@@ -12,3 +12,6 @@ Jewels will be in order by:
 - affix value (if it has only 1 affix)
 - jewel size
 - jewel level
+
+### Example
+![sorted_jewels](https://media.forgecdn.net/attachments/thumbnails/703/519/310/172/minecraft_-1.gif)
