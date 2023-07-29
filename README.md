@@ -14,4 +14,4 @@ Jewels will be in order by:
 - jewel level
 
 ### Example
-![sorted_jewels](https://github.com/BONNePlayground/VaultHuntersJewelSorting/assets/1344358/9de165a8-e616-4d25-9958-ce47431cb05a)
+![sorted_jewels](https://github.com/BONNePlayground/VaultHuntersJewelSorting/assets/1344358/57ab6581-856a-4591-bda3-0b15253cded6)
