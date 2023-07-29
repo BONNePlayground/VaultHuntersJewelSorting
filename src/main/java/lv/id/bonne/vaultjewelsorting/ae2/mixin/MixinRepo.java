@@ -35,14 +35,14 @@ import net.minecraft.world.item.ItemStack;
 @Mixin(Repo.class)
 public abstract class MixinRepo
 {
-    @Shadow
+    @Shadow(remap = false)
     @Final
     private ArrayList<GridInventoryEntry> view;
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract boolean isPaused();
 
-    @Shadow
+    @Shadow(remap = false)
     @Final
     private ISortSource sortSrc;
 
