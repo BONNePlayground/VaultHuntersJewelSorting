@@ -14,4 +14,4 @@ Jewels will be in order by:
 - jewel level
 
 ### Example
-![sorted_jewels](https://media.forgecdn.net/attachments/thumbnails/703/519/310/172/minecraft_-1.gif)
+![sorted_jewels](https://github.com/BONNePlayground/VaultHuntersJewelSorting/assets/1344358/9de165a8-e616-4d25-9958-ce47431cb05a)
