@@ -13,6 +13,7 @@ import java.util.Comparator;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.item.tool.JewelItem;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -41,7 +42,10 @@ public class MixinNetworkWidget
     {
         return original.thenComparing((first, second) ->
         {
-            if (first.getItem() instanceof JewelItem && second.getItem() instanceof JewelItem)
+            // Do not sort if shift is pressed
+            if (!Screen.hasShiftDown() &&
+                first.getItem() instanceof JewelItem &&
+                second.getItem() instanceof JewelItem)
             {
                 return SortingHelper.compareJewels(
                     VaultGearData.read(first),

@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.item.tool.JewelItem;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -46,8 +47,8 @@ public class MixinNameGridSorter
         String leftName = left.getName();
         String rightName = right.getName();
 
-        // Check only equal named items.
-        if (leftName.equalsIgnoreCase(rightName))
+        // Check only equal named items if shift is not pressed.
+        if (!Screen.hasShiftDown() && leftName.equalsIgnoreCase(rightName))
         {
             // Custom sorting is only for Jewel items.
             if (left.getIngredient() instanceof ItemStack leftStack &&

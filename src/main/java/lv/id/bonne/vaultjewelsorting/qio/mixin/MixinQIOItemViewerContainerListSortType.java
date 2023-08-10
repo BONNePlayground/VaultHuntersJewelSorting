@@ -21,6 +21,7 @@ import iskallia.vault.item.tool.JewelItem;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import net.minecraft.client.gui.screens.Screen;
 
 
 /**
@@ -54,8 +55,10 @@ public class MixinQIOItemViewerContainerListSortType
     {
         return this.ascendingComparator.thenComparing((stack1, stack2) ->
         {
-            if (stack1.getItem().getStack().getItem() == stack2.getItem().getStack().getItem() &&
-                stack1.getItem().getStack().getItem() instanceof JewelItem)
+            // Do not sort if shift is pressed
+            if (!Screen.hasShiftDown() &&
+                stack1.getItem().getStack().getItem() instanceof JewelItem &&
+                stack2.getItem().getStack().getItem() instanceof JewelItem)
             {
                 return SortingHelper.compareJewels(
                     VaultGearData.read(stack1.getItem().getStack()),

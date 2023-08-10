@@ -26,6 +26,7 @@ import appeng.menu.me.common.GridInventoryEntry;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -55,7 +56,8 @@ public abstract class MixinRepo
     @Inject(method = "updateView()V", at = @At("TAIL"), remap = false)
     public final void updateView(CallbackInfo callbackInfo)
     {
-        if (!isPaused())
+        // do not sort if shift is pressed.
+        if (!Screen.hasShiftDown() && !isPaused())
         {
             var sortOrder = this.sortSrc.getSortBy();
             var sortDir = this.sortSrc.getSortDir();
