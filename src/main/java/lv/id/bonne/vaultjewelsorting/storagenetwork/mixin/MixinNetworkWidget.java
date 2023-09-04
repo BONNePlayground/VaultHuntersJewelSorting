@@ -1,6 +1,7 @@
 package lv.id.bonne.vaultjewelsorting.storagenetwork.mixin;
 
 
+import com.lothrazar.storagenetwork.api.EnumSortType;
 import com.lothrazar.storagenetwork.api.IGuiNetwork;
 import com.lothrazar.storagenetwork.gui.NetworkWidget;
 import org.spongepowered.asm.mixin.Final;
@@ -42,20 +43,31 @@ public class MixinNetworkWidget
     {
         return original.thenComparing((first, second) ->
         {
+            int returnValue = 0;
+
             // Do not sort if shift is pressed
             if (!Screen.hasShiftDown() &&
                 first.getItem() instanceof JewelItem &&
                 second.getItem() instanceof JewelItem)
             {
-                return SortingHelper.compareJewels(
-                    VaultGearData.read(first),
-                    VaultGearData.read(second),
-                    this.gui.getDownwards());
+                switch (this.gui.getSort())
+                {
+                    case AMOUNT -> {
+                        returnValue = SortingHelper.compareJewelsSize(
+                            VaultGearData.read(first),
+                            VaultGearData.read(second),
+                            this.gui.getDownwards());
+                    }
+                    case NAME -> {
+                        returnValue = SortingHelper.compareJewels(
+                            VaultGearData.read(first),
+                            VaultGearData.read(second),
+                            this.gui.getDownwards());
+                    }
+                }
             }
-            else
-            {
-                return 0;
-            }
+
+            return returnValue;
         });
     }
 }

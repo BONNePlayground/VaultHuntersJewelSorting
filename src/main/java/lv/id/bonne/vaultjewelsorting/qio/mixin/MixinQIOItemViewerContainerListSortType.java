@@ -55,15 +55,28 @@ public class MixinQIOItemViewerContainerListSortType
     {
         return this.ascendingComparator.thenComparing((stack1, stack2) ->
         {
-            // Do not sort if shift is pressed
+            // if shift is down, or sorting by mod, then skip everything.
             if (!Screen.hasShiftDown() &&
+                instance != QIOItemViewerContainer.ListSortType.MOD &&
                 stack1.getItem().getStack().getItem() instanceof JewelItem &&
                 stack2.getItem().getStack().getItem() instanceof JewelItem)
             {
-                return SortingHelper.compareJewels(
-                    VaultGearData.read(stack1.getItem().getStack()),
-                    VaultGearData.read(stack2.getItem().getStack()),
-                    true);
+                 if (instance == QIOItemViewerContainer.ListSortType.NAME)
+                 {
+                     // Use NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE comparing.
+                     return SortingHelper.compareJewels(
+                         VaultGearData.read(stack1.getItem().getStack()),
+                         VaultGearData.read(stack2.getItem().getStack()),
+                         true);
+                 }
+                 else
+                 {
+                     // Use NAME, ATTRIBUTE, SIZE, ATTRIBUTE_VALUE comparing.
+                     return SortingHelper.compareJewelsSize(
+                         VaultGearData.read(stack1.getItem().getStack()),
+                         VaultGearData.read(stack2.getItem().getStack()),
+                         true);
+                 }
             }
             else
             {
@@ -83,13 +96,28 @@ public class MixinQIOItemViewerContainerListSortType
     {
         return this.descendingComparator.thenComparing((stack1, stack2) ->
         {
-            if (stack1.getItem().getStack().getItem() == stack2.getItem().getStack().getItem() &&
-                stack1.getItem().getStack().getItem() instanceof JewelItem)
+            // if shift is down, or sorting by mod, then skip everything.
+            if (!Screen.hasShiftDown() &&
+                instance != QIOItemViewerContainer.ListSortType.MOD &&
+                stack1.getItem().getStack().getItem() instanceof JewelItem &&
+                stack2.getItem().getStack().getItem() instanceof JewelItem)
             {
-                return SortingHelper.compareJewels(
-                    VaultGearData.read(stack1.getItem().getStack()),
-                    VaultGearData.read(stack2.getItem().getStack()),
-                    false);
+                if (instance == QIOItemViewerContainer.ListSortType.NAME)
+                {
+                    // Use NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE comparing.
+                    return SortingHelper.compareJewels(
+                        VaultGearData.read(stack1.getItem().getStack()),
+                        VaultGearData.read(stack2.getItem().getStack()),
+                        false);
+                }
+                else
+                {
+                    // Use NAME, ATTRIBUTE, SIZE, ATTRIBUTE_VALUE comparing.
+                    return SortingHelper.compareJewelsSize(
+                        VaultGearData.read(stack1.getItem().getStack()),
+                        VaultGearData.read(stack2.getItem().getStack()),
+                        false);
+                }
             }
             else
             {

@@ -62,13 +62,14 @@ public abstract class MixinRepo
             var sortOrder = this.sortSrc.getSortBy();
             var sortDir = this.sortSrc.getSortDir();
 
-            if (!sortOrder.equals(SortOrder.NAME))
+            if (sortOrder.equals(SortOrder.MOD))
             {
-                // Only if sorting by name
+                // Only if sorting by name and size.
                 return;
             }
 
-            this.view.sort(this.getJewelComparator(sortDir == SortDir.ASCENDING));
+            this.view.sort(this.getJewelComparator(sortDir == SortDir.ASCENDING,
+                sortOrder.equals(SortOrder.AMOUNT)));
         }
     }
 
@@ -76,10 +77,11 @@ public abstract class MixinRepo
     /**
      * This method returns comparator for sorting jewels or default name sorting.
      * @param ascending boolean that indicates if order is ascending or descending.
+     * @param bySize boolean that indicates if sorting by size.
      * @return Comparator for sorting jewels or default name sorting.
      */
     @Unique
-    private Comparator<GridInventoryEntry> getJewelComparator(boolean ascending)
+    private Comparator<GridInventoryEntry> getJewelComparator(boolean ascending, boolean bySize)
     {
         return (left, right) ->
         {
@@ -116,7 +118,7 @@ public abstract class MixinRepo
             rightItem.getOrCreateTag().putLongArray("vaultGearData",
                 rightWhat.toTag().getCompound("tag").getLongArray("vaultGearData"));
 
-            return SortingHelper.compareJewels(VaultGearData.read(leftItem),
+            return SortingHelper.compareJewelsSize(VaultGearData.read(leftItem),
                 VaultGearData.read(rightItem),
                 ascending);
         };
