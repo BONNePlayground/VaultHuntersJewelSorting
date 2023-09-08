@@ -118,9 +118,18 @@ public abstract class MixinRepo
             rightItem.getOrCreateTag().putLongArray("vaultGearData",
                 rightWhat.toTag().getCompound("tag").getLongArray("vaultGearData"));
 
-            return SortingHelper.compareJewelsSize(VaultGearData.read(leftItem),
-                VaultGearData.read(rightItem),
-                ascending);
+            if (bySize)
+            {
+                return SortingHelper.compareJewelsSize(VaultGearData.read(leftItem),
+                    VaultGearData.read(rightItem),
+                    ascending);
+            }
+            else
+            {
+                return SortingHelper.compareJewels(VaultGearData.read(leftItem),
+                    VaultGearData.read(rightItem),
+                    ascending);
+            }
         };
     }
 }
