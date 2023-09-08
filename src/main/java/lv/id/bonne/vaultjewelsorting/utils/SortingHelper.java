@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
 import iskallia.vault.gear.data.VaultGearData;
@@ -224,5 +225,67 @@ public class SortingHelper
         }
 
         return returnValue;
+    }
+
+
+    /**
+     * This method compares Vault Gears by: their rarity or roll type and item level.
+     * @param leftData The left Vault Gear.
+     * @param rightData The right Vault Gear.
+     * @param ascending ascending or descending order.
+     * @return The comparison result.
+     */
+    public static int compareVaultGear(VaultGearData leftData, VaultGearData rightData, boolean ascending)
+    {
+        // Start comparing with the current vault gear state.
+        int returnValue = leftData.getState().compareTo(rightData.getState());
+
+        // Now compare by item rarity options.
+        if (returnValue == 0)
+        {
+            if (leftData.getState().equals(VaultGearState.IDENTIFIED))
+            {
+                // If item is identified, then compare by item rarity.
+
+                returnValue = leftData.getRarity().compareTo(rightData.getRarity());
+
+                if (returnValue != 0)
+                {
+                    return ascending ? returnValue : -returnValue;
+                }
+            }
+            else
+            {
+                // Find ModGearAttributes.GEAR_ROLL_TYPE attribute and compare it.
+                Optional<String> leftValue = leftData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
+                Optional<String> rightValue = rightData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
+
+                if (leftValue.isPresent() && rightValue.isPresent())
+                {
+                    String leftRoll = leftValue.get();
+                    String rightRoll = rightValue.get();
+
+                    if (!leftRoll.equals(rightRoll))
+                    {
+                        returnValue = Integer.compare(
+                            AttributeHelper.getRollIndex(leftValue.get()),
+                            AttributeHelper.getRollIndex(rightValue.get()));
+
+                        if (returnValue == 0)
+                        {
+                            returnValue = leftRoll.compareTo(rightRoll);
+                        }
+                    }
+                }
+            }
+        }
+
+        // The last comparing step is to compare by item level.
+        if (returnValue == 0)
+        {
+            returnValue = Integer.compare(leftData.getItemLevel(), rightData.getItemLevel());
+        }
+
+        return ascending ? returnValue : -returnValue;
     }
 }

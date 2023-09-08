@@ -13,7 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import iskallia.vault.gear.data.VaultGearData;
+import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.tool.JewelItem;
+import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.world.item.ItemStack;
 import vazkii.quark.base.handler.SortingHandler;
@@ -46,7 +48,8 @@ public class MixinSortingHandler
         }
 
         // Deal with Jewels
-        if (stack1.getItem() == stack2.getItem() && stack1.getItem() instanceof JewelItem)
+        if (stack1.getItem() instanceof JewelItem &&
+            stack2.getItem() instanceof JewelItem)
         {
             String leftName = stack1.getDisplayName().getString();
             String rightName = stack2.getDisplayName().getString();
@@ -59,6 +62,37 @@ public class MixinSortingHandler
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareJewels(
+                        VaultGearData.read(stack1),
+                        VaultGearData.read(stack2),
+                        true));
+            }
+
+            callbackInfoReturnable.cancel();
+        }
+        else if (stack1.getItem() instanceof ToolItem &&
+            stack2.getItem() instanceof ToolItem)
+        {
+// TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
+//                callbackInfoReturnable.setReturnValue(SortingHelper.compareTools(
+//                    VaultGearData.read(leftStack),
+//                    VaultGearData.read(rightStack),
+//                    sortingDirection == SortingDirection.ASCENDING));
+//                callbackInfoReturnable.cancel();
+        }
+        else if (stack1.getItem() instanceof VaultGearItem &&
+            stack2.getItem() instanceof VaultGearItem)
+        {
+            String leftName = stack1.getDisplayName().getString();
+            String rightName = stack2.getDisplayName().getString();
+
+            if (!leftName.equalsIgnoreCase(rightName))
+            {
+                callbackInfoReturnable.setReturnValue(String.CASE_INSENSITIVE_ORDER.compare(leftName, rightName));
+            }
+            else
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareVaultGear(
                         VaultGearData.read(stack1),
                         VaultGearData.read(stack2),
                         true));

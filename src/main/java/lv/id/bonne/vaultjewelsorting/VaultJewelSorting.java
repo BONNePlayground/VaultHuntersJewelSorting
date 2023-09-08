@@ -34,6 +34,7 @@ public class VaultJewelSorting
     public static void onGearAttributeRegistry(RegistryEvent.Register<VaultGearAttribute<?>> event)
     {
         AttributeHelper.registerAttributes();
+        AttributeHelper.registerPollTypes();
 //        AttributeHelper.registerAttributes(event);
     }
 }

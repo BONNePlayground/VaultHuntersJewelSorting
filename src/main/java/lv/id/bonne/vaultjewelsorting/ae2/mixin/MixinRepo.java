@@ -23,10 +23,14 @@ import appeng.api.stacks.AEKey;
 import appeng.client.gui.me.common.Repo;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.menu.me.common.GridInventoryEntry;
+import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
+import lv.id.bonne.vaultjewelsorting.utils.CustomVaultGearData;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -68,7 +72,7 @@ public abstract class MixinRepo
                 return;
             }
 
-            this.view.sort(this.getJewelComparator(sortDir == SortDir.ASCENDING,
+            this.view.sort(this.getVaultComparator(sortDir == SortDir.ASCENDING,
                 sortOrder.equals(SortOrder.AMOUNT)));
         }
     }
@@ -81,7 +85,7 @@ public abstract class MixinRepo
      * @return Comparator for sorting jewels or default name sorting.
      */
     @Unique
-    private Comparator<GridInventoryEntry> getJewelComparator(boolean ascending, boolean bySize)
+    private Comparator<GridInventoryEntry> getVaultComparator(boolean ascending, boolean bySize)
     {
         return (left, right) ->
         {
@@ -98,7 +102,7 @@ public abstract class MixinRepo
             String rightName = rightWhat.getDisplayName().getString();
 
             if (!leftWhat.getId().equals(rightWhat.getId()) ||
-                leftWhat.getId() != ModItems.JEWEL.getRegistryName() ||
+                !MixinRepo.isSortable(leftWhat.getId()) ||
                 !leftName.equalsIgnoreCase(rightName))
             {
                 // Use default string comparing
@@ -107,29 +111,49 @@ public abstract class MixinRepo
                     String.CASE_INSENSITIVE_ORDER.compare(rightName, leftName);
             }
 
-            // Unfortunately, I was not able to generate VaultGearData from tag. So I had to
-            // add dummy item for parser.
-            // This is non-optimal solution, and will need to search a way to improve it.
-            ItemStack leftItem = new ItemStack(ModItems.JEWEL);
-            leftItem.getOrCreateTag().putLongArray("vaultGearData",
-                leftWhat.toTag().getCompound("tag").getLongArray("vaultGearData"));
+            VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
+            VaultGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
 
-            ItemStack rightItem = new ItemStack(ModItems.JEWEL);
-            rightItem.getOrCreateTag().putLongArray("vaultGearData",
-                rightWhat.toTag().getCompound("tag").getLongArray("vaultGearData"));
-
-            if (bySize)
+            if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
             {
-                return SortingHelper.compareJewelsSize(VaultGearData.read(leftItem),
-                    VaultGearData.read(rightItem),
-                    ascending);
+                if (bySize)
+                {
+                    return SortingHelper.compareJewelsSize(leftData, rightData, ascending);
+                }
+                else
+                {
+                    return SortingHelper.compareJewels(leftData, rightData, ascending);
+                }
             }
             else
             {
-                return SortingHelper.compareJewels(VaultGearData.read(leftItem),
-                    VaultGearData.read(rightItem),
-                    ascending);
+                return SortingHelper.compareVaultGear(leftData, rightData, ascending);
             }
         };
+    }
+
+
+    /**
+     * This method checks if item is sortable via custom sorting.
+     * @param id the ResourceLocation of item.
+     * @return true if item is sortable via custom sorting.
+     */
+    @Unique
+    private static boolean isSortable(ResourceLocation id)
+    {
+        return id.equals(ModItems.JEWEL.getRegistryName()) ||
+            id.equals(ModItems.HELMET.getRegistryName()) ||
+            id.equals(ModItems.CHESTPLATE.getRegistryName()) ||
+            id.equals(ModItems.LEGGINGS.getRegistryName()) ||
+            id.equals(ModItems.BOOTS.getRegistryName()) ||
+            id.equals(ModItems.SWORD.getRegistryName()) ||
+            id.equals(ModItems.AXE.getRegistryName()) ||
+            id.equals(ModItems.SHIELD.getRegistryName()) ||
+            id.equals(ModItems.IDOL_BENEVOLENT.getRegistryName()) ||
+            id.equals(ModItems.IDOL_OMNISCIENT.getRegistryName()) ||
+            id.equals(ModItems.IDOL_TIMEKEEPER.getRegistryName()) ||
+            id.equals(ModItems.IDOL_MALEVOLENCE.getRegistryName()) ||
+            id.equals(ModItems.WAND.getRegistryName()) ||
+            id.equals(ModItems.MAGNET.getRegistryName());
     }
 }
