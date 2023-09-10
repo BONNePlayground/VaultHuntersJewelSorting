@@ -7,31 +7,25 @@
 package lv.id.bonne.vaultjewelsorting.ae2.mixin;
 
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import java.util.ArrayList;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.me.common.Repo;
-import appeng.client.gui.widgets.ISortSource;
 import appeng.menu.me.common.GridInventoryEntry;
-import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
 import lv.id.bonne.vaultjewelsorting.utils.CustomVaultGearData;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 
 /**
@@ -41,53 +35,30 @@ import net.minecraft.world.item.ItemStack;
 public abstract class MixinRepo
 {
     @Shadow(remap = false)
-    @Final
-    private ArrayList<GridInventoryEntry> view;
-
-    @Shadow(remap = false)
     public abstract boolean isPaused();
 
-    @Shadow(remap = false)
-    @Final
-    private ISortSource sortSrc;
 
-
-    /**
-     * This method injects code at the end of updateView to resort jewel items.
-     *
-     * @param callbackInfo callback info
-     */
-    @Inject(method = "updateView()V", at = @At("TAIL"), remap = false)
-    public final void updateView(CallbackInfo callbackInfo)
+    @Inject(method = "getComparator",
+        at = @At("RETURN"),
+        cancellable = true,
+        remap = false)
+    public final void comparator(SortOrder sortOrder,
+        SortDir sortDir,
+        CallbackInfoReturnable<Comparator<GridInventoryEntry>> cir)
     {
-        // do not sort if shift is pressed.
         if (!Screen.hasShiftDown() && !isPaused())
         {
-            var sortOrder = this.sortSrc.getSortBy();
-            var sortDir = this.sortSrc.getSortDir();
-
             if (sortOrder.equals(SortOrder.MOD))
             {
                 // Only if sorting by name and size.
                 return;
             }
-
-            this.view.sort(this.getVaultComparator(sortDir == SortDir.ASCENDING,
-                sortOrder.equals(SortOrder.AMOUNT)));
         }
-    }
 
+        boolean ascending = sortDir == SortDir.ASCENDING;
+        boolean bySize = sortOrder.equals(SortOrder.AMOUNT);
 
-    /**
-     * This method returns comparator for sorting jewels or default name sorting.
-     * @param ascending boolean that indicates if order is ascending or descending.
-     * @param bySize boolean that indicates if sorting by size.
-     * @return Comparator for sorting jewels or default name sorting.
-     */
-    @Unique
-    private Comparator<GridInventoryEntry> getVaultComparator(boolean ascending, boolean bySize)
-    {
-        return (left, right) ->
+        cir.setReturnValue(cir.getReturnValue().thenComparing((left, right) ->
         {
             AEKey leftWhat = left.getWhat();
             AEKey rightWhat = right.getWhat();
@@ -129,7 +100,7 @@ public abstract class MixinRepo
             {
                 return SortingHelper.compareVaultGear(leftData, rightData, ascending);
             }
-        };
+        }));
     }
 
 
