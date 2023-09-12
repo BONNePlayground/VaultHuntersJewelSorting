@@ -38,14 +38,15 @@ public class MixinSortingHandler
      * @param callbackInfoReturnable The callback info returnable.
      */
     @Inject(method = "stackCompare(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)I",
-        at = @At("HEAD"),
+        at = @At("RETURN"),
         cancellable = true,
         remap = false)
     private static void stackCompare(ItemStack stack1, ItemStack stack2, CallbackInfoReturnable<Integer> callbackInfoReturnable)
     {
         if (stack1 == stack2 ||
-            stack1.isEmpty() ||
-            stack2.isEmpty())
+            !MixinSortingHandler.hasCustomComparison(stack1) ||
+            !MixinSortingHandler.hasCustomComparison(stack2) ||
+            !stack1.getItem().equals(stack2.getItem()))
         {
             // Leave to original code.
             return;
@@ -110,5 +111,18 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
+    }
+
+
+    /**
+     * This method returns if stack has custom comparison.
+     * @param stack Stack to check.
+     * @return true if stack has custom comparison.
+     */
+    @Unique
+    private static boolean hasCustomComparison(ItemStack stack)
+    {
+        return stack.getItem() instanceof VaultGearItem ||
+            stack.getItem() instanceof InscriptionItem;
     }
 }

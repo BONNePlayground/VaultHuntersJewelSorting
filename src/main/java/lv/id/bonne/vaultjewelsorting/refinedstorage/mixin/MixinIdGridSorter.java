@@ -41,7 +41,7 @@ public class MixinIdGridSorter
      * @param callbackInfoReturnable The callback info returnable.
      */
     @Inject(method = "compare(Lcom/refinedmods/refinedstorage/screen/grid/stack/IGridStack;Lcom/refinedmods/refinedstorage/screen/grid/stack/IGridStack;Lcom/refinedmods/refinedstorage/screen/grid/sorting/SortingDirection;)I",
-        at = @At("HEAD"),
+        at = @At("RETURN"),
         cancellable = true,
         remap = false)
     public void compare(IGridStack left,
@@ -49,7 +49,7 @@ public class MixinIdGridSorter
         SortingDirection sortingDirection,
         CallbackInfoReturnable<Integer> callbackInfoReturnable)
     {
-        if (Screen.hasShiftDown())
+        if (Screen.hasShiftDown() || callbackInfoReturnable.getReturnValue() != 0)
         {
             // If shift is pressed or both names are not equal, then ignore.
             return;
