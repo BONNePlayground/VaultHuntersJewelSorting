@@ -33,7 +33,7 @@ public class MixinInventorySorter
                         VaultGearData.read(first.getKey().getStack()),
                         second.getKey().getStack().getDisplayName().getString(),
                         VaultGearData.read(second.getKey().getStack()),
-                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         true);
                 }
                 else if (first.getKey().getStack().getItem() instanceof ToolItem &&
