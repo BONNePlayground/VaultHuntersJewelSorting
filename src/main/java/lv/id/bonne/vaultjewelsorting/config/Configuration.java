@@ -42,7 +42,7 @@ public class Configuration
                     SortingHelper.JewelOptions.SIZE.name(),
                     SortingHelper.JewelOptions.LEVEL.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
         this.jewelSortingByAmount = this.builder.
             comment("The order of Jewels if they are sorted by the amount/size.").
@@ -50,7 +50,7 @@ public class Configuration
             defineList("jewel_sorting_by_amount",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
         this.jewelSortingByMod = this.builder.
             comment("The order of Jewels if they are sorted by the mod.").
@@ -58,7 +58,7 @@ public class Configuration
             defineList("jewel_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
         this.builder.pop();
 
@@ -75,7 +75,7 @@ public class Configuration
                     SortingHelper.GearOptions.LEVEL.name(),
                     SortingHelper.GearOptions.MODEL.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
         this.gearSortingByAmount = this.builder.
             comment("The order of Gear if they are sorted by the amount/size.").
@@ -83,7 +83,7 @@ public class Configuration
             defineList("gear_sorting_by_amount",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
         this.gearSortingByMod = this.builder.
             comment("The order of Gear if they are sorted by the mod.").
@@ -91,7 +91,7 @@ public class Configuration
             defineList("gear_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
         this.rarityOrder = this.builder.
             comment("The order of Rarities Pools in the sorting for unidentified gear.").
@@ -130,7 +130,7 @@ public class Configuration
                     SortingHelper.InscriptionOptions.COMPLETION.name(),
                     SortingHelper.InscriptionOptions.INSTABILITY.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
         this.inscriptionSortingByAmount = this.builder.
             comment("The order of Inscriptions if they are sorted by the amount/size.").
@@ -138,7 +138,7 @@ public class Configuration
             defineList("inscription_sorting_by_amount",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
         this.inscriptionSortingByMod = this.builder.
             comment("The order of Inscriptions if they are sorted by the mod.").
@@ -146,7 +146,7 @@ public class Configuration
             defineList("inscription_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
         this.builder.pop();
 
