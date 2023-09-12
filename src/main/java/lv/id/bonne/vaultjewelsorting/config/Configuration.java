@@ -48,11 +48,7 @@ public class Configuration
             comment("The order of Jewels if they are sorted by the amount/size.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_amount",
-                Arrays.asList(SortingHelper.JewelOptions.NAME.name(),
-                    SortingHelper.JewelOptions.SIZE.name(),
-                    SortingHelper.JewelOptions.ATTRIBUTE.name(),
-                    SortingHelper.JewelOptions.ATTRIBUTE_VALUE.name(),
-                    SortingHelper.JewelOptions.LEVEL.name()),
+                Collections.emptyList(),
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
 
@@ -76,7 +72,8 @@ public class Configuration
                 Arrays.asList(SortingHelper.GearOptions.NAME.name(),
                     SortingHelper.GearOptions.STATE.name(),
                     SortingHelper.GearOptions.RARITY.name(),
-                    SortingHelper.GearOptions.LEVEL.name()),
+                    SortingHelper.GearOptions.LEVEL.name(),
+                    SortingHelper.GearOptions.MODEL.name()),
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
 
@@ -84,10 +81,7 @@ public class Configuration
             comment("The order of Gear if they are sorted by the amount/size.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_amount",
-                Arrays.asList(SortingHelper.GearOptions.NAME.name(),
-                    SortingHelper.GearOptions.STATE.name(),
-                    SortingHelper.GearOptions.LEVEL.name(),
-                    SortingHelper.GearOptions.RARITY.name()),
+                Collections.emptyList(),
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
 
@@ -142,11 +136,7 @@ public class Configuration
             comment("The order of Inscriptions if they are sorted by the amount/size.").
             comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
             defineList("inscription_sorting_by_amount",
-                Arrays.asList(SortingHelper.InscriptionOptions.NAME.name(),
-                    SortingHelper.InscriptionOptions.TIME.name(),
-                    SortingHelper.InscriptionOptions.INSTABILITY.name(),
-                    SortingHelper.InscriptionOptions.COMPLETION.name(),
-                    SortingHelper.InscriptionOptions.ROOMS.name()),
+                Collections.emptyList(),
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
 
