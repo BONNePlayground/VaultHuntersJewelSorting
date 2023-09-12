@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import iskallia.vault.core.world.generator.layout.ArchitectRoomEntry;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModGearAttributes;
+import iskallia.vault.item.data.InscriptionData;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 
@@ -108,6 +111,47 @@ public class SortingHelper
                 case RARITY -> SortingHelper.compareRarity(leftData, rightData);
                 case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
                 case MODEL -> SortingHelper.compareModel(leftData, rightData);
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares two given vault gear by their sorting order.
+     *
+     * @param leftName the left name
+     * @param leftData the left data
+     * @param rightName the right name
+     * @param rightData the right data
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given vault gear items.
+     */
+    public static int compareInscriptions(String leftName,
+        InscriptionData leftData,
+        String rightName,
+        InscriptionData rightData,
+        List<InscriptionOptions> sortingOrder,
+        boolean ascending)
+    {
+        // Start comparing with the current vault gear state.
+        int returnValue = 0;
+
+        CompoundTag leftTag = leftData.serializeNBT();
+        CompoundTag rightTag = rightData.serializeNBT();
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            InscriptionOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case INSTABILITY -> SortingHelper.compareInstability(leftTag, rightTag);
+                case COMPLETION -> SortingHelper.compareCompletion(leftTag, rightTag);
+                case TIME -> SortingHelper.compareTime(leftTag, rightTag);
+                case ROOMS -> SortingHelper.compareRooms(leftData, rightData);
             };
         }
 
@@ -410,6 +454,81 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares two given inscription data by their instability.
+     * @param leftData Left inscription data.
+     * @param rightData Right inscription data.
+     * @return Returns the comparison of two given inscription data by their instability.
+     */
+    private static int compareInstability(CompoundTag leftData, CompoundTag rightData)
+    {
+        return leftData.hasUUID("instability") && rightData.hasUUID("instability") ?
+            Integer.compare(leftData.getInt("instability"), rightData.getInt("instability")) :
+            0;
+    }
+
+
+    /**
+     * This method compares two given inscription data by their completion.
+     * @param leftData Left inscription data.
+     * @param rightData Right inscription data.
+     * @return Returns the comparison of two given inscription data by their completion.
+     */
+    private static int compareCompletion(CompoundTag leftData, CompoundTag rightData)
+    {
+        return leftData.hasUUID("completion") && rightData.hasUUID("completion") ?
+            Float.compare(leftData.getFloat("completion"), rightData.getFloat("completion")) :
+            0;
+    }
+
+
+    /**
+     * This method compares two given inscription data by their time.
+     * @param leftData Left inscription data.
+     * @param rightData Right inscription data.
+     * @return Returns the comparison of two given inscription data by their time.
+     */
+    private static int compareTime(CompoundTag leftData, CompoundTag rightData)
+    {
+        return leftData.hasUUID("time") && rightData.hasUUID("time") ?
+            Integer.compare(leftData.getInt("time"), rightData.getInt("time")) :
+            0;
+    }
+
+
+    /**
+     * This method compares two given inscription data by their rooms.
+     * @param leftData Left inscription data.
+     * @param rightData Right inscription data.
+     * @return Returns the comparison of two given inscription data by their rooms.
+     */
+    private static int compareRooms(InscriptionData leftData, InscriptionData rightData)
+    {
+        int leftRooms = leftData.getEntries().size();
+        int rightRooms = rightData.getEntries().size();
+
+        if (leftRooms != rightRooms)
+        {
+            return Integer.compare(leftRooms, rightRooms);
+        }
+        else if (leftRooms == 1)
+        {
+            InscriptionData.Entry leftEntry = leftData.getEntries().get(0);
+            InscriptionData.Entry rightEntry = rightData.getEntries().get(0);
+
+            String leftRoomName = leftEntry.toRoomEntry().getName().getString();
+            String rightRoomName = rightEntry.toRoomEntry().getName().getString();
+
+            return leftRoomName.compareTo(rightRoomName);
+        }
+        else
+        {
+            // Equal number of rooms. Return 0.
+            return 0;
+        }
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enum for sorting order
 // ---------------------------------------------------------------------
@@ -472,5 +591,33 @@ public class SortingHelper
          * The model fo the gear.
          */
         MODEL
+    }
+
+
+    /**
+     * This enum holds all possible values for INSCRIPTION sorting order.
+     */
+    public enum InscriptionOptions
+    {
+        /**
+         * The name of the inscription
+         */
+        NAME,
+        /**
+         * The completion amount of inscription.
+         */
+        COMPLETION,
+        /**
+         * The time of inscription.
+         */
+        TIME,
+        /**
+         * The instability of inscription.
+         */
+        INSTABILITY,
+        /**
+         * The amount of rooms in inscription.
+         */
+        ROOMS
     }
 }
