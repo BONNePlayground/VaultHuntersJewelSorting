@@ -71,7 +71,7 @@ public class Configuration
 
         this.gearSortingByName = this.builder.
             comment("The order of Gear if they are sorted by the name.").
-            comment("Supported Values: NAME, STATE, RARITY, LEVEL").
+            comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_name",
                 Arrays.asList(SortingHelper.SortOptions.NAME.name(),
                     SortingHelper.SortOptions.STATE.name(),
@@ -82,7 +82,7 @@ public class Configuration
 
         this.gearSortingByAmount = this.builder.
             comment("The order of Gear if they are sorted by the amount/size.").
-            comment("Supported Values: NAME, STATE, RARITY, LEVEL").
+            comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_amount",
                 Arrays.asList(SortingHelper.SortOptions.NAME.name(),
                     SortingHelper.SortOptions.STATE.name(),
@@ -93,7 +93,7 @@ public class Configuration
 
         this.gearSortingByMod = this.builder.
             comment("The order of Gear if they are sorted by the mod.").
-            comment("Supported Values: NAME, STATE, RARITY, LEVEL").
+            comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&

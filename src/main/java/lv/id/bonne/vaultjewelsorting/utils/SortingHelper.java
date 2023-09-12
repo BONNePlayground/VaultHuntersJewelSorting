@@ -12,11 +12,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import iskallia.vault.dynamodel.model.armor.ArmorPieceModel;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
 import iskallia.vault.gear.data.VaultGearData;
+import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModDynamicModels;
 import iskallia.vault.init.ModGearAttributes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 
 /**
@@ -108,6 +113,7 @@ public class SortingHelper
                 case STATE -> SortingHelper.compareState(leftData, rightData);
                 case RARITY -> SortingHelper.compareRarity(leftData, rightData);
                 case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
+                case MODEL -> SortingHelper.compareModel(leftData, rightData);
                 default -> 0;
             };
         }
@@ -380,6 +386,37 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares model of two given items.
+     * @param leftData The data of the left item.
+     * @param rightData The data of the right item.
+     * @return Gear Name comparison.
+     */
+    private static int compareModel(VaultGearData leftData, VaultGearData rightData)
+    {
+        if (leftData.getState() != rightData.getState())
+        {
+            // Non-equal states are not comparable by rarity.
+            return SortingHelper.compareState(leftData, rightData);
+        }
+
+        if (leftData.getState().equals(VaultGearState.IDENTIFIED))
+        {
+            // Find ModGearAttributes.GEAR_MODEL attribute and compare it.
+            Optional<ResourceLocation> leftValue = leftData.getFirstValue(ModGearAttributes.GEAR_MODEL);
+            Optional<ResourceLocation> rightValue = rightData.getFirstValue(ModGearAttributes.GEAR_MODEL);
+
+            if (leftValue.isPresent() && rightValue.isPresent())
+            {
+                return leftValue.get().compareTo(rightValue.get());
+            }
+        }
+
+        // Gear does not contain data about rarity.
+        return 0;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enum for sorting order
 // ---------------------------------------------------------------------
@@ -421,6 +458,10 @@ public class SortingHelper
         /**
          * The state of the gear. (IDENTIFIED, UNIDENTIFIED, etc.)
          */
-        STATE
+        STATE,
+        /**
+         * The model fo the gear.
+         */
+        MODEL
     }
 }
