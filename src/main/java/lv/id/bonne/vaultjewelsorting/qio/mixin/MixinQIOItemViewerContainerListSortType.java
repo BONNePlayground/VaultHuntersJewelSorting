@@ -18,6 +18,8 @@ import java.util.Comparator;
 
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -129,6 +131,35 @@ public class MixinQIOItemViewerContainerListSortType
                         rightName,
                         rightData,
                         VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        true);
+                };
+            }
+            else if (firstItem.getItem() instanceof InscriptionItem &&
+                secondItem.getItem() instanceof InscriptionItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                InscriptionData leftData = InscriptionData.from(firstItem);
+                InscriptionData rightData = InscriptionData.from(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
                         true);
                 };
             }

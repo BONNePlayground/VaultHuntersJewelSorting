@@ -2,6 +2,8 @@ package lv.id.bonne.vaultjewelsorting.sophisticatedcore.mixin;
 
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -56,6 +58,17 @@ public class MixinInventorySorter
                         VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
                         true);
                 }
+                else if (first.getKey().getStack().getItem() instanceof InscriptionItem &&
+                    second.getKey().getStack().getItem() instanceof InscriptionItem)
+                {
+                    return SortingHelper.compareInscriptions(
+                        first.getKey().getStack().getDisplayName().getString(),
+                        InscriptionData.from(first.getKey().getStack()),
+                        second.getKey().getStack().getDisplayName().getString(),
+                        InscriptionData.from(second.getKey().getStack()),
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
+                        true);
+                }
 
                 return 0;
             });
@@ -93,6 +106,17 @@ public class MixinInventorySorter
                         second.getKey().getStack().getDisplayName().getString(),
                         VaultGearData.read(second.getKey().getStack()),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        true);
+                }
+                else if (first.getKey().getStack().getItem() instanceof InscriptionItem &&
+                    second.getKey().getStack().getItem() instanceof InscriptionItem)
+                {
+                    return SortingHelper.compareInscriptions(
+                        first.getKey().getStack().getDisplayName().getString(),
+                        InscriptionData.from(first.getKey().getStack()),
+                        second.getKey().getStack().getDisplayName().getString(),
+                        InscriptionData.from(second.getKey().getStack()),
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
                         true);
                 }
 

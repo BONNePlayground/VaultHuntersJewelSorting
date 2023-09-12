@@ -17,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -90,6 +92,20 @@ public class MixinIdGridSorter
                         right.getName(),
                         VaultGearData.read(rightStack),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        sortingDirection == SortingDirection.ASCENDING));
+                    callbackInfoReturnable.cancel();
+                }
+            }
+            else if (leftStack.getItem() instanceof InscriptionItem &&
+                rightStack.getItem() instanceof InscriptionItem)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(SortingHelper.compareInscriptions(left.getName(),
+                        InscriptionData.from(leftStack),
+                        right.getName(),
+                        InscriptionData.from(rightStack),
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
                         sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
                 }

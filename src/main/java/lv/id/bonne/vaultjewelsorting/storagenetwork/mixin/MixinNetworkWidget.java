@@ -12,6 +12,8 @@ import java.util.Comparator;
 
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -118,6 +120,35 @@ public class MixinNetworkWidget
                         rightData,
                         VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
                         this.gui.getDownwards());
+                };
+            }
+            else if (first.getItem() instanceof InscriptionItem &&
+                second.getItem() instanceof InscriptionItem)
+            {
+                String leftName = first.getDisplayName().getString();
+                String rightName = second.getDisplayName().getString();
+                InscriptionData leftData = InscriptionData.from(first);
+                InscriptionData rightData = InscriptionData.from(second);
+
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
+                        true);
                 };
             }
 

@@ -8,12 +8,15 @@ package lv.id.bonne.vaultjewelsorting.quark.mixin;
 
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -86,6 +89,22 @@ public class MixinSortingHandler
                         stack2.getDisplayName().getString(),
                         VaultGearData.read(stack2),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
+        else if (stack1.getItem() instanceof InscriptionItem &&
+            stack2.getItem() instanceof InscriptionItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareInscriptions(stack1.getDisplayName().getString(),
+                        InscriptionData.from(stack1),
+                        stack2.getDisplayName().getString(),
+                        InscriptionData.from(stack2),
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
                         true));
 
                 callbackInfoReturnable.cancel();

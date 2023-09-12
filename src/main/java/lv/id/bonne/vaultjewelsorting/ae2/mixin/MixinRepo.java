@@ -8,7 +8,6 @@ package lv.id.bonne.vaultjewelsorting.ae2.mixin;
 
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,6 +21,7 @@ import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
+import iskallia.vault.item.data.InscriptionData;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.CustomVaultGearData;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
@@ -73,11 +73,11 @@ public abstract class MixinRepo
                     String.CASE_INSENSITIVE_ORDER.compare(rightName, leftName);
             }
 
-            VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
-            VaultGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
-
             if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
             {
+                VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
+                VaultGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
+
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareJewels(leftName,
                         leftData,
@@ -99,8 +99,40 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.INSCRIPTION.getRegistryName())
+            {
+                InscriptionData leftData = InscriptionData.empty();
+                leftData.deserializeNBT(leftWhat.toTag().getCompound("tag"));
+
+                InscriptionData rightData = InscriptionData.empty();
+                rightData.deserializeNBT(rightWhat.toTag().getCompound("tag"));
+
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
+                        ascending);
+                };
+            }
             else
             {
+                VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
+                VaultGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
+
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareVaultGear(leftName,
                         leftData,
@@ -147,6 +179,7 @@ public abstract class MixinRepo
             id.equals(ModItems.IDOL_TIMEKEEPER.getRegistryName()) ||
             id.equals(ModItems.IDOL_MALEVOLENCE.getRegistryName()) ||
             id.equals(ModItems.WAND.getRegistryName()) ||
-            id.equals(ModItems.MAGNET.getRegistryName());
+            id.equals(ModItems.MAGNET.getRegistryName()) ||
+            id.equals(ModItems.INSCRIPTION.getRegistryName());
     }
 }
