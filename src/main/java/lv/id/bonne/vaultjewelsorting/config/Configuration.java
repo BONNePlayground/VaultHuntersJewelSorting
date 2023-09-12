@@ -123,6 +123,44 @@ public class Configuration
 
         this.builder.pop();
 
+        this.builder.comment("This category holds options how Inscriptions are sorted");
+        this.builder.push("Inscription Sorting");
+
+        this.inscriptionSortingByName = this.builder.
+            comment("The order of Inscriptions if they are sorted by the name.").
+            comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
+            defineList("inscription_sorting_by_name",
+                Arrays.asList(SortingHelper.InscriptionOptions.NAME.name(),
+                    SortingHelper.InscriptionOptions.ROOMS.name(),
+                    SortingHelper.InscriptionOptions.TIME.name(),
+                    SortingHelper.InscriptionOptions.COMPLETION.name(),
+                    SortingHelper.InscriptionOptions.INSTABILITY.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+
+        this.inscriptionSortingByAmount = this.builder.
+            comment("The order of Inscriptions if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
+            defineList("inscription_sorting_by_amount",
+                Arrays.asList(SortingHelper.InscriptionOptions.NAME.name(),
+                    SortingHelper.InscriptionOptions.TIME.name(),
+                    SortingHelper.InscriptionOptions.INSTABILITY.name(),
+                    SortingHelper.InscriptionOptions.COMPLETION.name(),
+                    SortingHelper.InscriptionOptions.ROOMS.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+
+        this.inscriptionSortingByMod = this.builder.
+            comment("The order of Inscriptions if they are sorted by the mod.").
+            comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
+            defineList("inscription_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value).isPresent());
+
+        this.builder.pop();
+
+
         Configuration.GENERAL_SPEC = this.builder.build();
     }
 
@@ -205,6 +243,39 @@ public class Configuration
 
 
     /**
+     * Inscription sorting by name.
+     *
+     * @return the Inscription sorting by name
+     */
+    public List<SortingHelper.InscriptionOptions> getInscriptionSortingByName()
+    {
+        return this.convertStringToInscriptionEnum(this.inscriptionSortingByName.get());
+    }
+
+
+    /**
+     * Gets inscription sorting by amount.
+     *
+     * @return the inscription sorting by amount
+     */
+    public List<SortingHelper.InscriptionOptions> getInscriptionSortingByAmount()
+    {
+        return this.convertStringToInscriptionEnum(this.inscriptionSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets inscription sorting by mod.
+     *
+     * @return the inscription sorting by mod
+     */
+    public List<SortingHelper.InscriptionOptions> getInscriptionSortingByMod()
+    {
+        return this.convertStringToInscriptionEnum(this.inscriptionSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -228,6 +299,20 @@ public class Configuration
         return value.stream().
             filter(text -> Enums.getIfPresent(SortingHelper.GearOptions.class, text.toUpperCase()).isPresent()).
             map(SortingHelper.GearOptions::valueOf).
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.InscriptionOptions> convertStringToInscriptionEnum(List<? extends String> value)
+    {
+        return value.stream().
+            filter(text -> Enums.getIfPresent(SortingHelper.InscriptionOptions.class, text.toUpperCase()).isPresent()).
+            map(SortingHelper.InscriptionOptions::valueOf).
             toList();
     }
 
@@ -276,6 +361,21 @@ public class Configuration
      * The config value for rarity order.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> rarityOrder;
+
+    /**
+     * The config value for inscription sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> inscriptionSortingByName;
+
+    /**
+     * The config value for inscription sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> inscriptionSortingByAmount;
+
+    /**
+     * The config value for inscription sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> inscriptionSortingByMod;
 
     /**
      * The general config spec.
