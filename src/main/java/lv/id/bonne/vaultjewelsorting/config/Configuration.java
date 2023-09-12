@@ -275,6 +275,7 @@ public class Configuration
         return value.stream().
             filter(text -> Enums.getIfPresent(SortingHelper.JewelOptions.class, text.toUpperCase()).isPresent()).
             map(SortingHelper.JewelOptions::valueOf).
+            distinct().
             toList();
     }
 
@@ -289,6 +290,7 @@ public class Configuration
         return value.stream().
             filter(text -> Enums.getIfPresent(SortingHelper.GearOptions.class, text.toUpperCase()).isPresent()).
             map(SortingHelper.GearOptions::valueOf).
+            distinct().
             toList();
     }
 
@@ -303,6 +305,7 @@ public class Configuration
         return value.stream().
             filter(text -> Enums.getIfPresent(SortingHelper.InscriptionOptions.class, text.toUpperCase()).isPresent()).
             map(SortingHelper.InscriptionOptions::valueOf).
+            distinct().
             toList();
     }
 
