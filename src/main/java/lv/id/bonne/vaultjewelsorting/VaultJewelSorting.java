@@ -31,7 +31,7 @@ public class VaultJewelSorting
         MinecraftForge.EVENT_BUS.register(this);
         VaultJewelSorting.CONFIGURATION = new Configuration();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.GENERAL_SPEC, "vaulthunters_jewel_sorting.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.GENERAL_SPEC, "vault_hunters_jewel_sorting.toml");
     }
 
 
