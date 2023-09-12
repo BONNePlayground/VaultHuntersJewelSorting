@@ -7,7 +7,7 @@
 package lv.id.bonne.vaultjewelsorting.refinedstorage.mixin;
 
 
-import com.refinedmods.refinedstorage.screen.grid.sorting.QuantityGridSorter;
+import com.refinedmods.refinedstorage.screen.grid.sorting.IdGridSorter;
 import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 import com.refinedmods.refinedstorage.screen.grid.stack.IGridStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,8 +28,8 @@ import net.minecraft.world.item.ItemStack;
 /**
  * This mixin handles custom jewel sorting order for rs.
  */
-@Mixin(QuantityGridSorter.class)
-public class MixinQuantityGridSorter
+@Mixin(IdGridSorter.class)
+public class MixinIdGridSorter
 {
     /**
      * This method injects code at the start of compare to sort jewel items.
@@ -59,14 +59,13 @@ public class MixinQuantityGridSorter
             if (leftStack.getItem() instanceof JewelItem &&
                 rightStack.getItem() instanceof JewelItem)
             {
-                if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount().isEmpty())
+                if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByMod().isEmpty())
                 {
-                    callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(
-                        left.getName(),
+                    callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(left.getName(),
                         VaultGearData.read(leftStack),
                         right.getName(),
                         VaultGearData.read(rightStack),
-                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                         sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
                 }
@@ -84,14 +83,13 @@ public class MixinQuantityGridSorter
             else if (leftStack.getItem() instanceof VaultGearItem &&
                 rightStack.getItem() instanceof VaultGearItem)
             {
-                if (!VaultJewelSorting.CONFIGURATION.getGearSortingByAmount().isEmpty())
+                if (!VaultJewelSorting.CONFIGURATION.getGearSortingByMod().isEmpty())
                 {
-                    callbackInfoReturnable.setReturnValue(SortingHelper.compareVaultGear(
-                        left.getName(),
+                    callbackInfoReturnable.setReturnValue(SortingHelper.compareVaultGear(left.getName(),
                         VaultGearData.read(leftStack),
                         right.getName(),
                         VaultGearData.read(rightStack),
-                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
                         sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
                 }

@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import iskallia.vault.gear.attribute.VaultGearAttribute;
-import iskallia.vault.init.ModConfigs;
 import iskallia.vault.init.ModGearAttributes;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import net.minecraftforge.event.RegistryEvent;
 
 
@@ -70,28 +70,6 @@ public class AttributeHelper
 
 
     /**
-     * Populate Roll Type Index. Currently, order is by name.
-     */
-    public static void registerPollTypes()
-    {
-        ROLL_TYPE_INDEX.clear();
-
-        if (ModConfigs.VAULT_GEAR_TYPE_CONFIG != null)
-        {
-            List<String> rolls = new ArrayList<>(ModConfigs.VAULT_GEAR_TYPE_CONFIG.getRollPoolNames());
-
-            // Currently by name
-            rolls.sort(String::compareToIgnoreCase);
-
-            for (int i = 0; i < rolls.size(); i++)
-            {
-                ROLL_TYPE_INDEX.put(rolls.get(i), i);
-            }
-        }
-    }
-
-
-    /**
      * Is float attribute boolean.
      *
      * @param attribute the attribute
@@ -99,7 +77,7 @@ public class AttributeHelper
      */
     public static boolean isFloatAttribute(VaultGearAttribute<?> attribute)
     {
-        return FLOAT_ATTRIBUTE.contains(attribute);
+        return attribute != null && FLOAT_ATTRIBUTE.contains(attribute);
     }
 
 
@@ -111,7 +89,7 @@ public class AttributeHelper
      */
     public static boolean isIntegerAttribute(VaultGearAttribute<?> attribute)
     {
-        return INTEGER_ATTRIBUTE.contains(attribute);
+        return attribute != null && INTEGER_ATTRIBUTE.contains(attribute);
     }
 
 
@@ -123,7 +101,7 @@ public class AttributeHelper
      */
     public static boolean isDoubleAttribute(VaultGearAttribute<?> attribute)
     {
-        return DOUBLE_ATTRIBUTE.contains(attribute);
+        return attribute != null && DOUBLE_ATTRIBUTE.contains(attribute);
     }
 
 
@@ -135,7 +113,7 @@ public class AttributeHelper
      */
     public static int getAttributeIndex(VaultGearAttribute<?> attribute)
     {
-        return MOD_GEAR_ATTRIBUTE.indexOf(attribute);
+        return attribute == null ? -1 : MOD_GEAR_ATTRIBUTE.indexOf(attribute);
     }
 
 
@@ -146,7 +124,7 @@ public class AttributeHelper
      */
     public static int getRollIndex(String name)
     {
-        return ROLL_TYPE_INDEX.getOrDefault(name, -1);
+        return VaultJewelSorting.CONFIGURATION.getRarityOrder().indexOf(name);
     }
 
 
@@ -174,9 +152,4 @@ public class AttributeHelper
      * The set that holds all VaultGearAttributes that are double.
      */
     private static final Set<VaultGearAttribute<?>> DOUBLE_ATTRIBUTE = new HashSet<>();
-
-    /**
-     * The map that sorts roll types by index.
-     */
-    private static final Map<String, Integer> ROLL_TYPE_INDEX = new HashMap<>();
 }

@@ -19,6 +19,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
@@ -46,10 +47,7 @@ public class MixinNameGridSorter
         SortingDirection sortingDirection,
         CallbackInfoReturnable<Integer> callbackInfoReturnable)
     {
-        String leftName = left.getName();
-        String rightName = right.getName();
-
-        if (Screen.hasShiftDown() || !leftName.equalsIgnoreCase(rightName))
+        if (Screen.hasShiftDown())
         {
             // If shift is pressed or both names are not equal, then ignore.
             return;
@@ -61,11 +59,16 @@ public class MixinNameGridSorter
             if (leftStack.getItem() instanceof JewelItem &&
                 rightStack.getItem() instanceof JewelItem)
             {
-                callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(
-                    VaultGearData.read(leftStack),
-                    VaultGearData.read(rightStack),
-                    sortingDirection == SortingDirection.ASCENDING));
-                callbackInfoReturnable.cancel();
+                if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByName().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(left.getName(),
+                        VaultGearData.read(leftStack),
+                        right.getName(),
+                        VaultGearData.read(rightStack),
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
+                        sortingDirection == SortingDirection.ASCENDING));
+                    callbackInfoReturnable.cancel();
+                }
             }
             else if (leftStack.getItem() instanceof ToolItem &&
                 rightStack.getItem() instanceof ToolItem)
@@ -80,11 +83,16 @@ public class MixinNameGridSorter
             else if (leftStack.getItem() instanceof VaultGearItem &&
                 rightStack.getItem() instanceof VaultGearItem)
             {
-                callbackInfoReturnable.setReturnValue(SortingHelper.compareVaultGear(
-                    VaultGearData.read(leftStack),
-                    VaultGearData.read(rightStack),
-                    sortingDirection == SortingDirection.ASCENDING));
-                callbackInfoReturnable.cancel();
+                if (!VaultJewelSorting.CONFIGURATION.getGearSortingByName().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(SortingHelper.compareVaultGear(left.getName(),
+                        VaultGearData.read(leftStack),
+                        right.getName(),
+                        VaultGearData.read(rightStack),
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        sortingDirection == SortingDirection.ASCENDING));
+                    callbackInfoReturnable.cancel();
+                }
             }
         }
     }

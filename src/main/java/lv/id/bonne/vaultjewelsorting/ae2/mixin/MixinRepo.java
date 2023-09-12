@@ -22,6 +22,7 @@ import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.CustomVaultGearData;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,10 +35,6 @@ import net.minecraft.resources.ResourceLocation;
 @Mixin(Repo.class)
 public abstract class MixinRepo
 {
-    @Shadow(remap = false)
-    public abstract boolean isPaused();
-
-
     @Inject(method = "getComparator",
         at = @At("RETURN"),
         cancellable = true,
@@ -46,17 +43,12 @@ public abstract class MixinRepo
         SortDir sortDir,
         CallbackInfoReturnable<Comparator<GridInventoryEntry>> cir)
     {
-        if (!Screen.hasShiftDown() && !isPaused())
+        if (Screen.hasShiftDown())
         {
-            if (sortOrder.equals(SortOrder.MOD))
-            {
-                // Only if sorting by name and size.
-                return;
-            }
+            return;
         }
 
         boolean ascending = sortDir == SortDir.ASCENDING;
-        boolean bySize = sortOrder.equals(SortOrder.AMOUNT);
 
         cir.setReturnValue(cir.getReturnValue().thenComparing((left, right) ->
         {
@@ -73,8 +65,7 @@ public abstract class MixinRepo
             String rightName = rightWhat.getDisplayName().getString();
 
             if (!leftWhat.getId().equals(rightWhat.getId()) ||
-                !MixinRepo.isSortable(leftWhat.getId()) ||
-                !leftName.equalsIgnoreCase(rightName))
+                !MixinRepo.isSortable(leftWhat.getId()))
             {
                 // Use default string comparing
                 return ascending ?
@@ -87,18 +78,49 @@ public abstract class MixinRepo
 
             if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
             {
-                if (bySize)
-                {
-                    return SortingHelper.compareJewelsSize(leftData, rightData, ascending);
-                }
-                else
-                {
-                    return SortingHelper.compareJewels(leftData, rightData, ascending);
-                }
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
+                        ascending);
+                };
             }
             else
             {
-                return SortingHelper.compareVaultGear(leftData, rightData, ascending);
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        ascending);
+                };
             }
         }));
     }

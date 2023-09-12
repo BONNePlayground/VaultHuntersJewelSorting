@@ -20,6 +20,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -58,8 +59,7 @@ public class MixinQIOItemViewerContainerListSortType
     {
         return this.ascendingComparator.thenComparing((stack1, stack2) ->
         {
-            if (Screen.hasShiftDown() ||
-                instance == QIOItemViewerContainer.ListSortType.MOD)
+            if (Screen.hasShiftDown())
             {
                 return 0;
             }
@@ -71,36 +71,66 @@ public class MixinQIOItemViewerContainerListSortType
             if (firstItem.getItem() instanceof JewelItem &&
                 secondItem.getItem() instanceof JewelItem)
             {
-                if (instance == QIOItemViewerContainer.ListSortType.NAME)
-                {
-                    // Use NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE comparing.
-                    return SortingHelper.compareJewels(
-                        VaultGearData.read(firstItem),
-                        VaultGearData.read(secondItem),
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(firstItem);
+                VaultGearData rightData = VaultGearData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         true);
-                }
-                else
-                {
-                    // Use NAME, ATTRIBUTE, SIZE, ATTRIBUTE_VALUE comparing.
-                    return SortingHelper.compareJewelsSize(
-                        VaultGearData.read(firstItem),
-                        VaultGearData.read(secondItem),
+                    case SIZE -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         true);
-                }
+                    case MOD -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
+                        true);
+                };
             }
             else if (firstItem.getItem() instanceof ToolItem &&
                 secondItem.getItem() instanceof ToolItem)
             {
-                // TODO: comapre tools. Currently no.
+                // TODO: compare tools. Currently no.
                 return 0;
             }
             else if (firstItem.getItem() instanceof VaultGearItem &&
                 secondItem.getItem() instanceof VaultGearItem)
             {
-                return SortingHelper.compareVaultGear(
-                    VaultGearData.read(firstItem),
-                    VaultGearData.read(secondItem),
-                    true);
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(firstItem);
+                VaultGearData rightData = VaultGearData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        true);
+                };
             }
             else
             {
@@ -120,8 +150,7 @@ public class MixinQIOItemViewerContainerListSortType
     {
         return this.descendingComparator.thenComparing((stack1, stack2) ->
         {
-            if (Screen.hasShiftDown() ||
-                instance == QIOItemViewerContainer.ListSortType.MOD)
+            if (Screen.hasShiftDown())
             {
                 return 0;
             }
@@ -133,36 +162,66 @@ public class MixinQIOItemViewerContainerListSortType
             if (firstItem.getItem() instanceof JewelItem &&
                 secondItem.getItem() instanceof JewelItem)
             {
-                if (instance == QIOItemViewerContainer.ListSortType.NAME)
-                {
-                    // Use NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE comparing.
-                    return SortingHelper.compareJewels(
-                        VaultGearData.read(firstItem),
-                        VaultGearData.read(secondItem),
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(firstItem);
+                VaultGearData rightData = VaultGearData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         false);
-                }
-                else
-                {
-                    // Use NAME, ATTRIBUTE, SIZE, ATTRIBUTE_VALUE comparing.
-                    return SortingHelper.compareJewelsSize(
-                        VaultGearData.read(firstItem),
-                        VaultGearData.read(secondItem),
+                    case SIZE -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         false);
-                }
+                    case MOD -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
+                        false);
+                };
             }
             else if (firstItem.getItem() instanceof ToolItem &&
                 secondItem.getItem() instanceof ToolItem)
             {
-                // TODO: comapre tools. Currently no.
+                // TODO: compare tools. Currently no.
                 return 0;
             }
             else if (firstItem.getItem() instanceof VaultGearItem &&
                 secondItem.getItem() instanceof VaultGearItem)
             {
-                return SortingHelper.compareVaultGear(
-                    VaultGearData.read(firstItem),
-                    VaultGearData.read(secondItem),
-                    false);
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(firstItem);
+                VaultGearData rightData = VaultGearData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        false);
+                };
             }
             else
             {

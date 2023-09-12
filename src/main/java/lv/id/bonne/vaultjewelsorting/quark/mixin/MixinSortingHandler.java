@@ -16,6 +16,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.world.item.ItemStack;
 import vazkii.quark.base.handler.SortingHandler;
@@ -51,23 +52,18 @@ public class MixinSortingHandler
         if (stack1.getItem() instanceof JewelItem &&
             stack2.getItem() instanceof JewelItem)
         {
-            String leftName = stack1.getDisplayName().getString();
-            String rightName = stack2.getDisplayName().getString();
-
-            if (!leftName.equalsIgnoreCase(rightName))
-            {
-                callbackInfoReturnable.setReturnValue(String.CASE_INSENSITIVE_ORDER.compare(leftName, rightName));
-            }
-            else
+            if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByName().isEmpty())
             {
                 callbackInfoReturnable.setReturnValue(
-                    SortingHelper.compareJewels(
+                    SortingHelper.compareJewels(stack1.getDisplayName().getString(),
                         VaultGearData.read(stack1),
+                        stack2.getDisplayName().getString(),
                         VaultGearData.read(stack2),
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         true));
-            }
 
-            callbackInfoReturnable.cancel();
+                callbackInfoReturnable.cancel();
+            }
         }
         else if (stack1.getItem() instanceof ToolItem &&
             stack2.getItem() instanceof ToolItem)
@@ -82,23 +78,18 @@ public class MixinSortingHandler
         else if (stack1.getItem() instanceof VaultGearItem &&
             stack2.getItem() instanceof VaultGearItem)
         {
-            String leftName = stack1.getDisplayName().getString();
-            String rightName = stack2.getDisplayName().getString();
-
-            if (!leftName.equalsIgnoreCase(rightName))
-            {
-                callbackInfoReturnable.setReturnValue(String.CASE_INSENSITIVE_ORDER.compare(leftName, rightName));
-            }
-            else
+            if (!VaultJewelSorting.CONFIGURATION.getGearSortingByName().isEmpty())
             {
                 callbackInfoReturnable.setReturnValue(
-                    SortingHelper.compareVaultGear(
+                    SortingHelper.compareVaultGear(stack1.getDisplayName().getString(),
                         VaultGearData.read(stack1),
+                        stack2.getDisplayName().getString(),
                         VaultGearData.read(stack2),
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
                         true));
-            }
 
-            callbackInfoReturnable.cancel();
+                callbackInfoReturnable.cancel();
+            }
         }
     }
 }

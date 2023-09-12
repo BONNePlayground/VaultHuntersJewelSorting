@@ -1,10 +1,8 @@
 package lv.id.bonne.vaultjewelsorting.storagenetwork.mixin;
 
 
-import com.lothrazar.storagenetwork.api.EnumSortType;
 import com.lothrazar.storagenetwork.api.IGuiNetwork;
 import com.lothrazar.storagenetwork.gui.NetworkWidget;
-import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,6 +14,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
+import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
@@ -52,27 +51,35 @@ public class MixinNetworkWidget
                 return 0;
             }
 
-            int returnValue = 0;
-
             // Do not sort if shift is pressed
             if (first.getItem() instanceof JewelItem &&
                 second.getItem() instanceof JewelItem)
             {
-                switch (this.gui.getSort())
-                {
-                    case AMOUNT -> {
-                        returnValue = SortingHelper.compareJewelsSize(
-                            VaultGearData.read(first),
-                            VaultGearData.read(second),
-                            this.gui.getDownwards());
-                    }
-                    case NAME -> {
-                        returnValue = SortingHelper.compareJewels(
-                            VaultGearData.read(first),
-                            VaultGearData.read(second),
-                            this.gui.getDownwards());
-                    }
-                }
+                String leftName = first.getDisplayName().getString();
+                String rightName = second.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(first);
+                VaultGearData rightData = VaultGearData.read(second);
+
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
+                        this.gui.getDownwards());
+                    case AMOUNT -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
+                        this.gui.getDownwards());
+                    case MOD -> SortingHelper.compareJewels(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
+                        this.gui.getDownwards());
+                };
             }
             else if (first.getItem() instanceof ToolItem &&
                 second.getItem() instanceof ToolItem)
@@ -87,13 +94,34 @@ public class MixinNetworkWidget
             else if (first.getItem() instanceof VaultGearItem &&
                 second.getItem() instanceof VaultGearItem)
             {
-                returnValue = SortingHelper.compareVaultGear(
-                    VaultGearData.read(first),
-                    VaultGearData.read(second),
-                    this.gui.getDownwards());
+                String leftName = first.getDisplayName().getString();
+                String rightName = second.getDisplayName().getString();
+                VaultGearData leftData = VaultGearData.read(first);
+                VaultGearData rightData = VaultGearData.read(second);
+
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
+                        this.gui.getDownwards());
+                    case AMOUNT -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
+                        this.gui.getDownwards());
+                    case MOD -> SortingHelper.compareVaultGear(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        this.gui.getDownwards());
+                };
             }
 
-            return returnValue;
+            return 0;
         });
     }
 }

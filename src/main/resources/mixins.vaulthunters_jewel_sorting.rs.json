@@ -6,6 +6,7 @@
   "plugin": "lv.id.bonne.vaultjewelsorting.refinedstorage.RefinedStorageIntegrationModConfiguration",
   "client": [
     "MixinNameGridSorter",
-    "MixinQuantityGridSorter"
+    "MixinQuantityGridSorter",
+    "MixinIdGridSorter"
   ]
 }

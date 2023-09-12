@@ -8,6 +8,7 @@ package lv.id.bonne.vaultjewelsorting.utils;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,23 @@ import iskallia.vault.init.ModGearAttributes;
 public class SortingHelper
 {
     /**
-     * Compare jewels by their Attribute Count, Attribute, Attribute value, Jewel Size, Jewel Level.
+     * This method compares two given jewels by their sorting order.
      *
+     * @param leftName the left name
      * @param leftData the left data
+     * @param rightName the right name
      * @param rightData the right data
+     * @param sortingOrder the sorting order
      * @param ascending the ascending
-     * @return the int
+     * @return the comparison of two given jewels.
      */
-    public static int compareJewels(VaultGearData leftData, VaultGearData rightData, boolean ascending)
+    public static int compareJewels(
+        String leftName,
+        VaultGearData leftData,
+        String rightName,
+        VaultGearData rightData,
+        List<SortOptions> sortingOrder,
+        boolean ascending)
     {
         // Get all affixes for left item.
         List<VaultGearModifier<?>> leftAffixes = new ArrayList<>();
@@ -45,247 +55,372 @@ public class SortingHelper
 
         int returnValue = 0;
 
-        if (leftAffixes.size() == 1 && rightAffixes.size() == 1)
+        // Get compared affix.
+        VaultGearAttribute<?> leftAttribute = leftAffixes.size() == 1 ? leftAffixes.get(0).getAttribute() : null;
+        VaultGearAttribute<?> rightAttribute = rightAffixes.size() == 1 ? rightAffixes.get(0).getAttribute() : null;
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
         {
-            // If there is just 1 attribute in both lists, then compare them by attribute index.
+            SortOptions sortOptions = sortingOrder.get(i);
 
-            VaultGearAttribute<?> leftAttribute = leftAffixes.get(0).getAttribute();
-            VaultGearAttribute<?> rightAttribute = rightAffixes.get(0).getAttribute();
-
-            int leftIndex = AttributeHelper.getAttributeIndex(leftAttribute);
-            int rightIndex = AttributeHelper.getAttributeIndex(rightAttribute);
-
-            if (leftIndex != rightIndex)
-            {
-                // If attribute indexes are different, then return them based on required order.
-                return ascending ?
-                    Integer.compare(leftIndex, rightIndex) :
-                    Integer.compare(rightIndex, leftIndex);
-            }
-            else if (AttributeHelper.isFloatAttribute(leftAttribute))
-            {
-                // Compare items by float attribute value.
-                Optional<Float> leftValue = (Optional<Float>) leftData.getFirstValue(leftAttribute);
-                Optional<Float> rightValue = (Optional<Float>) rightData.getFirstValue(leftAttribute);
-
-                returnValue = ascending ?
-                    leftValue.orElse(0F).compareTo(rightValue.orElse(0F)) :
-                    rightValue.orElse(0F).compareTo(leftValue.orElse(0F));
-            }
-            else if (AttributeHelper.isIntegerAttribute(leftAttribute))
-            {
-                // Compare items by integer attribute value.
-                Optional<Integer> leftValue = (Optional<Integer>) leftData.getFirstValue(leftAttribute);
-                Optional<Integer> rightValue = (Optional<Integer>) rightData.getFirstValue(leftAttribute);
-
-                returnValue = ascending ?
-                    leftValue.orElse(0).compareTo(rightValue.orElse(0)) :
-                    rightValue.orElse(0).compareTo(leftValue.orElse(0));
-            }
-            else if (AttributeHelper.isDoubleAttribute(leftAttribute))
-            {
-                // Compare items by double attribute value.
-                Optional<Double> leftValue = (Optional<Double>) leftData.getFirstValue(leftAttribute);
-                Optional<Double> rightValue = (Optional<Double>) rightData.getFirstValue(leftAttribute);
-
-                returnValue = ascending ?
-                    leftValue.orElse(0D).compareTo(rightValue.orElse(0D)) :
-                    rightValue.orElse(0D).compareTo(leftValue.orElse(0D));
-            }
-        }
-        else
-        {
-            // Compare by the number of affixes
-            returnValue = Integer.compare(leftAffixes.size(), rightAffixes.size());
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case ATTRIBUTE -> SortingHelper.compareAttribute(leftAttribute, rightAttribute);
+                case ATTRIBUTE_VALUE -> SortingHelper.compareAttributeValue(leftData, leftAttribute, rightData, rightAttribute);
+                case SIZE -> SortingHelper.compareSizeAttribute(leftData, rightData);
+                case ATTRIBUTE_WEIGHT -> SortingHelper.compareAttributeValueWeight(leftData, leftAttribute, rightData, rightAttribute);
+                case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
+                default -> 0;
+            };
         }
 
-        if (returnValue == 0)
-        {
-            // If we reach this part and still do not have a valid order, then compare by jewel size.
-            Optional<Integer> leftSize = leftData.getFirstValue(ModGearAttributes.JEWEL_SIZE);
-            Optional<Integer> rightSize = rightData.getFirstValue(ModGearAttributes.JEWEL_SIZE);
-
-            returnValue = ascending ?
-                leftSize.orElse(0).compareTo(rightSize.orElse(0)) :
-                rightSize.orElse(0).compareTo(leftSize.orElse(0));
-
-        }
-
-        if (returnValue == 0)
-        {
-            // If we reach this part and still do not have a valid order, then compare by jewel level.
-            int leftLevel = leftData.getItemLevel();
-            int rightLevel = rightData.getItemLevel();
-
-            returnValue = ascending ?
-                Integer.compare(leftLevel, rightLevel) :
-                Integer.compare(rightLevel, leftLevel);
-        }
-
-        return returnValue;
+        return ascending ? returnValue : -returnValue;
     }
 
 
     /**
-     * Compare jewels by their Jewel Size, Attribute Count, Attribute, Attribute value, Jewel Level.
+     * This method compares two given vault gear by their sorting order.
      *
+     * @param leftName the left name
      * @param leftData the left data
+     * @param rightName the right name
      * @param rightData the right data
+     * @param sortingOrder the sorting order
      * @param ascending the ascending
-     * @return the int
+     * @return the comparison of two given vault gear items.
      */
-    public static int compareJewelsSize(VaultGearData leftData, VaultGearData rightData, boolean ascending)
+    public static int compareVaultGear(String leftName,
+        VaultGearData leftData,
+        String rightName,
+        VaultGearData rightData,
+        List<SortOptions> sortingOrder,
+        boolean ascending)
     {
-        // Get all affixes for left item.
-        List<VaultGearModifier<?>> leftAffixes = new ArrayList<>();
-        leftAffixes.addAll(leftData.getModifiers(VaultGearModifier.AffixType.PREFIX));
-        leftAffixes.addAll(leftData.getModifiers(VaultGearModifier.AffixType.SUFFIX));
-
-        // Get all affixes for right item.
-        List<VaultGearModifier<?>> rightAffixes = new ArrayList<>();
-        rightAffixes.addAll(rightData.getModifiers(VaultGearModifier.AffixType.PREFIX));
-        rightAffixes.addAll(rightData.getModifiers(VaultGearModifier.AffixType.SUFFIX));
-
+        // Start comparing with the current vault gear state.
         int returnValue = 0;
 
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            SortOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case STATE -> SortingHelper.compareState(leftData, rightData);
+                case RARITY -> SortingHelper.compareRarity(leftData, rightData);
+                case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
+                default -> 0;
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+// ---------------------------------------------------------------------
+// Section: Internal Sorting Methods
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This method compares two given strings.
+     * @param leftName Left item name.
+     * @param rightName Right item name.
+     * @return Returns comparison of two given strings.
+     */
+    private static int compareString(String leftName, String rightName)
+    {
+        return leftName.compareTo(rightName);
+    }
+
+
+    /**
+     * This method compares two given attributes.
+     * @param leftAttribute Left item attribute.
+     * @param rightAttribute Right item attribute.
+     * @return Returns:
+     *      -1 if leftAttribute internal index is smaller than rightAttribute.
+     *      +1 if leftAttribute internal index is bigger than rightAttribute.
+     *      0 if leftAttribute internal index is equal to rightAttribute.
+     */
+    private static int compareAttribute(VaultGearAttribute<?> leftAttribute, VaultGearAttribute<?> rightAttribute)
+    {
+        return Integer.compare(AttributeHelper.getAttributeIndex(leftAttribute),
+            AttributeHelper.getAttributeIndex(rightAttribute));
+    }
+
+
+    /**
+     * This method compares two given items by their attribute value. This method can compare only items with equal
+     * attributes.
+     * @param leftData Left item data.
+     * @param leftAttribute Left item attribute.
+     * @param rightData Right item data.
+     * @param rightAttribute Right item attribute.
+     * @return Returns:
+     *     -1 if leftData attribute value is smaller than rightData attribute value.
+     *     +1 if leftData attribute value is bigger than rightData attribute value.
+     *     0 if leftData attribute value is equal to rightData attribute value.
+     */
+    private static int compareAttributeValue(VaultGearData leftData,
+        VaultGearAttribute<?> leftAttribute,
+        VaultGearData rightData,
+        VaultGearAttribute<?> rightAttribute)
+    {
+        // Comparing by attribute value can happen only on equal attributes.
+        if (SortingHelper.compareAttribute(leftAttribute, rightAttribute) != 0 || leftAttribute == null)
+        {
+            return 0;
+        }
+
+        if (AttributeHelper.isFloatAttribute(leftAttribute))
+        {
+            // Compare items by float attribute value.
+            Optional<Float> leftValue = (Optional<Float>) leftData.getFirstValue(leftAttribute);
+            Optional<Float> rightValue = (Optional<Float>) rightData.getFirstValue(leftAttribute);
+
+            return leftValue.orElse(0F).compareTo(rightValue.orElse(0F));
+        }
+        else if (AttributeHelper.isIntegerAttribute(leftAttribute))
+        {
+            // Compare items by integer attribute value.
+            Optional<Integer> leftValue = (Optional<Integer>) leftData.getFirstValue(leftAttribute);
+            Optional<Integer> rightValue = (Optional<Integer>) rightData.getFirstValue(leftAttribute);
+
+            return leftValue.orElse(0).compareTo(rightValue.orElse(0));
+        }
+        else if (AttributeHelper.isDoubleAttribute(leftAttribute))
+        {
+            // Compare items by double attribute value.
+            Optional<Double> leftValue = (Optional<Double>) leftData.getFirstValue(leftAttribute);
+            Optional<Double> rightValue = (Optional<Double>) rightData.getFirstValue(leftAttribute);
+
+            return leftValue.orElse(0D).compareTo(rightValue.orElse(0D));
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+
+    /**
+     * This method compares two given items by their attribute value weight. Attribute value weight is calculated by
+     * dividing attribute value by jewel size.
+     * @param leftData Left item data.
+     * @param leftAttribute Left item attribute.
+     * @param rightData Right item data.
+     * @param rightAttribute Right item attribute.
+     * @return Returns:
+     *     -1 if leftData attribute value weight is smaller than rightData attribute value weight.
+     *     +1 if leftData attribute value weight is bigger than rightData attribute value weight.
+     *     0 if leftData attribute value weight is equal to rightData attribute value weight.
+     */
+    private static int compareAttributeValueWeight(VaultGearData leftData,
+        VaultGearAttribute<?> leftAttribute,
+        VaultGearData rightData,
+        VaultGearAttribute<?> rightAttribute)
+    {
+        // Comparing by attribute value can happen only on equal attributes.
+        if (SortingHelper.compareAttribute(leftAttribute, rightAttribute) != 0 || leftAttribute == null)
+        {
+            return 0;
+        }
+
+        int leftSize = leftData.getFirstValue(ModGearAttributes.JEWEL_SIZE).orElse(0);
+        int rightSize = rightData.getFirstValue(ModGearAttributes.JEWEL_SIZE).orElse(0);
+
+        if (leftSize == 0 && rightSize == 0)
+        {
+            // No size, no comparison
+            return 0;
+        }
+        else if (leftSize == 0)
+        {
+            // No size for first one.
+            return -1;
+        }
+        else if (rightSize == 0)
+        {
+            // No size for second one.
+            return 1;
+        }
+
+        // Now actually compare.
+
+        if (AttributeHelper.isFloatAttribute(leftAttribute))
+        {
+            float leftValue = ((Optional<Float>) leftData.getFirstValue(leftAttribute)).orElse(0F);
+            float rightValue = ((Optional<Float>) rightData.getFirstValue(leftAttribute)).orElse(0F);
+
+            // Compare items by float attribute value weight.
+            return Float.compare(leftValue / leftSize, rightValue / rightSize);
+        }
+        else if (AttributeHelper.isIntegerAttribute(leftAttribute))
+        {
+            int leftValue = ((Optional<Integer>) leftData.getFirstValue(leftAttribute)).orElse(0);
+            int rightValue = ((Optional<Integer>) rightData.getFirstValue(leftAttribute)).orElse(0);
+
+            // Compare items by integer attribute value weight.
+            return Integer.compare(leftValue / leftSize, rightValue / rightSize);
+        }
+        else if (AttributeHelper.isDoubleAttribute(leftAttribute))
+        {
+            double leftValue = ((Optional<Double>) leftData.getFirstValue(leftAttribute)).orElse(0D);
+            double rightValue = ((Optional<Double>) rightData.getFirstValue(leftAttribute)).orElse(0D);
+
+            // Compare items by integer attribute value weight.
+            return Double.compare(leftValue / leftSize, rightValue / rightSize);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+
+    /**
+     * This method compares two given items by their JEWEL_SIZE attribute.
+     * @param leftData Left item.
+     * @param rightData Right item.
+     * @return Returns:
+     *      -1 if leftData jewel size value is smaller than rightData jewel size value.
+     *      +1 if leftData jewel size value is bigger than rightData jewel size value.
+     *      0 if leftData jewel size value is equal to rightData jewel size value.
+     */
+    private static int compareSizeAttribute(VaultGearData leftData, VaultGearData rightData)
+    {
         // If we reach this part and still do not have a valid order, then compare by jewel size.
         Optional<Integer> leftSize = leftData.getFirstValue(ModGearAttributes.JEWEL_SIZE);
         Optional<Integer> rightSize = rightData.getFirstValue(ModGearAttributes.JEWEL_SIZE);
 
-        returnValue = ascending ?
-            leftSize.orElse(0).compareTo(rightSize.orElse(0)) :
-            rightSize.orElse(0).compareTo(leftSize.orElse(0));
-
-        if (returnValue == 0)
-        {
-            if (leftAffixes.size() == 1 && rightAffixes.size() == 1)
-            {
-                // If there is just 1 attribute in both lists, then compare them by attribute index.
-
-                VaultGearAttribute<?> leftAttribute = leftAffixes.get(0).getAttribute();
-                VaultGearAttribute<?> rightAttribute = rightAffixes.get(0).getAttribute();
-
-                int leftIndex = AttributeHelper.getAttributeIndex(leftAttribute);
-                int rightIndex = AttributeHelper.getAttributeIndex(rightAttribute);
-
-                if (leftIndex != rightIndex)
-                {
-                    // If attribute indexes are different, then return them based on required order.
-                    return ascending ?
-                        Integer.compare(leftIndex, rightIndex) :
-                        Integer.compare(rightIndex, leftIndex);
-                }
-                else if (AttributeHelper.isFloatAttribute(leftAttribute))
-                {
-                    // Compare items by float attribute value.
-                    Optional<Float> leftValue = (Optional<Float>) leftData.getFirstValue(leftAttribute);
-                    Optional<Float> rightValue = (Optional<Float>) rightData.getFirstValue(leftAttribute);
-
-                    returnValue = ascending ?
-                        leftValue.orElse(0F).compareTo(rightValue.orElse(0F)) :
-                        rightValue.orElse(0F).compareTo(leftValue.orElse(0F));
-                }
-                else if (AttributeHelper.isIntegerAttribute(leftAttribute))
-                {
-                    // Compare items by integer attribute value.
-                    Optional<Integer> leftValue = (Optional<Integer>) leftData.getFirstValue(leftAttribute);
-                    Optional<Integer> rightValue = (Optional<Integer>) rightData.getFirstValue(leftAttribute);
-
-                    returnValue = ascending ?
-                        leftValue.orElse(0).compareTo(rightValue.orElse(0)) :
-                        rightValue.orElse(0).compareTo(leftValue.orElse(0));
-                }
-                else if (AttributeHelper.isDoubleAttribute(leftAttribute))
-                {
-                    // Compare items by double attribute value.
-                    Optional<Double> leftValue = (Optional<Double>) leftData.getFirstValue(leftAttribute);
-                    Optional<Double> rightValue = (Optional<Double>) rightData.getFirstValue(leftAttribute);
-
-                    returnValue = ascending ?
-                        leftValue.orElse(0D).compareTo(rightValue.orElse(0D)) :
-                        rightValue.orElse(0D).compareTo(leftValue.orElse(0D));
-                }
-            }
-            else
-            {
-                // Compare by the number of affixes
-                returnValue = Integer.compare(leftAffixes.size(), rightAffixes.size());
-            }
-        }
-
-        if (returnValue == 0)
-        {
-            // If we reach this part and still do not have a valid order, then compare by jewel level.
-            int leftLevel = leftData.getItemLevel();
-            int rightLevel = rightData.getItemLevel();
-
-            returnValue = ascending ?
-                Integer.compare(leftLevel, rightLevel) :
-                Integer.compare(rightLevel, leftLevel);
-        }
-
-        return returnValue;
+        return leftSize.orElse(0).compareTo(rightSize.orElse(0));
     }
 
 
     /**
-     * This method compares Vault Gears by: their rarity or roll type and item level.
-     * @param leftData The left Vault Gear.
-     * @param rightData The right Vault Gear.
-     * @param ascending ascending or descending order.
-     * @return The comparison result.
+     * This method compares item level value of two given items.
+     * @param leftData Left item.
+     * @param rightData Right item.
+     * @return Returns:
+     *      -1 if leftData item level value is smaller than rightData item level value.
+     *      +1 if leftData item level value is bigger than rightData item level value.
+     *      0 if leftData item level value is equal to rightData item level value.
      */
-    public static int compareVaultGear(VaultGearData leftData, VaultGearData rightData, boolean ascending)
+    private static int compareLevel(VaultGearData leftData, VaultGearData rightData)
     {
-        // Start comparing with the current vault gear state.
-        int returnValue = leftData.getState().compareTo(rightData.getState());
+        // If we reach this part and still do not have a valid order, then compare by jewel level.
+        return Integer.compare(leftData.getItemLevel(), rightData.getItemLevel());
+    }
 
-        // Now compare by item rarity options.
-        if (returnValue == 0)
+
+    /**
+     * This method compares that state of two given items.
+     * @param leftData The data of the left item.
+     * @param rightData The data of the right item.
+     * @return The comparison of State value.
+     */
+    private static int compareState(VaultGearData leftData, VaultGearData rightData)
+    {
+        return leftData.getState().compareTo(rightData.getState());
+    }
+
+
+    /**
+     * This method compares rarity of two given items.
+     * @param leftData The data of the left item.
+     * @param rightData The data of the right item.
+     * @return The comparison of Rarity value.
+     */
+    private static int compareRarity(VaultGearData leftData, VaultGearData rightData)
+    {
+        if (leftData.getState() != rightData.getState())
         {
-            if (leftData.getState().equals(VaultGearState.IDENTIFIED))
+            // Non-equal states are not comparable by rarity.
+            return SortingHelper.compareState(leftData, rightData);
+        }
+
+        if (leftData.getState().equals(VaultGearState.IDENTIFIED))
+        {
+            // If item is identified, then compare by item rarity.
+
+            return leftData.getRarity().compareTo(rightData.getRarity());
+        }
+        else
+        {
+            // Find ModGearAttributes.GEAR_ROLL_TYPE attribute and compare it.
+            Optional<String> leftValue = leftData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
+            Optional<String> rightValue = rightData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
+
+            if (leftValue.isPresent() && rightValue.isPresent())
             {
-                // If item is identified, then compare by item rarity.
+                String leftRoll = leftValue.get();
+                String rightRoll = rightValue.get();
 
-                returnValue = leftData.getRarity().compareTo(rightData.getRarity());
-
-                if (returnValue != 0)
+                if (!leftRoll.equals(rightRoll))
                 {
-                    return ascending ? returnValue : -returnValue;
-                }
-            }
-            else
-            {
-                // Find ModGearAttributes.GEAR_ROLL_TYPE attribute and compare it.
-                Optional<String> leftValue = leftData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
-                Optional<String> rightValue = rightData.getFirstValue(ModGearAttributes.GEAR_ROLL_TYPE);
+                    int leftIndex = AttributeHelper.getRollIndex(leftValue.get());
+                    int rightIndex = AttributeHelper.getRollIndex(rightValue.get());
 
-                if (leftValue.isPresent() && rightValue.isPresent())
-                {
-                    String leftRoll = leftValue.get();
-                    String rightRoll = rightValue.get();
-
-                    if (!leftRoll.equals(rightRoll))
+                    if (leftIndex == rightIndex)
                     {
-                        returnValue = Integer.compare(
-                            AttributeHelper.getRollIndex(leftValue.get()),
-                            AttributeHelper.getRollIndex(rightValue.get()));
-
-                        if (returnValue == 0)
-                        {
-                            returnValue = leftRoll.compareTo(rightRoll);
-                        }
+                        // sort by name
+                        return leftRoll.compareTo(rightRoll);
+                    }
+                    else
+                    {
+                        // Sort by index
+                        return Integer.compare(leftIndex, rightIndex);
                     }
                 }
             }
         }
 
-        // The last comparing step is to compare by item level.
-        if (returnValue == 0)
-        {
-            returnValue = Integer.compare(leftData.getItemLevel(), rightData.getItemLevel());
-        }
+        // Gear does not contain data about rarity.
+        return 0;
+    }
 
-        return ascending ? returnValue : -returnValue;
+
+// ---------------------------------------------------------------------
+// Section: Enum for sorting order
+// ---------------------------------------------------------------------
+
+
+    /**
+     * This enum holds all possible values for sorting order.
+     */
+    public enum SortOptions
+    {
+        /**
+         * The name of the item
+         */
+        NAME,
+        /**
+         * The name of the jewel attribute
+         */
+        ATTRIBUTE,
+        /**
+         * The value of the jewel attribute
+         */
+        ATTRIBUTE_VALUE,
+        /**
+         * The size of the jewel
+         */
+        SIZE,
+        /**
+         * The weight of the jewel attribute - attribute value / size
+         */
+        ATTRIBUTE_WEIGHT,
+        /**
+         * The level of the item
+         */
+        LEVEL,
+        /**
+         * The rarity of the item
+         */
+        RARITY,
+        /**
+         * The state of the gear. (IDENTIFIED, UNIDENTIFIED, etc.)
+         */
+        STATE
     }
 }
