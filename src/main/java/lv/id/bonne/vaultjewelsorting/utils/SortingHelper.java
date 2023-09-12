@@ -8,20 +8,15 @@ package lv.id.bonne.vaultjewelsorting.utils;
 
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import iskallia.vault.dynamodel.model.armor.ArmorPieceModel;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
 import iskallia.vault.gear.data.VaultGearData;
-import iskallia.vault.gear.item.VaultGearItem;
-import iskallia.vault.init.ModDynamicModels;
 import iskallia.vault.init.ModGearAttributes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
 
 /**
@@ -45,7 +40,7 @@ public class SortingHelper
         VaultGearData leftData,
         String rightName,
         VaultGearData rightData,
-        List<SortOptions> sortingOrder,
+        List<JewelOptions> sortingOrder,
         boolean ascending)
     {
         // Get all affixes for left item.
@@ -66,7 +61,7 @@ public class SortingHelper
 
         for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
         {
-            SortOptions sortOptions = sortingOrder.get(i);
+            JewelOptions sortOptions = sortingOrder.get(i);
 
             returnValue = switch (sortOptions) {
                 case NAME -> SortingHelper.compareString(leftName, rightName);
@@ -75,7 +70,6 @@ public class SortingHelper
                 case SIZE -> SortingHelper.compareSizeAttribute(leftData, rightData);
                 case ATTRIBUTE_WEIGHT -> SortingHelper.compareAttributeValueWeight(leftData, leftAttribute, rightData, rightAttribute);
                 case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
-                default -> 0;
             };
         }
 
@@ -98,7 +92,7 @@ public class SortingHelper
         VaultGearData leftData,
         String rightName,
         VaultGearData rightData,
-        List<SortOptions> sortingOrder,
+        List<GearOptions> sortingOrder,
         boolean ascending)
     {
         // Start comparing with the current vault gear state.
@@ -106,7 +100,7 @@ public class SortingHelper
 
         for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
         {
-            SortOptions sortOptions = sortingOrder.get(i);
+            GearOptions sortOptions = sortingOrder.get(i);
 
             returnValue = switch (sortOptions) {
                 case NAME -> SortingHelper.compareString(leftName, rightName);
@@ -114,7 +108,6 @@ public class SortingHelper
                 case RARITY -> SortingHelper.compareRarity(leftData, rightData);
                 case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
                 case MODEL -> SortingHelper.compareModel(leftData, rightData);
-                default -> 0;
             };
         }
 
@@ -423,9 +416,9 @@ public class SortingHelper
 
 
     /**
-     * This enum holds all possible values for sorting order.
+     * This enum holds all possible values for JEWEL sorting order.
      */
-    public enum SortOptions
+    public enum JewelOptions
     {
         /**
          * The name of the item
@@ -447,6 +440,22 @@ public class SortingHelper
          * The weight of the jewel attribute - attribute value / size
          */
         ATTRIBUTE_WEIGHT,
+        /**
+         * The level of the item
+         */
+        LEVEL
+    }
+
+
+    /**
+     * This enum holds all possible values for GEAR sorting order.
+     */
+    public enum GearOptions
+    {
+        /**
+         * The name of the item
+         */
+        NAME,
         /**
          * The level of the item
          */

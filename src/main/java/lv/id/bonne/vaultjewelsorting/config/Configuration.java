@@ -36,25 +36,25 @@ public class Configuration
             comment("The order of Jewels if they are sorted by the name.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_name",
-                Arrays.asList(SortingHelper.SortOptions.NAME.name(),
-                    SortingHelper.SortOptions.ATTRIBUTE.name(),
-                    SortingHelper.SortOptions.ATTRIBUTE_VALUE.name(),
-                    SortingHelper.SortOptions.SIZE.name(),
-                    SortingHelper.SortOptions.LEVEL.name()),
+                Arrays.asList(SortingHelper.JewelOptions.NAME.name(),
+                    SortingHelper.JewelOptions.ATTRIBUTE.name(),
+                    SortingHelper.JewelOptions.ATTRIBUTE_VALUE.name(),
+                    SortingHelper.JewelOptions.SIZE.name(),
+                    SortingHelper.JewelOptions.LEVEL.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
 
         this.jewelSortingByAmount = this.builder.
             comment("The order of Jewels if they are sorted by the amount/size.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_amount",
-                Arrays.asList(SortingHelper.SortOptions.NAME.name(),
-                    SortingHelper.SortOptions.SIZE.name(),
-                    SortingHelper.SortOptions.ATTRIBUTE.name(),
-                    SortingHelper.SortOptions.ATTRIBUTE_VALUE.name(),
-                    SortingHelper.SortOptions.LEVEL.name()),
+                Arrays.asList(SortingHelper.JewelOptions.NAME.name(),
+                    SortingHelper.JewelOptions.SIZE.name(),
+                    SortingHelper.JewelOptions.ATTRIBUTE.name(),
+                    SortingHelper.JewelOptions.ATTRIBUTE_VALUE.name(),
+                    SortingHelper.JewelOptions.LEVEL.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
 
         this.jewelSortingByMod = this.builder.
             comment("The order of Jewels if they are sorted by the mod.").
@@ -62,7 +62,7 @@ public class Configuration
             defineList("jewel_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.JewelOptions.class, value).isPresent());
 
         this.builder.pop();
 
@@ -73,23 +73,23 @@ public class Configuration
             comment("The order of Gear if they are sorted by the name.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_name",
-                Arrays.asList(SortingHelper.SortOptions.NAME.name(),
-                    SortingHelper.SortOptions.STATE.name(),
-                    SortingHelper.SortOptions.RARITY.name(),
-                    SortingHelper.SortOptions.LEVEL.name()),
+                Arrays.asList(SortingHelper.GearOptions.NAME.name(),
+                    SortingHelper.GearOptions.STATE.name(),
+                    SortingHelper.GearOptions.RARITY.name(),
+                    SortingHelper.GearOptions.LEVEL.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
 
         this.gearSortingByAmount = this.builder.
             comment("The order of Gear if they are sorted by the amount/size.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_amount",
-                Arrays.asList(SortingHelper.SortOptions.NAME.name(),
-                    SortingHelper.SortOptions.STATE.name(),
-                    SortingHelper.SortOptions.LEVEL.name(),
-                    SortingHelper.SortOptions.RARITY.name()),
+                Arrays.asList(SortingHelper.GearOptions.NAME.name(),
+                    SortingHelper.GearOptions.STATE.name(),
+                    SortingHelper.GearOptions.LEVEL.name(),
+                    SortingHelper.GearOptions.RARITY.name()),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
 
         this.gearSortingByMod = this.builder.
             comment("The order of Gear if they are sorted by the mod.").
@@ -97,7 +97,7 @@ public class Configuration
             defineList("gear_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
-                    Enums.getIfPresent(SortingHelper.SortOptions.class, value).isPresent());
+                    Enums.getIfPresent(SortingHelper.GearOptions.class, value).isPresent());
 
         this.rarityOrder = this.builder.
             comment("The order of Rarities Pools in the sorting for unidentified gear.").
@@ -132,9 +132,9 @@ public class Configuration
      *
      * @return the jewel sorting by name
      */
-    public List<SortingHelper.SortOptions> getJewelSortingByName()
+    public List<SortingHelper.JewelOptions> getJewelSortingByName()
     {
-        return this.convertStringToEnum(this.jewelSortingByName.get());
+        return this.convertStringToJewelEnum(this.jewelSortingByName.get());
     }
 
 
@@ -143,9 +143,9 @@ public class Configuration
      *
      * @return the jewel sorting by amount
      */
-    public List<SortingHelper.SortOptions> getJewelSortingByAmount()
+    public List<SortingHelper.JewelOptions> getJewelSortingByAmount()
     {
-        return this.convertStringToEnum(this.jewelSortingByAmount.get());
+        return this.convertStringToJewelEnum(this.jewelSortingByAmount.get());
     }
 
 
@@ -154,9 +154,9 @@ public class Configuration
      *
      * @return the jewel sorting by mod
      */
-    public List<SortingHelper.SortOptions> getJewelSortingByMod()
+    public List<SortingHelper.JewelOptions> getJewelSortingByMod()
     {
-        return this.convertStringToEnum(this.jewelSortingByMod.get());
+        return this.convertStringToJewelEnum(this.jewelSortingByMod.get());
     }
 
 
@@ -165,9 +165,9 @@ public class Configuration
      *
      * @return the gear sorting by name
      */
-    public List<SortingHelper.SortOptions> getGearSortingByName()
+    public List<SortingHelper.GearOptions> getGearSortingByName()
     {
-        return this.convertStringToEnum(this.gearSortingByName.get());
+        return this.convertStringToGearEnum(this.gearSortingByName.get());
     }
 
 
@@ -176,9 +176,9 @@ public class Configuration
      *
      * @return the gear sorting by amount
      */
-    public List<SortingHelper.SortOptions> getGearSortingByAmount()
+    public List<SortingHelper.GearOptions> getGearSortingByAmount()
     {
-        return this.convertStringToEnum(this.gearSortingByAmount.get());
+        return this.convertStringToGearEnum(this.gearSortingByAmount.get());
     }
 
 
@@ -187,9 +187,9 @@ public class Configuration
      *
      * @return the gear sorting by mod
      */
-    public List<SortingHelper.SortOptions> getGearSortingByMod()
+    public List<SortingHelper.GearOptions> getGearSortingByMod()
     {
-        return this.convertStringToEnum(this.gearSortingByMod.get());
+        return this.convertStringToGearEnum(this.gearSortingByMod.get());
     }
 
 
@@ -209,11 +209,25 @@ public class Configuration
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
      */
-    private List<SortingHelper.SortOptions> convertStringToEnum(List<? extends String> value)
+    private List<SortingHelper.JewelOptions> convertStringToJewelEnum(List<? extends String> value)
     {
         return value.stream().
-            filter(text -> Enums.getIfPresent(SortingHelper.SortOptions.class, text.toUpperCase()).isPresent()).
-            map(SortingHelper.SortOptions::valueOf).
+            filter(text -> Enums.getIfPresent(SortingHelper.JewelOptions.class, text.toUpperCase()).isPresent()).
+            map(SortingHelper.JewelOptions::valueOf).
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.GearOptions> convertStringToGearEnum(List<? extends String> value)
+    {
+        return value.stream().
+            filter(text -> Enums.getIfPresent(SortingHelper.GearOptions.class, text.toUpperCase()).isPresent()).
+            map(SortingHelper.GearOptions::valueOf).
             toList();
     }
 
@@ -262,13 +276,6 @@ public class Configuration
      * The config value for rarity order.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> rarityOrder;
-
-
-    //private final ForgeConfigSpec.ConfigValue<List<SortingHelper.SortOptions>> inscriptionSortingByName;
-
-    //private final ForgeConfigSpec.ConfigValue<List<SortingHelper.SortOptions>> inscriptionSortingByAmount;
-
-    //private final ForgeConfigSpec.ConfigValue<List<SortingHelper.SortOptions>> inscriptionSortingByMod;
 
     /**
      * The general config spec.
