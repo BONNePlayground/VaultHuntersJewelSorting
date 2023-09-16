@@ -102,10 +102,10 @@ public abstract class MixinRepo
             else if (leftWhat.getId() == ModItems.INSCRIPTION.getRegistryName())
             {
                 InscriptionData leftData = InscriptionData.empty();
-                leftData.deserializeNBT(leftWhat.toTag().getCompound("tag"));
+                leftData.deserializeNBT(leftWhat.toTag().getCompound("tag").getCompound("data"));
 
                 InscriptionData rightData = InscriptionData.empty();
-                rightData.deserializeNBT(rightWhat.toTag().getCompound("tag"));
+                rightData.deserializeNBT(rightWhat.toTag().getCompound("tag").getCompound("data"));
 
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareInscriptions(leftName,
