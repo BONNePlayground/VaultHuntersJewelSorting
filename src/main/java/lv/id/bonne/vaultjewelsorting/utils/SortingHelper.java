@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import iskallia.vault.core.world.generator.layout.ArchitectRoomEntry;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModGearAttributes;
+import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -152,6 +152,41 @@ public class SortingHelper
                 case COMPLETION -> SortingHelper.compareCompletion(leftTag, rightTag);
                 case TIME -> SortingHelper.compareTime(leftTag, rightTag);
                 case ROOMS -> SortingHelper.compareRooms(leftData, rightData);
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares two given vault crystals by their sorting order.
+     * @param leftName the left name
+     * @param leftData the left data
+     * @param rightName the right name
+     * @param rightData the right data
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given vault crystals items.
+     */
+    public static int compareVaultCrystals(String leftName,
+        CrystalData leftData,
+        String rightName,
+        CrystalData rightData,
+        List<CrystalOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue = 0;
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            CrystalOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case LEVEL -> Integer.compare(leftData.getLevel(), rightData.getLevel());
+                case TYPE -> leftData.getObjective().getClass().getName().
+                    compareTo(rightData.getObjective().getClass().getName());
             };
         }
 
@@ -619,5 +654,25 @@ public class SortingHelper
          * The amount of rooms in inscription.
          */
         ROOMS
+    }
+
+
+    /**
+     * This enum holds all possible values for crystal sorting order
+     */
+    public enum CrystalOptions
+    {
+        /**
+         * The name of item
+         */
+        NAME,
+        /**
+         * Level of the crystal
+         */
+        LEVEL,
+        /**
+         * Type of the crystal
+         */
+        TYPE
     }
 }
