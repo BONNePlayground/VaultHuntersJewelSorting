@@ -257,7 +257,7 @@ public class SortingHelper
                         if (leftValue.get().getConfig().hasCuriosSlot() && rightValue.get().getConfig().hasCuriosSlot())
                         {
                             yield leftValue.get().getConfig().getCuriosSlot().
-                                compareTo(rightValue.get().getTrinketConfig().getName());
+                                compareTo(rightValue.get().getConfig().getCuriosSlot());
                         }
                         else
                         {
