@@ -3,6 +3,7 @@ package lv.id.bonne.vaultjewelsorting.storagenetwork.mixin;
 
 import com.lothrazar.storagenetwork.api.IGuiNetwork;
 import com.lothrazar.storagenetwork.gui.NetworkWidget;
+import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import java.util.Comparator;
 
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
@@ -17,6 +19,7 @@ import iskallia.vault.item.VaultCatalystItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -180,6 +183,36 @@ public class MixinNetworkWidget
                         rightName,
                         rightData,
                         VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() instanceof TrinketItem &&
+                second.getItem() instanceof TrinketItem)
+            {
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareTrinkets(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareTrinkets(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareTrinkets(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
                         true);
                 };
             }

@@ -19,6 +19,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
 import iskallia.vault.item.crystal.CrystalData;
@@ -158,6 +159,38 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.TRINKET.getRegistryName())
+            {
+                AttributeGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
+                AttributeGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
+
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareTrinkets(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareTrinkets(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareTrinkets(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        ascending);
+                };
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
@@ -212,6 +245,7 @@ public abstract class MixinRepo
             id.equals(ModItems.WAND.getRegistryName()) ||
             id.equals(ModItems.MAGNET.getRegistryName()) ||
             id.equals(ModItems.INSCRIPTION.getRegistryName()) ||
-            id.equals(ModItems.VAULT_CRYSTAL.getRegistryName());
+            id.equals(ModItems.VAULT_CRYSTAL.getRegistryName()) ||
+            id.equals(ModItems.TRINKET.getRegistryName());
     }
 }

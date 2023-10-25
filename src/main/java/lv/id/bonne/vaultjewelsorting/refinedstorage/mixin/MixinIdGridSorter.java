@@ -15,12 +15,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -123,6 +125,23 @@ public class MixinIdGridSorter
                             rightStack.getDisplayName().getString(),
                             CrystalData.read(rightStack),
                             VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
+                            sortingDirection == SortingDirection.ASCENDING));
+                    callbackInfoReturnable.cancel();
+                }
+            }
+            else if (leftStack.getItem() instanceof TrinketItem &&
+                rightStack.getItem() instanceof TrinketItem)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(
+                        SortingHelper.compareTrinkets(leftStack.getDisplayName().getString(),
+                            AttributeGearData.read(leftStack),
+                            leftStack.getTag(),
+                            rightStack.getDisplayName().getString(),
+                            AttributeGearData.read(rightStack),
+                            rightStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
                             sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
                 }

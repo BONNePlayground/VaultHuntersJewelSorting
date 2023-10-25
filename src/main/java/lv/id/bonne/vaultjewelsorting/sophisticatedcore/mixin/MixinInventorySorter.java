@@ -2,12 +2,14 @@ package lv.id.bonne.vaultjewelsorting.sophisticatedcore.mixin;
 
 import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -87,6 +89,21 @@ public class MixinInventorySorter
                             true);
                     }
                 }
+                else if (first.getKey().getStack().getItem() instanceof TrinketItem &&
+                    second.getKey().getStack().getItem() instanceof TrinketItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount().isEmpty())
+                    {
+                        return SortingHelper.compareTrinkets(first.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(first.getKey().getStack()),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(second.getKey().getStack()),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
+                            true);
+                    }
+                }
 
                 return 0;
             });
@@ -148,6 +165,21 @@ public class MixinInventorySorter
                             second.getKey().getStack().getDisplayName().getString(),
                             CrystalData.read(second.getKey().getStack()),
                             VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                            true);
+                    }
+                }
+                else if (first.getKey().getStack().getItem() instanceof TrinketItem &&
+                    second.getKey().getStack().getItem() instanceof TrinketItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByName().isEmpty())
+                    {
+                        return SortingHelper.compareTrinkets(first.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(first.getKey().getStack()),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(second.getKey().getStack()),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
                             true);
                     }
                 }

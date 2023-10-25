@@ -13,12 +13,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
@@ -129,6 +131,24 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
+        else if (stack1.getItem() instanceof TrinketItem &&
+            stack2.getItem() instanceof TrinketItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareTrinkets(stack1.getDisplayName().getString(),
+                        AttributeGearData.read(stack1),
+                        stack1.getTag(),
+                        stack2.getDisplayName().getString(),
+                        AttributeGearData.read(stack2),
+                        stack2.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
     }
 
 
@@ -141,6 +161,8 @@ public class MixinSortingHandler
     private static boolean hasCustomComparison(ItemStack stack)
     {
         return stack.getItem() instanceof VaultGearItem ||
-            stack.getItem() instanceof InscriptionItem;
+            stack.getItem() instanceof InscriptionItem ||
+            stack.getItem() instanceof VaultCrystalItem ||
+            stack.getItem() instanceof TrinketItem;
     }
 }
