@@ -14,7 +14,9 @@ import java.util.Optional;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
+import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
+import iskallia.vault.gear.trinket.TrinketEffect;
 import iskallia.vault.init.ModGearAttributes;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
@@ -187,6 +189,87 @@ public class SortingHelper
                 case LEVEL -> Integer.compare(leftData.getLevel(), rightData.getLevel());
                 case TYPE -> leftData.getObjective().getClass().getName().
                     compareTo(rightData.getObjective().getClass().getName());
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares two given vault trinkets by their sorting order.
+     * @param leftName the left name
+     * @param leftData the left data
+     * @param leftTag the left tag
+     * @param rightName the right name
+     * @param rightData the right data
+     * @param rightTag the right tag
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given vault trinkets items.
+     */
+    public static int compareTrinkets(String leftName,
+        AttributeGearData leftData,
+        CompoundTag leftTag,
+        String rightName,
+        AttributeGearData rightData,
+        CompoundTag rightTag,
+        List<TrinketOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue = Boolean.compare(isIdentified(leftData), isIdentified(rightData));
+
+        if (!isIdentified(leftData) && returnValue == 0)
+        {
+            // Exit fast. Unidentified items are not comparable.
+            return 0;
+        }
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            TrinketOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case USES -> Integer.compare(getRemainingUses(leftTag), getRemainingUses(rightTag));
+                case TYPE ->
+                {
+                    Optional<TrinketEffect<?>> leftValue = leftData.getFirstValue(ModGearAttributes.TRINKET_EFFECT);
+                    Optional<TrinketEffect<?>> rightValue = rightData.getFirstValue(ModGearAttributes.TRINKET_EFFECT);
+
+                    if (leftValue.isPresent() && rightValue.isPresent())
+                    {
+                        yield leftValue.get().getTrinketConfig().getName().
+                            compareTo(rightValue.get().getTrinketConfig().getName());
+                    }
+                    else
+                    {
+                        yield Boolean.compare(leftValue.isPresent(), rightValue.isPresent());
+                    }
+                }
+                case SLOT ->
+                {
+                    Optional<TrinketEffect<?>> leftValue = leftData.getFirstValue(ModGearAttributes.TRINKET_EFFECT);
+                    Optional<TrinketEffect<?>> rightValue = rightData.getFirstValue(ModGearAttributes.TRINKET_EFFECT);
+
+                    if (leftValue.isPresent() && rightValue.isPresent())
+                    {
+                        if (leftValue.get().getConfig().hasCuriosSlot() && rightValue.get().getConfig().hasCuriosSlot())
+                        {
+                            yield leftValue.get().getConfig().getCuriosSlot().
+                                compareTo(rightValue.get().getTrinketConfig().getName());
+                        }
+                        else
+                        {
+                            yield Boolean.compare(leftValue.get().getConfig().hasCuriosSlot(),
+                                rightValue.get().getConfig().hasCuriosSlot());
+                        }
+                    }
+                    else
+                    {
+                        yield Boolean.compare(leftValue.isPresent(), rightValue.isPresent());
+                    }
+                }
             };
         }
 
@@ -564,6 +647,51 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method returns remaining uses from given tag.
+     * @param tag The tag of the item.
+     * @return The remaining uses from given tag.
+     */
+    private static int getRemainingUses(CompoundTag tag)
+    {
+        return Math.max(getVaultUses(tag) - getUsedVaults(tag), 0);
+    }
+
+
+    /**
+     * This method returns vaultUses from given tag.
+     * @param tag The tag of the item.
+     * @return The vaultUses from given tag.
+     */
+    private static int getVaultUses(CompoundTag tag)
+    {
+        return tag.contains("vaultUses") ? tag.getInt("vaultUses") : 0;
+    }
+
+
+    /**
+     * This method returns amount of used vaults.
+     * @param tag The tag of the item.
+     * @return The amount of used vaults.
+     */
+    private static int getUsedVaults(CompoundTag tag)
+    {
+        return tag.contains("usedVaults") ? tag.getList("usedVaults", 10).size() : 0;
+    }
+
+
+    /**
+     * This method checks if given gear is identified.
+     * @param data The data of the gear.
+     * @return True if gear is identified.
+     */
+    private static boolean isIdentified(AttributeGearData data)
+    {
+        return data.getFirstValue(ModGearAttributes.STATE).
+            orElse(VaultGearState.UNIDENTIFIED) == VaultGearState.IDENTIFIED;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enum for sorting order
 // ---------------------------------------------------------------------
@@ -674,5 +802,29 @@ public class SortingHelper
          * Type of the crystal
          */
         TYPE
+    }
+
+
+    /**
+     * This enum holds all possible values for trinket sorting order
+     */
+    public enum TrinketOptions
+    {
+        /**
+         * The name of item
+         */
+        NAME,
+        /**
+         * Type of the trinket
+         */
+        TYPE,
+        /**
+         * The slot of trinket
+         */
+        SLOT,
+        /**
+         * The uses left on trinket
+         */
+        USES
     }
 }
