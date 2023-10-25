@@ -180,6 +180,38 @@ public class Configuration
 
         this.builder.pop();
 
+        this.builder.comment("This category holds options how Trinkets are sorted");
+        this.builder.push("Trinkets Sorting");
+
+        this.trinketSortingByName = this.builder.
+            comment("The order of Trinkets if they are sorted by the name.").
+            comment("Supported Values: NAME, SLOT, TYPE, USES").
+            defineList("trinket_sorting_by_name",
+                Arrays.asList(SortingHelper.TrinketOptions.NAME.name(),
+                    SortingHelper.TrinketOptions.SLOT.name(),
+                    SortingHelper.TrinketOptions.TYPE.name(),
+                    SortingHelper.TrinketOptions.USES.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
+
+        this.trinketSortingByAmount = this.builder.
+            comment("The order of Trinkets if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, SLOT, TYPE, USES").
+            defineList("trinket_sorting_by_amount",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
+
+        this.trinketSortingByMod = this.builder.
+            comment("The order of Trinkets if they are sorted by the mod.").
+            comment("Supported Values: NAME, SLOT, TYPE, USES").
+            defineList("trinket_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
+
+        this.builder.pop();
+
         Configuration.GENERAL_SPEC = this.builder.build();
     }
 
@@ -328,6 +360,39 @@ public class Configuration
 
 
     /**
+     * Gets Trinket sorting by name.
+     *
+     * @return the Trinket sorting by name
+     */
+    public List<SortingHelper.TrinketOptions> getTrinketSortingByName()
+    {
+        return this.convertStringToTrinketEnum(this.trinketSortingByName.get());
+    }
+
+
+    /**
+     * Gets Trinket sorting by amount.
+     *
+     * @return the Trinket sorting by amount
+     */
+    public List<SortingHelper.TrinketOptions> getTrinketSortingByAmount()
+    {
+        return this.convertStringToTrinketEnum(this.trinketSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets Trinket sorting by mod.
+     *
+     * @return the Trinket sorting by mod
+     */
+    public List<SortingHelper.TrinketOptions> getTrinketSortingByMod()
+    {
+        return this.convertStringToTrinketEnum(this.trinketSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -386,6 +451,22 @@ public class Configuration
             map(String::toUpperCase).
             filter(upperCase -> Enums.getIfPresent(SortingHelper.CrystalOptions.class, upperCase).isPresent()).
             map(SortingHelper.CrystalOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.TrinketOptions> convertStringToTrinketEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.TrinketOptions.class, upperCase).isPresent()).
+            map(SortingHelper.TrinketOptions::valueOf).
             distinct().
             toList();
     }
@@ -465,6 +546,21 @@ public class Configuration
      * The config value for vault crystal sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> vaultCrystalSortingByMod;
+
+    /**
+     * The config value for trinket sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> trinketSortingByName;
+
+    /**
+     * The config value for trinket sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> trinketSortingByAmount;
+
+    /**
+     * The config value for trinket sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> trinketSortingByMod;
 
     /**
      * The general config spec.
