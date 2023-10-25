@@ -7,7 +7,6 @@
 package lv.id.bonne.vaultjewelsorting.config;
 
 
-
 import com.google.common.base.Enums;
 import java.util.Arrays;
 import java.util.Collections;
@@ -150,6 +149,36 @@ public class Configuration
 
         this.builder.pop();
 
+        this.builder.comment("This category holds options how Vault Crystals are sorted");
+        this.builder.push("Vault Crystal Sorting");
+
+        this.vaultCrystalSortingByName = this.builder.
+            comment("The order of Vault Crystal if they are sorted by the name.").
+            comment("Supported Values: NAME, LEVEL, TYPE").
+            defineList("crystal_sorting_by_name",
+                Arrays.asList(SortingHelper.CrystalOptions.NAME.name(),
+                    SortingHelper.CrystalOptions.TYPE.name(),
+                    SortingHelper.CrystalOptions.LEVEL.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
+
+        this.vaultCrystalSortingByAmount = this.builder.
+            comment("The order of Vault Crystal if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, LEVEL, TYPE").
+            defineList("crystal_sorting_by_amount",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
+
+        this.vaultCrystalSortingByMod = this.builder.
+            comment("The order of Vault Crystal if they are sorted by the mod.").
+            comment("Supported Values: NAME, LEVEL, TYPE").
+            defineList("crystal_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
+
+        this.builder.pop();
 
         Configuration.GENERAL_SPEC = this.builder.build();
     }
@@ -266,6 +295,39 @@ public class Configuration
 
 
     /**
+     * Gets vault crystal sorting by name.
+     *
+     * @return the vault crystal sorting by name
+     */
+    public List<SortingHelper.CrystalOptions> getVaultCrystalSortingByName()
+    {
+        return this.convertStringToCrystalEnum(this.vaultCrystalSortingByName.get());
+    }
+
+
+    /**
+     * Gets vault crystal sorting by amount.
+     *
+     * @return the vault crystal sorting by amount
+     */
+    public List<SortingHelper.CrystalOptions> getVaultCrystalSortingByAmount()
+    {
+        return this.convertStringToCrystalEnum(this.vaultCrystalSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets vault crystal sorting by mod.
+     *
+     * @return the vault crystal sorting by mod
+     */
+    public List<SortingHelper.CrystalOptions> getVaultCrystalSortingByMod()
+    {
+        return this.convertStringToCrystalEnum(this.vaultCrystalSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -273,8 +335,8 @@ public class Configuration
     private List<SortingHelper.JewelOptions> convertStringToJewelEnum(List<? extends String> value)
     {
         return value.stream().
-            filter(text -> Enums.getIfPresent(SortingHelper.JewelOptions.class, text.toUpperCase()).isPresent()).
             map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.JewelOptions.class, upperCase).isPresent()).
             map(SortingHelper.JewelOptions::valueOf).
             distinct().
             toList();
@@ -289,8 +351,8 @@ public class Configuration
     private List<SortingHelper.GearOptions> convertStringToGearEnum(List<? extends String> value)
     {
         return value.stream().
-            filter(text -> Enums.getIfPresent(SortingHelper.GearOptions.class, text.toUpperCase()).isPresent()).
             map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.GearOptions.class, upperCase).isPresent()).
             map(SortingHelper.GearOptions::valueOf).
             distinct().
             toList();
@@ -305,9 +367,25 @@ public class Configuration
     private List<SortingHelper.InscriptionOptions> convertStringToInscriptionEnum(List<? extends String> value)
     {
         return value.stream().
-            filter(text -> Enums.getIfPresent(SortingHelper.InscriptionOptions.class, text.toUpperCase()).isPresent()).
             map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.InscriptionOptions.class, upperCase).isPresent()).
             map(SortingHelper.InscriptionOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.CrystalOptions> convertStringToCrystalEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.CrystalOptions.class, upperCase).isPresent()).
+            map(SortingHelper.CrystalOptions::valueOf).
             distinct().
             toList();
     }
@@ -372,6 +450,21 @@ public class Configuration
      * The config value for inscription sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> inscriptionSortingByMod;
+
+    /**
+     * The config value for vault crystal sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> vaultCrystalSortingByName;
+
+    /**
+     * The config value for vault crystal sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> vaultCrystalSortingByAmount;
+
+    /**
+     * The config value for vault crystal sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> vaultCrystalSortingByMod;
 
     /**
      * The general config spec.
