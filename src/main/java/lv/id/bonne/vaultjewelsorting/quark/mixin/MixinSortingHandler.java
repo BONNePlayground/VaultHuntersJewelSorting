@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.crystal.CrystalData;
+import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -106,6 +108,22 @@ public class MixinSortingHandler
                         stack2.getDisplayName().getString(),
                         InscriptionData.from(stack2),
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
+        else if (stack1.getItem() instanceof VaultCrystalItem &&
+            stack2.getItem() instanceof VaultCrystalItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareVaultCrystals(stack1.getDisplayName().getString(),
+                        CrystalData.read(stack1),
+                        stack2.getDisplayName().getString(),
+                        CrystalData.read(stack2),
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
                         true));
 
                 callbackInfoReturnable.cancel();

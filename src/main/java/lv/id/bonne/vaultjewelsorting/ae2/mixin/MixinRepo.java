@@ -21,6 +21,7 @@ import appeng.client.gui.me.common.Repo;
 import appeng.menu.me.common.GridInventoryEntry;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModItems;
+import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
 import lv.id.bonne.vaultjewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaultjewelsorting.utils.CustomVaultGearData;
@@ -128,6 +129,35 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.VAULT_CRYSTAL.getRegistryName())
+            {
+                CrystalData leftData = CrystalData.empty();
+                leftData.deserializeNBT(leftWhat.toTag().getCompound("tag").getCompound("CrystalData"));
+
+                CrystalData rightData = CrystalData.empty();
+                rightData.deserializeNBT(rightWhat.toTag().getCompound("tag").getCompound("CrystalData"));
+
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
+                        ascending);
+                };
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
@@ -154,6 +184,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+
         }));
     }
 
@@ -180,6 +211,7 @@ public abstract class MixinRepo
             id.equals(ModItems.IDOL_MALEVOLENCE.getRegistryName()) ||
             id.equals(ModItems.WAND.getRegistryName()) ||
             id.equals(ModItems.MAGNET.getRegistryName()) ||
-            id.equals(ModItems.INSCRIPTION.getRegistryName());
+            id.equals(ModItems.INSCRIPTION.getRegistryName()) ||
+            id.equals(ModItems.VAULT_CRYSTAL.getRegistryName());
     }
 }

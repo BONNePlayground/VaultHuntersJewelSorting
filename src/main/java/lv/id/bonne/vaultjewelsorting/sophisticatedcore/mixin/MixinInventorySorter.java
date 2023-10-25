@@ -1,8 +1,12 @@
 package lv.id.bonne.vaultjewelsorting.sophisticatedcore.mixin;
 
+import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
+
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.crystal.CrystalData;
+import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -69,6 +73,20 @@ public class MixinInventorySorter
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
                         true);
                 }
+                else if (first.getKey().getStack().getItem() instanceof VaultCrystalItem &&
+                    second.getKey().getStack().getItem() instanceof VaultCrystalItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount().isEmpty())
+                    {
+                        return SortingHelper.compareVaultCrystals(
+                            first.getKey().getStack().getDisplayName().getString(),
+                            CrystalData.read(first.getKey().getStack()),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            CrystalData.read(second.getKey().getStack()),
+                            VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
+                            true);
+                    }
+                }
 
                 return 0;
             });
@@ -118,6 +136,20 @@ public class MixinInventorySorter
                         InscriptionData.from(second.getKey().getStack()),
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
                         true);
+                }
+                else if (first.getKey().getStack().getItem() instanceof VaultCrystalItem &&
+                    second.getKey().getStack().getItem() instanceof VaultCrystalItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName().isEmpty())
+                    {
+                        return SortingHelper.compareVaultCrystals(
+                            first.getKey().getStack().getDisplayName().getString(),
+                            CrystalData.read(first.getKey().getStack()),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            CrystalData.read(second.getKey().getStack()),
+                            VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                            true);
+                    }
                 }
 
                 return 0;

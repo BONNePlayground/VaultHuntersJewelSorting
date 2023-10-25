@@ -13,6 +13,9 @@ import java.util.Comparator;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.VaultCatalystItem;
+import iskallia.vault.item.crystal.CrystalData;
+import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -148,6 +151,35 @@ public class MixinNetworkWidget
                         rightName,
                         rightData,
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() instanceof VaultCrystalItem &&
+                second.getItem() instanceof VaultCrystalItem)
+            {
+                String leftName = first.getDisplayName().getString();
+                String rightName = second.getDisplayName().getString();
+                CrystalData leftData = CrystalData.read(first);
+                CrystalData rightData = CrystalData.read(second);
+
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
                         true);
                 };
             }

@@ -19,6 +19,8 @@ import java.util.Comparator;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.crystal.CrystalData;
+import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -163,6 +165,35 @@ public class MixinQIOItemViewerContainerListSortType
                         true);
                 };
             }
+            else if (firstItem.getItem() instanceof VaultCrystalItem &&
+                secondItem.getItem() instanceof VaultCrystalItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                CrystalData leftData = CrystalData.read(firstItem);
+                CrystalData rightData = CrystalData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
+                        true);
+                };
+            }
             else
             {
                 return 0;
@@ -251,6 +282,64 @@ public class MixinQIOItemViewerContainerListSortType
                         rightName,
                         rightData,
                         VaultJewelSorting.CONFIGURATION.getGearSortingByMod(),
+                        false);
+                };
+            }
+            else if (firstItem.getItem() instanceof InscriptionItem &&
+                secondItem.getItem() instanceof InscriptionItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                InscriptionData leftData = InscriptionData.from(firstItem);
+                InscriptionData rightData = InscriptionData.from(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareInscriptions(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getInscriptionSortingByMod(),
+                        false);
+                };
+            }
+            else if (firstItem.getItem() instanceof VaultCrystalItem &&
+                secondItem.getItem() instanceof VaultCrystalItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                CrystalData leftData = CrystalData.read(firstItem);
+                CrystalData rightData = CrystalData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareVaultCrystals(leftName,
+                        leftData,
+                        rightName,
+                        rightData,
+                        VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByMod(),
                         false);
                 };
             }
