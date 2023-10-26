@@ -5,6 +5,7 @@ pluginManagement {
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
         }
+        maven { url "https://cursemaven.com" }
     }
 }
 
@@ -12,4 +13,4 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
-rootProject.name = 'vaulthunters_jewel_sorting'
+rootProject.name = 'vault_hunters_jewel_sorting'
