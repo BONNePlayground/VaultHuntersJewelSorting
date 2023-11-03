@@ -63,7 +63,17 @@ public class MixinIdGridSorter
         if (left.getIngredient() instanceof ItemStack leftStack &&
             right.getIngredient() instanceof ItemStack rightStack)
         {
-            if (leftStack.getItem() instanceof JewelItem &&
+            int registryOrder = SortingHelper.compareRegistryNames(
+                leftStack.getItem().getRegistryName(),
+                rightStack.getItem().getRegistryName(),
+                sortingDirection == SortingDirection.ASCENDING);
+
+            if (registryOrder != 0)
+            {
+                // If registry order is not 0, then return it.
+                callbackInfoReturnable.setReturnValue(registryOrder);
+            }
+            else if (leftStack.getItem() instanceof JewelItem &&
                 rightStack.getItem() instanceof JewelItem)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByMod().isEmpty())

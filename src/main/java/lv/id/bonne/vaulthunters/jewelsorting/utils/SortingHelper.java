@@ -7,10 +7,9 @@
 package lv.id.bonne.vaulthunters.jewelsorting.utils;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import iskallia.vault.VaultMod;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
@@ -19,6 +18,7 @@ import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.trinket.TrinketEffect;
 import iskallia.vault.init.ModGearAttributes;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +30,29 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class SortingHelper
 {
+    /**
+     * This method compares two given registry names.
+     * @param leftReg The left registry name.
+     * @param rightReg The right registry name.
+     * @param ascending The ascending or descending order.
+     * @return The comparison of two given registry names.
+     */
+    public static int compareRegistryNames(ResourceLocation leftReg,
+        ResourceLocation rightReg,
+        boolean ascending)
+    {
+        String leftName = VAULT_GEAR_SET.contains(leftReg) ?
+            VaultMod.sId("gear") : leftReg.toString();
+
+        String rightName = VAULT_GEAR_SET.contains(rightReg) ?
+            VaultMod.sId("gear") : rightReg.toString();
+
+        return ascending ?
+            SortingHelper.compareString(leftName, rightName) :
+            SortingHelper.compareString(rightName, leftName);
+    }
+
+
     /**
      * This method compares two given jewels by their sorting order.
      *
@@ -282,8 +305,9 @@ public class SortingHelper
             returnValue = switch (sortOptions) {
                 case NAME -> SortingHelper.compareString(leftName, rightName);
                 case LEVEL -> Integer.compare(leftData.getLevel(), rightData.getLevel());
-                case TYPE -> leftData.getObjective().getClass().getName().
-                    compareTo(rightData.getObjective().getClass().getName());
+                case TYPE -> SortingHelper.compareString(
+                    leftData.getObjective().getClass().getName(),
+                    rightData.getObjective().getClass().getName());
             };
         }
 
@@ -334,8 +358,9 @@ public class SortingHelper
 
                     if (leftValue.isPresent() && rightValue.isPresent())
                     {
-                        yield leftValue.get().getTrinketConfig().getName().
-                            compareTo(rightValue.get().getTrinketConfig().getName());
+                        yield SortingHelper.compareString(
+                            leftValue.get().getTrinketConfig().getName(),
+                            rightValue.get().getTrinketConfig().getName());
                     }
                     else
                     {
@@ -351,8 +376,9 @@ public class SortingHelper
                     {
                         if (leftValue.get().getConfig().hasCuriosSlot() && rightValue.get().getConfig().hasCuriosSlot())
                         {
-                            yield leftValue.get().getConfig().getCuriosSlot().
-                                compareTo(rightValue.get().getConfig().getCuriosSlot());
+                            yield SortingHelper.compareString(
+                                leftValue.get().getConfig().getCuriosSlot(),
+                                rightValue.get().getConfig().getCuriosSlot());
                         }
                         else
                         {
@@ -620,7 +646,7 @@ public class SortingHelper
                     if (leftIndex == rightIndex)
                     {
                         // sort by name
-                        return leftRoll.compareTo(rightRoll);
+                        return SortingHelper.compareString(leftRoll, rightRoll);
                     }
                     else
                     {
@@ -1049,4 +1075,28 @@ public class SortingHelper
      * The name of the cache.
      */
     public static final String EXTRA_GEAR_LEVEL = "extra_gear_level";
+
+    public static final Set<ResourceLocation> VAULT_GEAR_SET = new HashSet<>();
+
+    // Put all vault gear items into the set.
+    static
+    {
+        VAULT_GEAR_SET.add(ModItems.HELMET.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.CHESTPLATE.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.LEGGINGS.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.BOOTS.getRegistryName());
+
+        VAULT_GEAR_SET.add(ModItems.SWORD.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.AXE.getRegistryName());
+
+        VAULT_GEAR_SET.add(ModItems.WAND.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.SHIELD.getRegistryName());
+
+        VAULT_GEAR_SET.add(ModItems.MAGNET.getRegistryName());
+
+        VAULT_GEAR_SET.add(ModItems.IDOL_BENEVOLENT.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.IDOL_OMNISCIENT.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.IDOL_TIMEKEEPER.getRegistryName());
+        VAULT_GEAR_SET.add(ModItems.IDOL_MALEVOLENCE.getRegistryName());
+    }
 }

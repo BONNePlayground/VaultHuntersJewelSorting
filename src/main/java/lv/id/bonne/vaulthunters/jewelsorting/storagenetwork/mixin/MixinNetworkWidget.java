@@ -57,8 +57,17 @@ public class MixinNetworkWidget
                 return 0;
             }
 
-            // Do not sort if shift is pressed
-            if (first.getItem() instanceof JewelItem &&
+            int registryOrder = SortingHelper.compareRegistryNames(
+                first.getItem().getRegistryName(),
+                second.getItem().getRegistryName(),
+                this.gui.getDownwards());
+
+            if (registryOrder != 0)
+            {
+                // Use default string comparing
+                return registryOrder;
+            }
+            else if (first.getItem() instanceof JewelItem &&
                 second.getItem() instanceof JewelItem)
             {
                 String leftName = first.getDisplayName().getString();

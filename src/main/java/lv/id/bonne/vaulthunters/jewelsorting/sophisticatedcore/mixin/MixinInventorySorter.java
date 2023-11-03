@@ -31,7 +31,17 @@ public class MixinInventorySorter
         {
             return original.thenComparing((first, second) ->
             {
-                if (first.getKey().getStack().getItem() instanceof JewelItem &&
+                int registryOrder = SortingHelper.compareRegistryNames(
+                    first.getKey().getStack().getItem().getRegistryName(),
+                    second.getKey().getStack().getItem().getRegistryName(),
+                    true);
+
+                if (registryOrder != 0)
+                {
+                    // Use default string comparing
+                    return registryOrder;
+                }
+                else if (first.getKey().getStack().getItem() instanceof JewelItem &&
                     second.getKey().getStack().getItem() instanceof JewelItem)
                 {
                     return SortingHelper.compareJewels(
@@ -110,7 +120,17 @@ public class MixinInventorySorter
         {
             return original.thenComparing((first, second) ->
             {
-                if (first.getKey().getStack().getItem() instanceof JewelItem &&
+                int registryOrder = SortingHelper.compareRegistryNames(
+                    first.getKey().getStack().getItem().getRegistryName(),
+                    second.getKey().getStack().getItem().getRegistryName(),
+                    true);
+
+                if (registryOrder != 0)
+                {
+                    // Use default string comparing
+                    return registryOrder;
+                }
+                else if (first.getKey().getStack().getItem() instanceof JewelItem &&
                     second.getKey().getStack().getItem() instanceof JewelItem)
                 {
                     return SortingHelper.compareJewels(

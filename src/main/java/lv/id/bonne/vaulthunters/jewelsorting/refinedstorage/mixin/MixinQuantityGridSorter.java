@@ -60,10 +60,30 @@ public class MixinQuantityGridSorter
             return;
         }
 
+        if (!left.getModId().equals(right.getModId()))
+        {
+            // some small cleanup. We want to sort only vault items.
+            callbackInfoReturnable.setReturnValue(
+                String.CASE_INSENSITIVE_ORDER.compare(left.getModId(), right.getModId()));
+            return;
+        }
+
         if (left.getIngredient() instanceof ItemStack leftStack &&
             right.getIngredient() instanceof ItemStack rightStack)
         {
-            if (leftStack.getItem() instanceof JewelItem &&
+            // Get item registry names.
+
+            int registryOrder = SortingHelper.compareRegistryNames(
+                leftStack.getItem().getRegistryName(),
+                rightStack.getItem().getRegistryName(),
+                sortingDirection == SortingDirection.ASCENDING);
+
+            if (registryOrder != 0)
+            {
+                // If registry order is not 0, then return it.
+                callbackInfoReturnable.setReturnValue(registryOrder);
+            }
+            else if (leftStack.getItem() instanceof JewelItem &&
                 rightStack.getItem() instanceof JewelItem)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount().isEmpty())
@@ -75,7 +95,6 @@ public class MixinQuantityGridSorter
                         GearDataCache.of(rightStack),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         sortingDirection == SortingDirection.ASCENDING));
-                    callbackInfoReturnable.cancel();
                 }
             }
             else if (leftStack.getItem() instanceof ToolItem &&
@@ -100,7 +119,6 @@ public class MixinQuantityGridSorter
                         VaultGearData.read(rightStack),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
                         sortingDirection == SortingDirection.ASCENDING));
-                    callbackInfoReturnable.cancel();
                 }
             }
             else if (leftStack.getItem() instanceof InscriptionItem &&
@@ -114,7 +132,6 @@ public class MixinQuantityGridSorter
                         InscriptionData.from(rightStack),
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
                         sortingDirection == SortingDirection.ASCENDING));
-                    callbackInfoReturnable.cancel();
                 }
             }
             else if (leftStack.getItem() instanceof VaultCrystalItem &&
@@ -129,7 +146,6 @@ public class MixinQuantityGridSorter
                             CrystalData.read(rightStack),
                             VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
                             sortingDirection == SortingDirection.ASCENDING));
-                    callbackInfoReturnable.cancel();
                 }
             }
             else if (leftStack.getItem() instanceof TrinketItem &&
@@ -146,7 +162,6 @@ public class MixinQuantityGridSorter
                             rightStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
                             sortingDirection == SortingDirection.ASCENDING));
-                    callbackInfoReturnable.cancel();
                 }
             }
         }

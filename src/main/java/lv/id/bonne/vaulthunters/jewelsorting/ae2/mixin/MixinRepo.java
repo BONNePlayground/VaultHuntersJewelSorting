@@ -67,16 +67,26 @@ public abstract class MixinRepo
             String leftName = leftWhat.getDisplayName().getString();
             String rightName = rightWhat.getDisplayName().getString();
 
-            if (!leftWhat.getId().equals(rightWhat.getId()) ||
+            if (!leftWhat.getModId().equals(rightWhat.getModId()))
+            {
+                // some small cleanup. We want to sort only vault items.
+                return String.CASE_INSENSITIVE_ORDER.compare(
+                    leftWhat.getModId(),
+                    rightWhat.getModId());
+            }
+
+            int registryOrder = SortingHelper.compareRegistryNames(
+                leftWhat.getId(),
+                rightWhat.getId(),
+                ascending);
+
+            if (registryOrder != 0 ||
                 !MixinRepo.isSortable(leftWhat.getId()))
             {
                 // Use default string comparing
-                return ascending ?
-                    String.CASE_INSENSITIVE_ORDER.compare(leftName, rightName) :
-                    String.CASE_INSENSITIVE_ORDER.compare(rightName, leftName);
+                return registryOrder;
             }
-
-            if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
+            else if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
             {
                 CompoundTag leftTag = leftWhat.toTag().getCompound("tag");
                 CompoundTag rightTag = rightWhat.toTag().getCompound("tag");

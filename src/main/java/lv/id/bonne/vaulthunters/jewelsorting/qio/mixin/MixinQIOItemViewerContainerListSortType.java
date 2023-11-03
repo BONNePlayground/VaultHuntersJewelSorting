@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
 import java.util.Comparator;
 
 import iskallia.vault.gear.data.AttributeGearData;
@@ -74,8 +73,25 @@ public class MixinQIOItemViewerContainerListSortType
             ItemStack firstItem = stack1.getItem().getStack();
             ItemStack secondItem = stack2.getItem().getStack();
 
-            // if shift is down, or sorting by mod, then skip everything.
-            if (firstItem.getItem() instanceof JewelItem &&
+            if (!stack1.getModID().equals(stack2.getModID()))
+            {
+                // some small cleanup. We want to sort only vault items.
+                return String.CASE_INSENSITIVE_ORDER.compare(
+                    stack1.getModID(),
+                    stack2.getModID());
+            }
+
+            int registryOrder = SortingHelper.compareRegistryNames(
+                firstItem.getItem().getRegistryName(),
+                secondItem.getItem().getRegistryName(),
+                true);
+
+            if (registryOrder != 0)
+            {
+                // Use default string comparing
+                return registryOrder;
+            }
+            else if (firstItem.getItem() instanceof JewelItem &&
                 secondItem.getItem() instanceof JewelItem)
             {
                 String leftName = firstItem.getDisplayName().getString();
@@ -259,8 +275,25 @@ public class MixinQIOItemViewerContainerListSortType
             ItemStack firstItem = stack1.getItem().getStack();
             ItemStack secondItem = stack2.getItem().getStack();
 
-            // if shift is down, or sorting by mod, then skip everything.
-            if (firstItem.getItem() instanceof JewelItem &&
+            if (!stack1.getModID().equals(stack2.getModID()))
+            {
+                // some small cleanup. We want to sort only vault items.
+                return String.CASE_INSENSITIVE_ORDER.compare(
+                    stack2.getModID(),
+                    stack1.getModID());
+            }
+
+            int registryOrder = SortingHelper.compareRegistryNames(
+                firstItem.getItem().getRegistryName(),
+                secondItem.getItem().getRegistryName(),
+                false);
+
+            if (registryOrder != 0)
+            {
+                // Use default string comparing
+                return registryOrder;
+            }
+            else if (firstItem.getItem() instanceof JewelItem &&
                 secondItem.getItem() instanceof JewelItem)
             {
                 String leftName = firstItem.getDisplayName().getString();
