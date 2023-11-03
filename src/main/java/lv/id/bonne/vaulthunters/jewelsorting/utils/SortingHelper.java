@@ -675,7 +675,7 @@ public class SortingHelper
      */
     private static int compareInstability(CompoundTag leftData, CompoundTag rightData)
     {
-        return leftData.hasUUID("instability") && rightData.hasUUID("instability") ?
+        return leftData.contains("instability") && rightData.contains("instability") ?
             Integer.compare(leftData.getInt("instability"), rightData.getInt("instability")) :
             0;
     }
@@ -689,7 +689,7 @@ public class SortingHelper
      */
     private static int compareCompletion(CompoundTag leftData, CompoundTag rightData)
     {
-        return leftData.hasUUID("completion") && rightData.hasUUID("completion") ?
+        return leftData.contains("completion") && rightData.contains("completion") ?
             Float.compare(leftData.getFloat("completion"), rightData.getFloat("completion")) :
             0;
     }
@@ -703,7 +703,7 @@ public class SortingHelper
      */
     private static int compareTime(CompoundTag leftData, CompoundTag rightData)
     {
-        return leftData.hasUUID("time") && rightData.hasUUID("time") ?
+        return leftData.contains("time") && rightData.contains("time") ?
             Integer.compare(leftData.getInt("time"), rightData.getInt("time")) :
             0;
     }
