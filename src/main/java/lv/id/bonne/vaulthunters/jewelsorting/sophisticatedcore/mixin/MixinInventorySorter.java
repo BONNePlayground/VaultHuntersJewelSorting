@@ -8,6 +8,7 @@ import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.CharmItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -113,6 +114,21 @@ public class MixinInventorySorter
                             true);
                     }
                 }
+                else if (first.getKey().getStack().getItem() instanceof CharmItem &&
+                    second.getKey().getStack().getItem() instanceof CharmItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount().isEmpty())
+                    {
+                        return SortingHelper.compareCharms(first.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(first.getKey().getStack()),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(second.getKey().getStack()),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
+                            true);
+                    }
+                }
                 else if (first.getKey().getStack().getItem() instanceof VaultDollItem &&
                     second.getKey().getStack().getItem() instanceof VaultDollItem)
                 {
@@ -212,6 +228,21 @@ public class MixinInventorySorter
                             AttributeGearData.read(second.getKey().getStack()),
                             second.getKey().getStack().getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
+                            true);
+                    }
+                }
+                else if (first.getKey().getStack().getItem() instanceof CharmItem &&
+                    second.getKey().getStack().getItem() instanceof CharmItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByName().isEmpty())
+                    {
+                        return SortingHelper.compareCharms(first.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(first.getKey().getStack()),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            AttributeGearData.read(second.getKey().getStack()),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
                             true);
                     }
                 }

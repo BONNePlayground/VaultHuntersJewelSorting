@@ -26,12 +26,12 @@ public class Configuration
      */
     public Configuration()
     {
-        this.builder = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
-        this.builder.comment("This category holds options how Jewels are sorted");
-        this.builder.push("Jewel Sorting");
+        builder.comment("This category holds options how Jewels are sorted");
+        builder.push("Jewel Sorting");
 
-        this.jewelSortingByName = this.builder.
+        this.jewelSortingByName = builder.
             comment("The order of Jewels if they are sorted by the name.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_name",
@@ -43,7 +43,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
-        this.jewelSortingByAmount = this.builder.
+        this.jewelSortingByAmount = builder.
             comment("The order of Jewels if they are sorted by the amount/size.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_amount",
@@ -51,7 +51,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
-        this.jewelSortingByMod = this.builder.
+        this.jewelSortingByMod = builder.
             comment("The order of Jewels if they are sorted by the mod.").
             comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
             defineList("jewel_sorting_by_mod",
@@ -59,12 +59,12 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
-        this.builder.pop();
+        builder.pop();
 
-        this.builder.comment("This category holds options how Gear are sorted");
-        this.builder.push("Gear Sorting");
+        builder.comment("This category holds options how Gear are sorted");
+        builder.push("Gear Sorting");
 
-        this.gearSortingByName = this.builder.
+        this.gearSortingByName = builder.
             comment("The order of Gear if they are sorted by the name.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_name",
@@ -76,7 +76,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
-        this.gearSortingByAmount = this.builder.
+        this.gearSortingByAmount = builder.
             comment("The order of Gear if they are sorted by the amount/size.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_amount",
@@ -84,7 +84,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
-        this.gearSortingByMod = this.builder.
+        this.gearSortingByMod = builder.
             comment("The order of Gear if they are sorted by the mod.").
             comment("Supported Values: NAME, STATE, RARITY, LEVEL, MODEL").
             defineList("gear_sorting_by_mod",
@@ -92,7 +92,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.GearOptions.class, value.toUpperCase()).isPresent());
 
-        this.rarityOrder = this.builder.
+        this.rarityOrder = builder.
             comment("The order of Rarities Pools in the sorting for unidentified gear.").
             defineList("rarity_order",
                 Arrays.asList("Scrappy",
@@ -114,12 +114,12 @@ public class Configuration
                     "Gladiator"),
                 entry -> true);
 
-        this.builder.pop();
+        builder.pop();
 
-        this.builder.comment("This category holds options how Inscriptions are sorted");
-        this.builder.push("Inscription Sorting");
+        builder.comment("This category holds options how Inscriptions are sorted");
+        builder.push("Inscription Sorting");
 
-        this.inscriptionSortingByName = this.builder.
+        this.inscriptionSortingByName = builder.
             comment("The order of Inscriptions if they are sorted by the name.").
             comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
             defineList("inscription_sorting_by_name",
@@ -131,7 +131,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
-        this.inscriptionSortingByAmount = this.builder.
+        this.inscriptionSortingByAmount = builder.
             comment("The order of Inscriptions if they are sorted by the amount/size.").
             comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
             defineList("inscription_sorting_by_amount",
@@ -139,7 +139,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
-        this.inscriptionSortingByMod = this.builder.
+        this.inscriptionSortingByMod = builder.
             comment("The order of Inscriptions if they are sorted by the mod.").
             comment("Supported Values: NAME, INSTABILITY, TIME, COMPLETION, ROOMS").
             defineList("inscription_sorting_by_mod",
@@ -147,12 +147,12 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.InscriptionOptions.class, value.toUpperCase()).isPresent());
 
-        this.builder.pop();
+        builder.pop();
 
-        this.builder.comment("This category holds options how Vault Crystals are sorted");
-        this.builder.push("Vault Crystal Sorting");
+        builder.comment("This category holds options how Vault Crystals are sorted");
+        builder.push("Vault Crystal Sorting");
 
-        this.vaultCrystalSortingByName = this.builder.
+        this.vaultCrystalSortingByName = builder.
             comment("The order of Vault Crystal if they are sorted by the name.").
             comment("Supported Values: NAME, LEVEL, TYPE").
             defineList("crystal_sorting_by_name",
@@ -162,7 +162,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
 
-        this.vaultCrystalSortingByAmount = this.builder.
+        this.vaultCrystalSortingByAmount = builder.
             comment("The order of Vault Crystal if they are sorted by the amount/size.").
             comment("Supported Values: NAME, LEVEL, TYPE").
             defineList("crystal_sorting_by_amount",
@@ -170,7 +170,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
 
-        this.vaultCrystalSortingByMod = this.builder.
+        this.vaultCrystalSortingByMod = builder.
             comment("The order of Vault Crystal if they are sorted by the mod.").
             comment("Supported Values: NAME, LEVEL, TYPE").
             defineList("crystal_sorting_by_mod",
@@ -178,12 +178,12 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.CrystalOptions.class, value.toUpperCase()).isPresent());
 
-        this.builder.pop();
+        builder.pop();
 
-        this.builder.comment("This category holds options how Trinkets are sorted");
-        this.builder.push("Trinkets Sorting");
+        builder.comment("This category holds options how Trinkets are sorted");
+        builder.push("Trinkets Sorting");
 
-        this.trinketSortingByName = this.builder.
+        this.trinketSortingByName = builder.
             comment("The order of Trinkets if they are sorted by the name.").
             comment("Supported Values: NAME, SLOT, TYPE, USES").
             defineList("trinket_sorting_by_name",
@@ -194,7 +194,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
 
-        this.trinketSortingByAmount = this.builder.
+        this.trinketSortingByAmount = builder.
             comment("The order of Trinkets if they are sorted by the amount/size.").
             comment("Supported Values: NAME, SLOT, TYPE, USES").
             defineList("trinket_sorting_by_amount",
@@ -202,7 +202,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
 
-        this.trinketSortingByMod = this.builder.
+        this.trinketSortingByMod = builder.
             comment("The order of Trinkets if they are sorted by the mod.").
             comment("Supported Values: NAME, SLOT, TYPE, USES").
             defineList("trinket_sorting_by_mod",
@@ -210,12 +210,12 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.TrinketOptions.class, value.toUpperCase()).isPresent());
 
-        this.builder.pop();
+        builder.pop();
 
-        this.builder.comment("This category holds options how Vault Dolls are sorted");
-        this.builder.push("Vault Doll Sorting");
+        builder.comment("This category holds options how Vault Dolls are sorted");
+        builder.push("Vault Doll Sorting");
 
-        this.dollSortingByName = this.builder.
+        this.dollSortingByName = builder.
             comment("The order of dolls if they are sorted by the name.").
             comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
             defineList("vault_doll_sorting_by_name",
@@ -227,7 +227,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
 
-        this.dollSortingByAmount = this.builder.
+        this.dollSortingByAmount = builder.
             comment("The order of dolls if they are sorted by the amount/size.").
             comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
             defineList("vault_doll_sorting_by_amount",
@@ -235,7 +235,7 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
 
-        this.dollSortingByMod = this.builder.
+        this.dollSortingByMod = builder.
             comment("The order of dolls if they are sorted by the mod.").
             comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
             defineList("vault_doll_sorting_by_mod",
@@ -243,9 +243,40 @@ public class Configuration
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
 
-        this.builder.pop();
+        builder.pop();
 
-        Configuration.GENERAL_SPEC = this.builder.build();
+        builder.comment("This category holds options how Vault Charms are sorted");
+        builder.push("Vault Charm Sorting");
+
+        this.charmSortingByName = builder.
+            comment("The order of charms if they are sorted by the name.").
+            comment("Supported Values: NAME, USES, VALUE").
+            defineList("charm_sorting_by_name",
+                Arrays.asList(SortingHelper.CharmOptions.NAME.name(),
+                    SortingHelper.CharmOptions.USES.name(),
+                    SortingHelper.CharmOptions.VALUE.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CharmOptions.class, value.toUpperCase()).isPresent());
+
+        this.charmSortingByAmount = builder.
+            comment("The order of charms if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, USES, VALUE").
+            defineList("charm_sorting_by_amount",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CharmOptions.class, value.toUpperCase()).isPresent());
+
+        this.charmSortingByMod = builder.
+            comment("The order of charms if they are sorted by the mod.").
+            comment("Supported Values: NAME, USES, VALUE").
+            defineList("charm_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CharmOptions.class, value.toUpperCase()).isPresent());
+
+        builder.pop();
+
+        Configuration.GENERAL_SPEC = builder.build();
     }
 
 
@@ -459,6 +490,39 @@ public class Configuration
 
 
     /**
+     * Gets Doll sorting by name.
+     *
+     * @return the Doll sorting by name
+     */
+    public List<SortingHelper.CharmOptions> getCharmSortingByName()
+    {
+        return this.convertStringToCharmEnum(this.charmSortingByName.get());
+    }
+
+
+    /**
+     * Gets Charm sorting by amount.
+     *
+     * @return the Charm sorting by amount
+     */
+    public List<SortingHelper.CharmOptions> getCharmSortingByAmount()
+    {
+        return this.convertStringToCharmEnum(this.charmSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets Charm sorting by mod.
+     *
+     * @return the Charm sorting by mod
+     */
+    public List<SortingHelper.CharmOptions> getCharmSortingByMod()
+    {
+        return this.convertStringToCharmEnum(this.charmSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -554,15 +618,26 @@ public class Configuration
     }
 
 
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.CharmOptions> convertStringToCharmEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.CharmOptions.class, upperCase).isPresent()).
+            map(SortingHelper.CharmOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
 
-
-    /**
-     * The main builder for the config.
-     */
-    private final ForgeConfigSpec.Builder builder;
 
     /**
      * The config value for jewel sorting by name.
@@ -658,6 +733,21 @@ public class Configuration
      * The config value for vault doll sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> dollSortingByMod;
+
+    /**
+     * The config value for vault charm sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> charmSortingByName;
+
+    /**
+     * The config value for vault charm sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> charmSortingByAmount;
+
+    /**
+     * The config value for vault charm sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> charmSortingByMod;
 
     /**
      * The general config spec.

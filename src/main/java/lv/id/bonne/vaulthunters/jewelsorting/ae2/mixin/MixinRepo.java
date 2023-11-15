@@ -241,6 +241,38 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (SortingHelper.VAULT_CHARMS.contains(leftWhat.getId()))
+            {
+                AttributeGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
+                AttributeGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
+
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightData,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
+                        ascending);
+                };
+            }
             else if (leftWhat.getId() == ModItems.VAULT_DOLL.getRegistryName())
             {
                 return switch (sortOrder) {
@@ -304,23 +336,11 @@ public abstract class MixinRepo
     private static boolean isSortable(ResourceLocation id)
     {
         return id.equals(ModItems.JEWEL.getRegistryName()) ||
-            id.equals(ModItems.HELMET.getRegistryName()) ||
-            id.equals(ModItems.CHESTPLATE.getRegistryName()) ||
-            id.equals(ModItems.LEGGINGS.getRegistryName()) ||
-            id.equals(ModItems.BOOTS.getRegistryName()) ||
-            id.equals(ModItems.SWORD.getRegistryName()) ||
-            id.equals(ModItems.AXE.getRegistryName()) ||
-            id.equals(ModItems.SHIELD.getRegistryName()) ||
-            id.equals(ModItems.FOCUS.getRegistryName()) ||
-            id.equals(ModItems.IDOL_BENEVOLENT.getRegistryName()) ||
-            id.equals(ModItems.IDOL_OMNISCIENT.getRegistryName()) ||
-            id.equals(ModItems.IDOL_TIMEKEEPER.getRegistryName()) ||
-            id.equals(ModItems.IDOL_MALEVOLENCE.getRegistryName()) ||
-            id.equals(ModItems.WAND.getRegistryName()) ||
-            id.equals(ModItems.MAGNET.getRegistryName()) ||
             id.equals(ModItems.INSCRIPTION.getRegistryName()) ||
             id.equals(ModItems.VAULT_CRYSTAL.getRegistryName()) ||
             id.equals(ModItems.TRINKET.getRegistryName()) ||
+            SortingHelper.VAULT_CHARMS.contains(id) ||
+            SortingHelper.VAULT_GEAR_SET.contains(id) ||
             id.equals(ModItems.VAULT_DOLL.getRegistryName());
     }
 }

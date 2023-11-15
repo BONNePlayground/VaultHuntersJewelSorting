@@ -18,6 +18,7 @@ import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.CharmItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -221,6 +222,36 @@ public class MixinNetworkWidget
                         AttributeGearData.read(second),
                         second.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() instanceof CharmItem &&
+                second.getItem() instanceof CharmItem)
+            {
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareCharms(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareCharms(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareCharms(first.getDisplayName().getString(),
+                        AttributeGearData.read(first),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        AttributeGearData.read(second),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
                         true);
                 };
             }

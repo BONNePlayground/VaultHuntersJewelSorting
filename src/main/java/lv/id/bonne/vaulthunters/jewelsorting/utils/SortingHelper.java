@@ -42,10 +42,14 @@ public class SortingHelper
         boolean ascending)
     {
         String leftName = VAULT_GEAR_SET.contains(leftReg) ?
-            VaultMod.sId("gear") : leftReg.toString();
+            VaultMod.sId("gear") :
+            VAULT_CHARMS.contains(leftReg) ?
+                VaultMod.sId("charm"): leftReg.toString();
 
         String rightName = VAULT_GEAR_SET.contains(rightReg) ?
-            VaultMod.sId("gear") : rightReg.toString();
+            VaultMod.sId("gear") :
+            VAULT_CHARMS.contains(rightReg) ?
+                VaultMod.sId("charm"): rightReg.toString();
 
         return ascending ?
             SortingHelper.compareString(leftName, rightName) :
@@ -427,6 +431,50 @@ public class SortingHelper
                 case XP -> Double.compare(getDollXP(leftTag), getDollXP(rightTag));
                 case LOOT -> Double.compare(getDollLoot(leftTag), getDollLoot(rightTag));
                 case COMPLETED -> Boolean.compare(getDollCompletion(leftTag), getDollCompletion(rightTag));
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares two given vault charms by their sorting order.
+     * @param leftName the left name
+     * @param leftData the left data
+     * @param leftTag the left tag
+     * @param rightName the right name
+     * @param rightData the right data
+     * @param rightTag the right tag
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given vault charms items.
+     */
+    public static int compareCharms(String leftName,
+        AttributeGearData leftData,
+        CompoundTag leftTag,
+        String rightName,
+        AttributeGearData rightData,
+        CompoundTag rightTag,
+        List<CharmOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue = Boolean.compare(isIdentified(leftData), isIdentified(rightData));
+
+        if (!isIdentified(leftData) && returnValue == 0)
+        {
+            // Exit fast. Unidentified items are not comparable.
+            return 0;
+        }
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            CharmOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case USES -> Integer.compare(getRemainingUses(leftTag), getRemainingUses(rightTag));
+                case VALUE -> Float.compare(getCharmValue(leftTag), getCharmValue(rightTag));
             };
         }
 
@@ -989,6 +1037,17 @@ public class SortingHelper
 
 
     /**
+     * This method returns name of charm value %.
+     * @param tag The tag of the item.
+     * @return The charm value %.
+     */
+    private static float getCharmValue(CompoundTag tag)
+    {
+        return tag.contains("charmValue") ? tag.getFloat("charmValue") : 0f;
+    }
+
+
+    /**
      * This method checks if given gear is identified.
      * @param data The data of the gear.
      * @return True if gear is identified.
@@ -1166,6 +1225,26 @@ public class SortingHelper
 
 
     /**
+     * This enum holds all possible values for vault charm sorting order
+     */
+    public enum CharmOptions
+    {
+        /**
+         * The name of item
+         */
+        NAME,
+        /**
+         * The god affinity value of charm
+         */
+        VALUE,
+        /**
+         * The uses of charm
+         */
+        USES
+    }
+
+
+    /**
      * The name of the cache.
      */
     public static final String EXTRA_ATTRIBUTE_INDEX = "extra_attribute_index";
@@ -1185,7 +1264,15 @@ public class SortingHelper
      */
     public static final String EXTRA_GEAR_LEVEL = "extra_gear_level";
 
+    /**
+     * The set of items that are considered vault gear.
+     */
     public static final Set<ResourceLocation> VAULT_GEAR_SET = new HashSet<>();
+
+    /**
+     * The set of items that are considered vault charms.
+     */
+    public static final Set<ResourceLocation> VAULT_CHARMS = new HashSet<>();
 
     // Put all vault gear items into the set.
     static
@@ -1207,5 +1294,12 @@ public class SortingHelper
         VAULT_GEAR_SET.add(ModItems.IDOL_OMNISCIENT.getRegistryName());
         VAULT_GEAR_SET.add(ModItems.IDOL_TIMEKEEPER.getRegistryName());
         VAULT_GEAR_SET.add(ModItems.IDOL_MALEVOLENCE.getRegistryName());
+
+        VAULT_GEAR_SET.add(ModItems.FOCUS.getRegistryName());
+
+        VAULT_CHARMS.add(ModItems.SMALL_CHARM.getRegistryName());
+        VAULT_CHARMS.add(ModItems.LARGE_CHARM.getRegistryName());
+        VAULT_CHARMS.add(ModItems.GRAND_CHARM.getRegistryName());
+        VAULT_CHARMS.add(ModItems.MAJESTIC_CHARM.getRegistryName());
     }
 }

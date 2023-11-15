@@ -24,6 +24,7 @@ import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.CharmItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -154,6 +155,23 @@ public class MixinIdGridSorter
                             AttributeGearData.read(rightStack),
                             rightStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                            sortingDirection == SortingDirection.ASCENDING));
+                    callbackInfoReturnable.cancel();
+                }
+            }
+            else if (leftStack.getItem() instanceof CharmItem &&
+                rightStack.getItem() instanceof CharmItem)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByMod().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(
+                        SortingHelper.compareCharms(leftStack.getDisplayName().getString(),
+                            AttributeGearData.read(leftStack),
+                            leftStack.getTag(),
+                            rightStack.getDisplayName().getString(),
+                            AttributeGearData.read(rightStack),
+                            rightStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
                             sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
                 }

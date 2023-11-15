@@ -24,6 +24,7 @@ import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.CharmItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -247,6 +248,42 @@ public class MixinQIOItemViewerContainerListSortType
                         rightData,
                         secondItem.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        true);
+                };
+            }
+            else if (firstItem.getItem() instanceof CharmItem &&
+                secondItem.getItem() instanceof CharmItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                AttributeGearData leftData = AttributeGearData.read(firstItem);
+                AttributeGearData rightData = AttributeGearData.read(secondItem);
+
+                return switch (instance)
+                {
+                    case NAME -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
                         true);
                 };
             }
@@ -476,6 +513,41 @@ public class MixinQIOItemViewerContainerListSortType
                         rightData,
                         secondItem.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        false);
+                };
+            }
+            else if (firstItem.getItem() instanceof CharmItem &&
+                secondItem.getItem() instanceof CharmItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+                AttributeGearData leftData = AttributeGearData.read(firstItem);
+                AttributeGearData rightData = AttributeGearData.read(secondItem);
+
+                return switch (instance) {
+                    case NAME -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareCharms(leftName,
+                        leftData,
+                        firstItem.getTag(),
+                        rightName,
+                        rightData,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
                         false);
                 };
             }

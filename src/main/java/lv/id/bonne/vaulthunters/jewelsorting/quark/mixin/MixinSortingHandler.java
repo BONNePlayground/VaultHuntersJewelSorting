@@ -21,6 +21,7 @@ import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
+import iskallia.vault.item.gear.CharmItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -145,6 +146,24 @@ public class MixinSortingHandler
                         AttributeGearData.read(stack2),
                         stack2.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
+        else if (stack1.getItem() instanceof CharmItem &&
+            stack2.getItem() instanceof CharmItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareCharms(stack1.getDisplayName().getString(),
+                        AttributeGearData.read(stack1),
+                        stack1.getTag(),
+                        stack2.getDisplayName().getString(),
+                        AttributeGearData.read(stack2),
+                        stack2.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
                         true));
 
                 callbackInfoReturnable.cancel();
