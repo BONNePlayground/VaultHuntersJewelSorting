@@ -20,6 +20,7 @@ import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -249,6 +250,34 @@ public class MixinQIOItemViewerContainerListSortType
                         true);
                 };
             }
+            else if (firstItem.getItem() instanceof VaultDollItem &&
+                secondItem.getItem() instanceof VaultDollItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+
+                return switch (instance)
+                {
+                    case NAME -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
+                        true);
+                };
+            }
             else
             {
                 return 0;
@@ -447,6 +476,34 @@ public class MixinQIOItemViewerContainerListSortType
                         rightData,
                         secondItem.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        false);
+                };
+            }
+            else if (firstItem.getItem() instanceof VaultDollItem &&
+                secondItem.getItem() instanceof VaultDollItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+
+                return switch (instance)
+                {
+                    case NAME -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareVaultDolls(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
                         false);
                 };
             }

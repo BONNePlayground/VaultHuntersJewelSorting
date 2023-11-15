@@ -14,6 +14,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -220,6 +221,30 @@ public class MixinNetworkWidget
                         AttributeGearData.read(second),
                         second.getTag(),
                         VaultJewelSorting.CONFIGURATION.getTrinketSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() instanceof VaultDollItem &&
+                second.getItem() instanceof VaultDollItem)
+            {
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareVaultDolls(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareVaultDolls(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareVaultDolls(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
                         true);
                 };
             }

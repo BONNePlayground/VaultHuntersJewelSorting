@@ -241,6 +241,29 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.VAULT_DOLL.getRegistryName())
+            {
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareVaultDolls(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareVaultDolls(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareVaultDolls(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
+                        ascending);
+                };
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
@@ -288,6 +311,7 @@ public abstract class MixinRepo
             id.equals(ModItems.SWORD.getRegistryName()) ||
             id.equals(ModItems.AXE.getRegistryName()) ||
             id.equals(ModItems.SHIELD.getRegistryName()) ||
+            id.equals(ModItems.FOCUS.getRegistryName()) ||
             id.equals(ModItems.IDOL_BENEVOLENT.getRegistryName()) ||
             id.equals(ModItems.IDOL_OMNISCIENT.getRegistryName()) ||
             id.equals(ModItems.IDOL_TIMEKEEPER.getRegistryName()) ||
@@ -296,6 +320,7 @@ public abstract class MixinRepo
             id.equals(ModItems.MAGNET.getRegistryName()) ||
             id.equals(ModItems.INSCRIPTION.getRegistryName()) ||
             id.equals(ModItems.VAULT_CRYSTAL.getRegistryName()) ||
-            id.equals(ModItems.TRINKET.getRegistryName());
+            id.equals(ModItems.TRINKET.getRegistryName()) ||
+            id.equals(ModItems.VAULT_DOLL.getRegistryName());
     }
 }

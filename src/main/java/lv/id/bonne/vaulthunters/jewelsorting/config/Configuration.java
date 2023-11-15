@@ -212,6 +212,39 @@ public class Configuration
 
         this.builder.pop();
 
+        this.builder.comment("This category holds options how Vault Dolls are sorted");
+        this.builder.push("Vault Doll Sorting");
+
+        this.dollSortingByName = this.builder.
+            comment("The order of dolls if they are sorted by the name.").
+            comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
+            defineList("vault_doll_sorting_by_name",
+                Arrays.asList(SortingHelper.DollOptions.NAME.name(),
+                    SortingHelper.DollOptions.COMPLETED.name(),
+                    SortingHelper.DollOptions.OWNER.name(),
+                    SortingHelper.DollOptions.LOOT.name(),
+                    SortingHelper.DollOptions.XP.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
+
+        this.dollSortingByAmount = this.builder.
+            comment("The order of dolls if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
+            defineList("vault_doll_sorting_by_amount",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
+
+        this.dollSortingByMod = this.builder.
+            comment("The order of dolls if they are sorted by the mod.").
+            comment("Supported Values: NAME, OWNER, COMPLETED, XP, LOOT").
+            defineList("vault_doll_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.DollOptions.class, value.toUpperCase()).isPresent());
+
+        this.builder.pop();
+
         Configuration.GENERAL_SPEC = this.builder.build();
     }
 
@@ -393,6 +426,39 @@ public class Configuration
 
 
     /**
+     * Gets Doll sorting by name.
+     *
+     * @return the Doll sorting by name
+     */
+    public List<SortingHelper.DollOptions> getDollSortingByName()
+    {
+        return this.convertStringToDollEnum(this.dollSortingByName.get());
+    }
+
+
+    /**
+     * Gets Doll sorting by amount.
+     *
+     * @return the Doll sorting by amount
+     */
+    public List<SortingHelper.DollOptions> getDollSortingByAmount()
+    {
+        return this.convertStringToDollEnum(this.dollSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets Doll sorting by mod.
+     *
+     * @return the Doll sorting by mod
+     */
+    public List<SortingHelper.DollOptions> getDollSortingByMod()
+    {
+        return this.convertStringToDollEnum(this.dollSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -467,6 +533,22 @@ public class Configuration
             map(String::toUpperCase).
             filter(upperCase -> Enums.getIfPresent(SortingHelper.TrinketOptions.class, upperCase).isPresent()).
             map(SortingHelper.TrinketOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.DollOptions> convertStringToDollEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.DollOptions.class, upperCase).isPresent()).
+            map(SortingHelper.DollOptions::valueOf).
             distinct().
             toList();
     }
@@ -561,6 +643,21 @@ public class Configuration
      * The config value for trinket sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> trinketSortingByMod;
+
+    /**
+     * The config value for vault doll sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> dollSortingByName;
+
+    /**
+     * The config value for vault doll sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> dollSortingByAmount;
+
+    /**
+     * The config value for vault doll sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> dollSortingByMod;
 
     /**
      * The general config spec.

@@ -20,6 +20,7 @@ import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -161,6 +162,20 @@ public class MixinQuantityGridSorter
                             AttributeGearData.read(rightStack),
                             rightStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
+                            sortingDirection == SortingDirection.ASCENDING));
+                }
+            }
+            else if (leftStack.getItem() instanceof VaultDollItem &&
+                rightStack.getItem() instanceof VaultDollItem)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getDollSortingByAmount().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(
+                        SortingHelper.compareVaultDolls(leftStack.getDisplayName().getString(),
+                            leftStack.getTag(),
+                            rightStack.getDisplayName().getString(),
+                            rightStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
                             sortingDirection == SortingDirection.ASCENDING));
                 }
             }

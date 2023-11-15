@@ -398,6 +398,42 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares two given vault dolls by their sorting order.
+     * @param leftName the left name
+     * @param leftTag the left data
+     * @param rightName the right name
+     * @param rightTag the right data
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given vault dolls items.
+     */
+    public static int compareVaultDolls(String leftName,
+        CompoundTag leftTag,
+        String rightName,
+        CompoundTag rightTag,
+        List<DollOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue = 0;
+
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            DollOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case OWNER -> SortingHelper.compareString(getDollName(leftTag), getDollName(rightTag));
+                case XP -> Double.compare(getDollXP(leftTag), getDollXP(rightTag));
+                case LOOT -> Double.compare(getDollLoot(leftTag), getDollLoot(rightTag));
+                case COMPLETED -> Boolean.compare(getDollCompletion(leftTag), getDollCompletion(rightTag));
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -908,6 +944,51 @@ public class SortingHelper
 
 
     /**
+     * This method returns name of doll owner.
+     * @param tag The tag of the item.
+     * @return The doll owner name.
+     */
+    private static String getDollName(CompoundTag tag)
+    {
+        return tag.contains("playerProfile") && tag.getCompound("playerProfile").contains("Name") ?
+            tag.getCompound("playerProfile").getString("Name") : "";
+    }
+
+
+    /**
+     * This method returns name of doll xp %.
+     * @param tag The tag of the item.
+     * @return The doll xp %.
+     */
+    private static float getDollXP(CompoundTag tag)
+    {
+        return tag.contains("xpPercent") ? tag.getFloat("xpPercent") : 0f;
+    }
+
+
+    /**
+     * This method returns name of doll loot %.
+     * @param tag The tag of the item.
+     * @return The doll loot %.
+     */
+    private static float getDollLoot(CompoundTag tag)
+    {
+        return tag.contains("lootPercent") ? tag.getFloat("lootPercent") : 0f;
+    }
+
+
+    /**
+     * This method returns name of doll completion status.
+     * @param tag The tag of the item.
+     * @return The doll completion status.
+     */
+    private static boolean getDollCompletion(CompoundTag tag)
+    {
+        return tag.contains("vaultUUID");
+    }
+
+
+    /**
      * This method checks if given gear is identified.
      * @param data The data of the gear.
      * @return True if gear is identified.
@@ -1053,6 +1134,34 @@ public class SortingHelper
          * The uses left on trinket
          */
         USES
+    }
+
+
+    /**
+     * This enum holds all possible values for vault doll sorting order
+     */
+    public enum DollOptions
+    {
+        /**
+         * The name of item
+         */
+        NAME,
+        /**
+         * The name of doll owner
+         */
+        OWNER,
+        /**
+         * The status of doll
+         */
+        COMPLETED,
+        /**
+         * The xp % of doll
+         */
+        XP,
+        /**
+         * The loot % of doll
+         */
+        LOOT
     }
 
 

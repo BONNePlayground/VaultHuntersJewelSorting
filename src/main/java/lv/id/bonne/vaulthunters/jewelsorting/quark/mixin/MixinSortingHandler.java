@@ -17,6 +17,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -149,6 +150,22 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
+        else if (stack1.getItem() instanceof VaultDollItem &&
+            stack2.getItem() instanceof VaultDollItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getDollSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareVaultDolls(stack1.getDisplayName().getString(),
+                        stack1.getTag(),
+                        stack2.getDisplayName().getString(),
+                        stack2.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
     }
 
 
@@ -163,6 +180,7 @@ public class MixinSortingHandler
         return stack.getItem() instanceof VaultGearItem ||
             stack.getItem() instanceof InscriptionItem ||
             stack.getItem() instanceof VaultCrystalItem ||
-            stack.getItem() instanceof TrinketItem;
+            stack.getItem() instanceof TrinketItem ||
+            stack.getItem() instanceof VaultDollItem;
     }
 }
