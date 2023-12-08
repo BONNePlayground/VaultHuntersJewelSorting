@@ -786,7 +786,7 @@ public class SortingHelper
     private static int compareInstability(CompoundTag leftData, CompoundTag rightData)
     {
         return leftData.contains("instability") && rightData.contains("instability") ?
-            Integer.compare(leftData.getInt("instability"), rightData.getInt("instability")) :
+            Float.compare(leftData.getFloat("instability"), rightData.getFloat("instability")) :
             0;
     }
 
@@ -998,7 +998,7 @@ public class SortingHelper
      */
     private static String getDollName(CompoundTag tag)
     {
-        return tag.contains("playerProfile") && tag.getCompound("playerProfile").contains("Name") ?
+        return tag != null && tag.contains("playerProfile") && tag.getCompound("playerProfile").contains("Name") ?
             tag.getCompound("playerProfile").getString("Name") : "";
     }
 
@@ -1010,7 +1010,7 @@ public class SortingHelper
      */
     private static float getDollXP(CompoundTag tag)
     {
-        return tag.contains("xpPercent") ? tag.getFloat("xpPercent") : 0f;
+        return tag != null && tag.contains("xpPercent") ? tag.getFloat("xpPercent") : 0f;
     }
 
 
@@ -1021,7 +1021,7 @@ public class SortingHelper
      */
     private static float getDollLoot(CompoundTag tag)
     {
-        return tag.contains("lootPercent") ? tag.getFloat("lootPercent") : 0f;
+        return tag != null && tag.contains("lootPercent") ? tag.getFloat("lootPercent") : 0f;
     }
 
 
@@ -1032,7 +1032,7 @@ public class SortingHelper
      */
     private static boolean getDollCompletion(CompoundTag tag)
     {
-        return tag.contains("vaultUUID");
+        return tag != null && tag.contains("vaultUUID");
     }
 
 

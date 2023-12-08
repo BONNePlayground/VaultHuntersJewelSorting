@@ -1,6 +1,6 @@
 {
   "package": "lv.id.bonne.vaulthunters.jewelsorting.ae2.mixin",
-  "refmap": "mixins.vaulthunters_jewel_sorting.refmap.json",
+  "refmap": "mixins.vault_hunters_jewel_sorting.refmap.json",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_17",
   "plugin": "lv.id.bonne.vaulthunters.jewelsorting.ae2.AE2IntegrationModConfiguration",
