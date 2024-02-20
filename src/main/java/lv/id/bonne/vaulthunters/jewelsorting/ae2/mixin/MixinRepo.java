@@ -96,11 +96,17 @@ public abstract class MixinRepo
                     !leftTag.getCompound("clientCache").contains(SortingHelper.EXTRA_ATTRIBUTE_VALUE) ||
                     !leftTag.getCompound("clientCache").contains(SortingHelper.EXTRA_GEAR_LEVEL) ||
                     !leftTag.getCompound("clientCache").contains(SortingHelper.EXTRA_JEWEL_SIZE) ||
+                    !(leftTag.getCompound("clientCache").contains(SortingHelper.EXTRA_CACHE_VERSION) &&
+                        leftTag.getCompound("clientCache").getString(SortingHelper.EXTRA_CACHE_VERSION).
+                            equals(VaultJewelSorting.VAULT_MOD_VERSION)) ||
                     !rightTag.contains("clientCache") ||
                     !rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_ATTRIBUTE_INDEX) ||
                     !rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_ATTRIBUTE_VALUE) ||
                     !rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_GEAR_LEVEL) ||
-                    !rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_JEWEL_SIZE))
+                    !rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_JEWEL_SIZE) ||
+                    !(rightTag.getCompound("clientCache").contains(SortingHelper.EXTRA_CACHE_VERSION) &&
+                        rightTag.getCompound("clientCache").getString(SortingHelper.EXTRA_CACHE_VERSION).
+                            equals(VaultJewelSorting.VAULT_MOD_VERSION)))
                 {
                     // Client cache is not generated. Process everything manually.
                     VaultGearData leftData = CustomVaultGearData.read(leftTag);

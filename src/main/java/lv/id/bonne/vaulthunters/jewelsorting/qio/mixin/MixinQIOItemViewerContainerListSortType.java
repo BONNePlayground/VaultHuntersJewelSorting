@@ -29,6 +29,7 @@ import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
+import lv.id.bonne.vaulthunters.jewelsorting.utils.IExtraGearDataCache;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -100,6 +101,22 @@ public class MixinQIOItemViewerContainerListSortType
                 String rightName = secondItem.getDisplayName().getString();
                 GearDataCache leftData = GearDataCache.of(firstItem);
                 GearDataCache rightData = GearDataCache.of(secondItem);
+
+                // Update item cache if vault versions mismatch.
+                if (((IExtraGearDataCache) leftData).isInvalidCache())
+                {
+                    GearDataCache.removeCache(firstItem);
+                    GearDataCache.createCache(firstItem);
+                    leftData = GearDataCache.of(firstItem);
+                }
+
+                // Update item cache if vault versions mismatch.
+                if (((IExtraGearDataCache) rightData).isInvalidCache())
+                {
+                    GearDataCache.removeCache(secondItem);
+                    GearDataCache.createCache(secondItem);
+                    rightData = GearDataCache.of(secondItem);
+                }
 
                 return switch (instance) {
                     case NAME -> SortingHelper.compareJewels(leftName,

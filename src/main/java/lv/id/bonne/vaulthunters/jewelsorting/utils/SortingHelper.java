@@ -1265,6 +1265,11 @@ public class SortingHelper
     public static final String EXTRA_GEAR_LEVEL = "extra_gear_level";
 
     /**
+     * The name of the cache.
+     */
+    public static final String EXTRA_CACHE_VERSION = "extra_cache_version";
+
+    /**
      * The set of items that are considered vault gear.
      */
     public static final Set<ResourceLocation> VAULT_GEAR_SET = new HashSet<>();

@@ -29,6 +29,7 @@ import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
+import lv.id.bonne.vaulthunters.jewelsorting.utils.IExtraGearDataCache;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
@@ -80,6 +81,23 @@ public class MixinIdGridSorter
             {
                 if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByMod().isEmpty())
                 {
+                    GearDataCache leftData = GearDataCache.of(leftStack);
+                    GearDataCache rightData = GearDataCache.of(rightStack);
+
+                    // Update item cache if vault versions mismatch.
+                    if (((IExtraGearDataCache) leftData).isInvalidCache())
+                    {
+                        GearDataCache.removeCache(leftStack);
+                        GearDataCache.createCache(leftStack);
+                    }
+
+                    // Update item cache if vault versions mismatch.
+                    if (((IExtraGearDataCache) rightData).isInvalidCache())
+                    {
+                        GearDataCache.removeCache(rightStack);
+                        GearDataCache.createCache(rightStack);
+                    }
+
                     callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(left.getName(),
                         GearDataCache.of(leftStack),
                         right.getName(),

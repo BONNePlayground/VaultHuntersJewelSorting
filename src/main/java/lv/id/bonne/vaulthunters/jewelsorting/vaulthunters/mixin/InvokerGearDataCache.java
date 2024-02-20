@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import java.util.function.Function;
 
 import iskallia.vault.gear.data.GearDataCache;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,4 +49,12 @@ public interface InvokerGearDataCache
      */
     @Invoker(value = "queryCache", remap = false)
     public <R, T> T callQueryCache(String key, Function<Tag, R> cacheRead, Function<R, Tag> cacheWrite, T cacheMissDefault, Function<R, T> cacheHitTransform, Function<ItemStack, R> cacheInit);
+
+
+    /**
+     * This method allows to call private method cacheTag.
+     * @return The cache tag.
+     */
+    @Invoker
+    public CompoundTag callCacheTag();
 }

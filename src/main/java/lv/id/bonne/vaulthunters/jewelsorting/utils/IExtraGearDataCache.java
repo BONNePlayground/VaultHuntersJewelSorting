@@ -8,6 +8,10 @@ package lv.id.bonne.vaulthunters.jewelsorting.utils;
 
 
 import org.jetbrains.annotations.Nullable;
+import java.util.function.Function;
+
+import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
+import net.minecraft.nbt.Tag;
 
 
 /**
@@ -55,5 +59,29 @@ public interface IExtraGearDataCache
     default int getExtraGearLevel()
     {
         return 0;
+    }
+
+
+    /**
+     * This method returns cached value of a requested tag without applying it.
+     * @param key String value of a tag.
+     * @param nbtRead Function to read a tag.
+     * @param <T> Type of a tag.
+     * @return cached value of a requested tag.
+     */
+    default <T> T getCachedValue(String key,  Function<Tag, T> nbtRead)
+    {
+        return null;
+    }
+
+
+    /**
+     * This method returns true if cache is invalid.
+     * @return true if cache is valid.
+     */
+    default boolean isInvalidCache()
+    {
+        return !VaultJewelSorting.VAULT_MOD_VERSION.equals(
+            this.getCachedValue(SortingHelper.EXTRA_CACHE_VERSION, Tag::getAsString));
     }
 }

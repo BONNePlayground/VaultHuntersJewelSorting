@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -32,6 +33,9 @@ public class VaultJewelSorting
         VaultJewelSorting.CONFIGURATION = new Configuration();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.GENERAL_SPEC, "vault_hunters_jewel_sorting.toml");
+
+        ModList.get().getModContainerById("the_vault").ifPresent(modContainer ->
+            VAULT_MOD_VERSION = modContainer.getModInfo().getVersion().toString());
     }
 
 
@@ -52,4 +56,9 @@ public class VaultJewelSorting
      * The logger for this mod.
      */
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    /**
+     * The Vault Mod version for caching.
+     */
+    public static String VAULT_MOD_VERSION = null;
 }

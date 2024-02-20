@@ -24,10 +24,13 @@ import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.init.ModGearAttributes;
 import iskallia.vault.item.tool.JewelItem;
+import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.AttributeHelper;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.IExtraGearDataCache;
 import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -135,6 +138,13 @@ public class MixinGearDataCache implements IExtraGearDataCache
 
         ((InvokerGearDataCache) cache).callQueryIntCache(SortingHelper.EXTRA_GEAR_LEVEL, 0, (stack) ->
             data.getItemLevel());
+
+        ((InvokerGearDataCache) cache).callQueryCache(SortingHelper.EXTRA_CACHE_VERSION,
+            Tag::getAsString,
+            StringTag::valueOf,
+            null,
+            Function.identity(),
+            stack -> VaultJewelSorting.VAULT_MOD_VERSION);
     }
 
 
@@ -257,5 +267,29 @@ public class MixinGearDataCache implements IExtraGearDataCache
             VaultGearData data = VaultGearData.read(stack);
             return data.getItemLevel();
         });
+    }
+
+
+    /**
+     * This method returns cached value of a requested tag without applying it.
+     * @param key String value of a tag.
+     * @param nbtRead Function to read a tag.
+     * @return cached value of a requested tag.
+     * @param <T> Type of a tag.
+     */
+    @Override
+    @Unique
+    public <T> T getCachedValue(String key,  Function<Tag, T> nbtRead)
+    {
+        int tagType = ((InvokerGearDataCache) this).callCacheTag().getTagType(key);
+
+        if (tagType == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return nbtRead.apply(((InvokerGearDataCache) this).callCacheTag().get(key));
+        }
     }
 }
