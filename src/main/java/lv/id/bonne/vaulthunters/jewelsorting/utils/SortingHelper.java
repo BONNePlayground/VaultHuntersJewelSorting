@@ -308,7 +308,8 @@ public class SortingHelper
 
             returnValue = switch (sortOptions) {
                 case NAME -> SortingHelper.compareString(leftName, rightName);
-                case LEVEL -> Integer.compare(leftData.getLevel(), rightData.getLevel());
+                case LEVEL -> Integer.compare(leftData.getProperties().getLevel().orElse(-1),
+                    rightData.getProperties().getLevel().orElse(-1));
                 case TYPE -> SortingHelper.compareString(
                     leftData.getObjective().getClass().getName(),
                     rightData.getObjective().getClass().getName());
