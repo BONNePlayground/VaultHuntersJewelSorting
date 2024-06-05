@@ -18,16 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
-import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.init.ModItems;
-import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
-import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
-import iskallia.vault.item.gear.CharmItem;
-import iskallia.vault.item.gear.TrinketItem;
-import iskallia.vault.item.tool.JewelItem;
-import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.IExtraGearDataCache;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
@@ -66,8 +59,17 @@ public class MixinNameGridSorter
         if (left.getIngredient() instanceof ItemStack leftStack &&
             right.getIngredient() instanceof ItemStack rightStack)
         {
-            if (leftStack.getItem() instanceof JewelItem &&
-                rightStack.getItem() instanceof JewelItem)
+            int registryOrder = SortingHelper.compareRegistryNames(
+                leftStack.getItem().getRegistryName(),
+                rightStack.getItem().getRegistryName(),
+                sortingDirection == SortingDirection.ASCENDING);
+
+            if (registryOrder != 0 || !SortingHelper.isSortable(leftStack.getItem().getRegistryName()))
+            {
+                // If registry order is not 0 or item is not sortable, then return it.
+                callbackInfoReturnable.setReturnValue(registryOrder);
+            }
+            else if (leftStack.getItem() == ModItems.JEWEL)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByName().isEmpty())
                 {
@@ -97,8 +99,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof ToolItem &&
-                rightStack.getItem() instanceof ToolItem)
+            else if (leftStack.getItem() == ModItems.TOOL)
             {
 // TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
 //                callbackInfoReturnable.setReturnValue(SortingHelper.compareTools(
@@ -107,8 +108,7 @@ public class MixinNameGridSorter
 //                    sortingDirection == SortingDirection.ASCENDING));
 //                callbackInfoReturnable.cancel();
             }
-            else if (leftStack.getItem() instanceof VaultGearItem &&
-                rightStack.getItem() instanceof VaultGearItem)
+            else if (SortingHelper.VAULT_GEAR_SET.contains(leftStack.getItem().getRegistryName()))
             {
                 if (!VaultJewelSorting.CONFIGURATION.getGearSortingByName().isEmpty())
                 {
@@ -121,8 +121,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof InscriptionItem &&
-                rightStack.getItem() instanceof InscriptionItem)
+            else if (leftStack.getItem() == ModItems.INSCRIPTION)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName().isEmpty())
                 {
@@ -135,8 +134,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof VaultCrystalItem &&
-                rightStack.getItem() instanceof VaultCrystalItem)
+            else if (leftStack.getItem() == ModItems.VAULT_CRYSTAL)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName().isEmpty())
                 {
@@ -150,8 +148,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof TrinketItem &&
-                rightStack.getItem() instanceof TrinketItem)
+            else if (leftStack.getItem() == ModItems.TRINKET)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByName().isEmpty())
                 {
@@ -167,8 +164,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof CharmItem &&
-                rightStack.getItem() instanceof CharmItem)
+            else if (SortingHelper.VAULT_CHARMS.contains(leftStack.getItem().getRegistryName()))
             {
                 if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByName().isEmpty())
                 {
@@ -184,8 +180,7 @@ public class MixinNameGridSorter
                     callbackInfoReturnable.cancel();
                 }
             }
-            else if (leftStack.getItem() instanceof InfusedCatalystItem &&
-                rightStack.getItem() instanceof InfusedCatalystItem)
+            else if (leftStack.getItem() == ModItems.VAULT_CATALYST_INFUSED)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
                 {
@@ -198,8 +193,7 @@ public class MixinNameGridSorter
                             sortingDirection == SortingDirection.ASCENDING));
                 }
             }
-            else if (leftStack.getItem() instanceof VaultDollItem &&
-                rightStack.getItem() instanceof VaultDollItem)
+            else if (leftStack.getItem() == ModItems.VAULT_DOLL)
             {
                 if (!VaultJewelSorting.CONFIGURATION.getDollSortingByName().isEmpty())
                 {
@@ -212,8 +206,7 @@ public class MixinNameGridSorter
                             sortingDirection == SortingDirection.ASCENDING));
                 }
             }
-            else if (leftStack.getItem() instanceof RelicFragmentItem &&
-                rightStack.getItem() instanceof RelicFragmentItem)
+            else if (leftStack.getItem() == ModItems.RELIC_FRAGMENT)
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareRelicFragments(
@@ -221,8 +214,7 @@ public class MixinNameGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
-            else if (leftStack.getItem() instanceof ItemRespecFlask &&
-                rightStack.getItem() instanceof ItemRespecFlask)
+            else if (leftStack.getItem() == ModItems.RESPEC_FLASK)
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareRespecFlasks(
@@ -230,8 +222,7 @@ public class MixinNameGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
-            else if (leftStack.getItem() == ModItems.FACETED_FOCUS &&
-                rightStack.getItem() == ModItems.FACETED_FOCUS)
+            else if (leftStack.getItem() == ModItems.FACETED_FOCUS)
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareFacedFocus(
@@ -239,8 +230,7 @@ public class MixinNameGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
-            else if (leftStack.getItem() == ModItems.AUGMENT &&
-                rightStack.getItem() == ModItems.AUGMENT)
+            else if (leftStack.getItem() == ModItems.AUGMENT)
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareAugments(
