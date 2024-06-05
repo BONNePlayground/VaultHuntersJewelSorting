@@ -385,6 +385,14 @@ public class MixinQIOItemViewerContainerListSortType
                     secondItem.getTag(),
                     true);
             }
+            else if (firstItem.getItem() == ModItems.AUGMENT &&
+                secondItem.getItem() == ModItems.AUGMENT)
+            {
+                return SortingHelper.compareAugments(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    true);
+            }
             else
             {
                 return 0;
@@ -697,6 +705,14 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getItem() == ModItems.FACETED_FOCUS)
             {
                 return SortingHelper.compareFacedFocus(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    false);
+            }
+            else if (firstItem.getItem() == ModItems.AUGMENT &&
+                secondItem.getItem() == ModItems.AUGMENT)
+            {
+                return SortingHelper.compareAugments(
                     firstItem.getTag(),
                     secondItem.getTag(),
                     false);

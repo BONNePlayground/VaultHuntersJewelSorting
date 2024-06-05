@@ -29,6 +29,7 @@ import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
 import vazkii.quark.base.handler.SortingHandler;
 
 
@@ -232,6 +233,16 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
+        else if (stack1.getItem() == ModItems.AUGMENT &&
+            stack2.getItem() == ModItems.AUGMENT)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareAugments(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 
 
@@ -251,6 +262,7 @@ public class MixinSortingHandler
             stack.getItem() instanceof InfusedCatalystItem ||
             stack.getItem() instanceof RelicFragmentItem ||
             stack.getItem() instanceof ItemRespecFlask ||
-            stack.getItem() == ModItems.FACETED_FOCUS;
+            stack.getItem() == ModItems.FACETED_FOCUS ||
+            stack.getItem() == ModItems.AUGMENT;
     }
 }

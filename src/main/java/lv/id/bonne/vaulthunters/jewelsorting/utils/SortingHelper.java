@@ -622,6 +622,39 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares augments by their "theme" tag value.
+     * @param leftTag The left tag of augment
+     * @param rightTag The right tag of augment
+     * @param ascending the order of sort
+     * @return the comparison of two given augments tags.
+     */
+    public static int compareAugments(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(THEME),
+                rightTag.getString(THEME));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -1454,6 +1487,11 @@ public class SortingHelper
      * The mod tag variable
      */
     public static final String MOD_TAG = "modTag";
+
+    /**
+     * The theme variable
+     */
+    public static final String THEME = "theme";
 
     /**
      * The name of the cache.

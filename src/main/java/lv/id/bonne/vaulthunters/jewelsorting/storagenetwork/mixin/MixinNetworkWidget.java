@@ -318,6 +318,11 @@ public class MixinNetworkWidget
             {
                 return SortingHelper.compareFacedFocus(first.getTag(), second.getTag(), true);
             }
+            else if (first.getItem() == ModItems.AUGMENT &&
+                second.getItem() == ModItems.AUGMENT)
+            {
+                return SortingHelper.compareAugments(first.getTag(), second.getTag(), true);
+            }
 
             return 0;
         });

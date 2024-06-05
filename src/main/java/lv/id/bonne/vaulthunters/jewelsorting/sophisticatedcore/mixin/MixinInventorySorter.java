@@ -180,6 +180,14 @@ public class MixinInventorySorter
                         second.getKey().getStack().getTag(),
                         true);
                 }
+                else if (first.getKey().getStack().getItem() == ModItems.AUGMENT &&
+                    second.getKey().getStack().getItem() == ModItems.AUGMENT)
+                {
+                    return SortingHelper.compareAugments(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -331,6 +339,14 @@ public class MixinInventorySorter
                     second.getKey().getStack().getItem() == ModItems.FACETED_FOCUS)
                 {
                     return SortingHelper.compareFacedFocus(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
+                }
+                else if (first.getKey().getStack().getItem() == ModItems.AUGMENT &&
+                    second.getKey().getStack().getItem() == ModItems.AUGMENT)
+                {
+                    return SortingHelper.compareAugments(
                         first.getKey().getStack().getTag(),
                         second.getKey().getStack().getTag(),
                         true);

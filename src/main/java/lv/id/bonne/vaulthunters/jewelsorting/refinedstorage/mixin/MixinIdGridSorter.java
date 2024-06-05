@@ -249,6 +249,15 @@ public class MixinIdGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
+            else if (leftStack.getItem() == ModItems.AUGMENT &&
+                rightStack.getItem() == ModItems.AUGMENT)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareAugments(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
         }
     }
 }
