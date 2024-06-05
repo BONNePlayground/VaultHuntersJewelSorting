@@ -589,6 +589,39 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares faced focus by their "modTag" tag value.
+     * @param leftTag The left tag of relic fragment
+     * @param rightTag The right tag of relic fragment
+     * @param ascending the order of sort
+     * @return the comparison of two given faced focus tags.
+     */
+    public static int compareFacedFocus(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(MOD_TAG),
+                rightTag.getString(MOD_TAG));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -1416,6 +1449,11 @@ public class SortingHelper
      * The ability variable
      */
     public static final String ABILITY = "Ability";
+
+    /**
+     * The mod tag variable
+     */
+    public static final String MOD_TAG = "modTag";
 
     /**
      * The name of the cache.

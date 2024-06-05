@@ -3,6 +3,7 @@ package lv.id.bonne.vaulthunters.jewelsorting.sophisticatedcore.mixin;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -171,6 +172,14 @@ public class MixinInventorySorter
                         second.getKey().getStack().getTag(),
                         true);
                 }
+                else if (first.getKey().getStack().getItem() == ModItems.FACETED_FOCUS &&
+                    second.getKey().getStack().getItem() == ModItems.FACETED_FOCUS)
+                {
+                    return SortingHelper.compareFacedFocus(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -314,6 +323,14 @@ public class MixinInventorySorter
                     second.getKey().getStack().getItem() instanceof ItemRespecFlask)
                 {
                     return SortingHelper.compareRespecFlasks(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
+                }
+                else if (first.getKey().getStack().getItem() == ModItems.FACETED_FOCUS &&
+                    second.getKey().getStack().getItem() == ModItems.FACETED_FOCUS)
+                {
+                    return SortingHelper.compareFacedFocus(
                         first.getKey().getStack().getTag(),
                         second.getKey().getStack().getTag(),
                         true);

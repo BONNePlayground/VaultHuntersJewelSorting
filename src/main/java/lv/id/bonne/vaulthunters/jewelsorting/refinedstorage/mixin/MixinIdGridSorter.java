@@ -19,6 +19,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -235,6 +236,15 @@ public class MixinIdGridSorter
             {
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareRespecFlasks(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
+            else if (leftStack.getItem() == ModItems.FACETED_FOCUS &&
+                rightStack.getItem() == ModItems.FACETED_FOCUS)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareFacedFocus(
                         leftStack.getTag(),
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));

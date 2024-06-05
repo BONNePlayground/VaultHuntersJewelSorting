@@ -16,11 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
 import iskallia.vault.item.gear.CharmItem;
+import iskallia.vault.item.gear.FocusItem;
 import iskallia.vault.item.gear.TrinketItem;
 import iskallia.vault.item.tool.JewelItem;
 import iskallia.vault.item.tool.ToolItem;
@@ -220,6 +222,16 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
+        else if (stack1.getItem() == ModItems.FACETED_FOCUS &&
+            stack2.getItem() == ModItems.FACETED_FOCUS)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareFacedFocus(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 
 
@@ -238,6 +250,7 @@ public class MixinSortingHandler
             stack.getItem() instanceof VaultDollItem ||
             stack.getItem() instanceof InfusedCatalystItem ||
             stack.getItem() instanceof RelicFragmentItem ||
-            stack.getItem() instanceof ItemRespecFlask;
+            stack.getItem() instanceof ItemRespecFlask ||
+            stack.getItem() == ModItems.FACETED_FOCUS;
     }
 }

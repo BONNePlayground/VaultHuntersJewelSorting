@@ -20,6 +20,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -376,6 +377,14 @@ public class MixinQIOItemViewerContainerListSortType
                     secondItem.getTag(),
                     true);
             }
+            else if (firstItem.getItem() == ModItems.FACETED_FOCUS &&
+                secondItem.getItem() == ModItems.FACETED_FOCUS)
+            {
+                return SortingHelper.compareFacedFocus(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    true);
+            }
             else
             {
                 return 0;
@@ -680,6 +689,14 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getItem() instanceof ItemRespecFlask)
             {
                 return SortingHelper.compareRespecFlasks(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    false);
+            }
+            else if (firstItem.getItem() == ModItems.FACETED_FOCUS &&
+                secondItem.getItem() == ModItems.FACETED_FOCUS)
+            {
+                return SortingHelper.compareFacedFocus(
                     firstItem.getTag(),
                     secondItem.getTag(),
                     false);

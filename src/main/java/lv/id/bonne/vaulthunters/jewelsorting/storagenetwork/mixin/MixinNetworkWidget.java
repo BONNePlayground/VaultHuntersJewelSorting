@@ -13,6 +13,7 @@ import java.util.Comparator;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.init.ModItems;
 import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -311,6 +312,11 @@ public class MixinNetworkWidget
                 second.getItem() instanceof ItemRespecFlask)
             {
                 return SortingHelper.compareRespecFlasks(first.getTag(), second.getTag(), true);
+            }
+            else if (first.getItem() == ModItems.FACETED_FOCUS &&
+                second.getItem() == ModItems.FACETED_FOCUS)
+            {
+                return SortingHelper.compareFacedFocus(first.getTag(), second.getTag(), true);
             }
 
             return 0;
