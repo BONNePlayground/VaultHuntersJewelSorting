@@ -8,28 +8,18 @@ package lv.id.bonne.vaulthunters.jewelsorting.quark.mixin;
 
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
-import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.init.ModItems;
-import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
-import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
-import iskallia.vault.item.gear.CharmItem;
-import iskallia.vault.item.gear.FocusItem;
-import iskallia.vault.item.gear.TrinketItem;
-import iskallia.vault.item.tool.JewelItem;
-import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
 import vazkii.quark.base.handler.SortingHandler;
 
 
@@ -52,17 +42,15 @@ public class MixinSortingHandler
     private static void stackCompare(ItemStack stack1, ItemStack stack2, CallbackInfoReturnable<Integer> callbackInfoReturnable)
     {
         if (stack1 == stack2 ||
-            !MixinSortingHandler.hasCustomComparison(stack1) ||
-            !MixinSortingHandler.hasCustomComparison(stack2) ||
-            !stack1.getItem().equals(stack2.getItem()))
+            !stack1.getItem().equals(stack2.getItem()) ||
+            !SortingHelper.isSortable(stack1.getItem().getRegistryName()))
         {
             // Leave to original code.
             return;
         }
 
         // Deal with Jewels
-        if (stack1.getItem() instanceof JewelItem &&
-            stack2.getItem() instanceof JewelItem)
+        if (stack1.getItem() == ModItems.JEWEL)
         {
             if (!VaultJewelSorting.CONFIGURATION.getJewelSortingByName().isEmpty())
             {
@@ -77,8 +65,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof ToolItem &&
-            stack2.getItem() instanceof ToolItem)
+        else if (stack1.getItem() == ModItems.TOOL)
         {
 // TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
 //                callbackInfoReturnable.setReturnValue(SortingHelper.compareTools(
@@ -87,8 +74,7 @@ public class MixinSortingHandler
 //                    sortingDirection == SortingDirection.ASCENDING));
 //                callbackInfoReturnable.cancel();
         }
-        else if (stack1.getItem() instanceof VaultGearItem &&
-            stack2.getItem() instanceof VaultGearItem)
+        else if (SortingHelper.VAULT_GEAR_SET.contains(stack1.getItem().getRegistryName()))
         {
             if (!VaultJewelSorting.CONFIGURATION.getGearSortingByName().isEmpty())
             {
@@ -103,8 +89,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof InscriptionItem &&
-            stack2.getItem() instanceof InscriptionItem)
+        else if (stack1.getItem() == ModItems.INSCRIPTION)
         {
             if (!VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName().isEmpty())
             {
@@ -119,8 +104,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof InfusedCatalystItem &&
-            stack2.getItem() instanceof InfusedCatalystItem)
+        else if (stack1.getItem() == ModItems.VAULT_CATALYST_INFUSED)
         {
             if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
             {
@@ -135,8 +119,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof VaultCrystalItem &&
-            stack2.getItem() instanceof VaultCrystalItem)
+        else if (stack1.getItem() == ModItems.VAULT_CRYSTAL)
         {
             if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName().isEmpty())
             {
@@ -151,8 +134,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof TrinketItem &&
-            stack2.getItem() instanceof TrinketItem)
+        else if (stack1.getItem() == ModItems.TRINKET)
         {
             if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByName().isEmpty())
             {
@@ -169,8 +151,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof CharmItem &&
-            stack2.getItem() instanceof CharmItem)
+        else if (SortingHelper.VAULT_CHARMS.contains(stack1.getItem().getRegistryName()))
         {
             if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByName().isEmpty())
             {
@@ -187,8 +168,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof VaultDollItem &&
-            stack2.getItem() instanceof VaultDollItem)
+        else if (stack1.getItem() == ModItems.VAULT_DOLL)
         {
             if (!VaultJewelSorting.CONFIGURATION.getDollSortingByName().isEmpty())
             {
@@ -203,8 +183,7 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
-        else if (stack1.getItem() instanceof RelicFragmentItem &&
-            stack2.getItem() instanceof RelicFragmentItem)
+        else if (stack1.getItem() == ModItems.RELIC_FRAGMENT)
         {
             callbackInfoReturnable.setReturnValue(
                 SortingHelper.compareRelicFragments(stack1.getTag(),
@@ -213,8 +192,7 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
-        else if (stack1.getItem() instanceof ItemRespecFlask &&
-            stack2.getItem() instanceof ItemRespecFlask)
+        else if (stack1.getItem() == ModItems.RESPEC_FLASK)
         {
             callbackInfoReturnable.setReturnValue(
                 SortingHelper.compareRespecFlasks(stack1.getTag(),
@@ -223,8 +201,7 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
-        else if (stack1.getItem() == ModItems.FACETED_FOCUS &&
-            stack2.getItem() == ModItems.FACETED_FOCUS)
+        else if (stack1.getItem() == ModItems.FACETED_FOCUS)
         {
             callbackInfoReturnable.setReturnValue(
                 SortingHelper.compareFacedFocus(stack1.getTag(),
@@ -233,8 +210,7 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
-        else if (stack1.getItem() == ModItems.AUGMENT &&
-            stack2.getItem() == ModItems.AUGMENT)
+        else if (stack1.getItem() == ModItems.AUGMENT)
         {
             callbackInfoReturnable.setReturnValue(
                 SortingHelper.compareAugments(stack1.getTag(),
@@ -243,26 +219,5 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
-    }
-
-
-    /**
-     * This method returns if stack has custom comparison.
-     * @param stack Stack to check.
-     * @return true if stack has custom comparison.
-     */
-    @Unique
-    private static boolean hasCustomComparison(ItemStack stack)
-    {
-        return stack.getItem() instanceof VaultGearItem ||
-            stack.getItem() instanceof InscriptionItem ||
-            stack.getItem() instanceof VaultCrystalItem ||
-            stack.getItem() instanceof TrinketItem ||
-            stack.getItem() instanceof VaultDollItem ||
-            stack.getItem() instanceof InfusedCatalystItem ||
-            stack.getItem() instanceof RelicFragmentItem ||
-            stack.getItem() instanceof ItemRespecFlask ||
-            stack.getItem() == ModItems.FACETED_FOCUS ||
-            stack.getItem() == ModItems.AUGMENT;
     }
 }
