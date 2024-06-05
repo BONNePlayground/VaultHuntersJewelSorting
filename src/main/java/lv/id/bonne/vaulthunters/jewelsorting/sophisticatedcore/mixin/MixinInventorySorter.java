@@ -3,6 +3,7 @@ package lv.id.bonne.vaulthunters.jewelsorting.sophisticatedcore.mixin;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
@@ -129,6 +130,20 @@ public class MixinInventorySorter
                             true);
                     }
                 }
+                else if (first.getKey().getStack().getItem() instanceof InfusedCatalystItem &&
+                    second.getKey().getStack().getItem() instanceof InfusedCatalystItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount().isEmpty())
+                    {
+                        return SortingHelper.compareCatalysts(
+                            first.getKey().getStack().getDisplayName().getString(),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
+                            true);
+                    }
+                }
                 else if (first.getKey().getStack().getItem() instanceof VaultDollItem &&
                     second.getKey().getStack().getItem() instanceof VaultDollItem)
                 {
@@ -243,6 +258,20 @@ public class MixinInventorySorter
                             AttributeGearData.read(second.getKey().getStack()),
                             second.getKey().getStack().getTag(),
                             VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
+                            true);
+                    }
+                }
+                else if (first.getKey().getStack().getItem() instanceof InfusedCatalystItem &&
+                    second.getKey().getStack().getItem() instanceof InfusedCatalystItem)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
+                    {
+                        return SortingHelper.compareCatalysts(
+                            first.getKey().getStack().getDisplayName().getString(),
+                            first.getKey().getStack().getTag(),
+                            second.getKey().getStack().getDisplayName().getString(),
+                            second.getKey().getStack().getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
                             true);
                     }
                 }

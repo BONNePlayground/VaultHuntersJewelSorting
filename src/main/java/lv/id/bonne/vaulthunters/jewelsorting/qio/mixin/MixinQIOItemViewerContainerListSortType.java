@@ -19,6 +19,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
@@ -304,6 +305,34 @@ public class MixinQIOItemViewerContainerListSortType
                         true);
                 };
             }
+            else if (firstItem.getItem() instanceof InfusedCatalystItem &&
+                secondItem.getItem() instanceof InfusedCatalystItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+
+                return switch (instance)
+                {
+                    case NAME -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                        true);
+                    case SIZE -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByMod(),
+                        true);
+                };
+            }
             else if (firstItem.getItem() instanceof VaultDollItem &&
                 secondItem.getItem() instanceof VaultDollItem)
             {
@@ -565,6 +594,34 @@ public class MixinQIOItemViewerContainerListSortType
                         rightData,
                         secondItem.getTag(),
                         VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
+                        false);
+                };
+            }
+            else if (firstItem.getItem() instanceof InfusedCatalystItem &&
+                secondItem.getItem() instanceof InfusedCatalystItem)
+            {
+                String leftName = firstItem.getDisplayName().getString();
+                String rightName = secondItem.getDisplayName().getString();
+
+                return switch (instance)
+                {
+                    case NAME -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                        false);
+                    case SIZE -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
+                        false);
+                    case MOD -> SortingHelper.compareCatalysts(leftName,
+                        firstItem.getTag(),
+                        rightName,
+                        secondItem.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByMod(),
                         false);
                 };
             }

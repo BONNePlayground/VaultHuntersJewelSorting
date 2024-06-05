@@ -22,6 +22,7 @@ import iskallia.vault.init.ModItems;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 
 
@@ -276,6 +277,44 @@ public class SortingHelper
                 case COMPLETION -> SortingHelper.compareCompletion(leftTag, rightTag);
                 case TIME -> SortingHelper.compareTime(leftTag, rightTag);
                 case ROOMS -> SortingHelper.compareRooms(leftData, rightData);
+            };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares two given infused catalyst by their sorting order.
+     *
+     * @param leftName the left name
+     * @param leftData the left data
+     * @param rightName the right name
+     * @param rightData the right data
+     * @param sortingOrder the sorting order
+     * @param ascending the ascending
+     * @return the comparison of two given infused catalyst items.
+     */
+    public static int compareCatalysts(String leftName,
+        CompoundTag leftData,
+        String rightName,
+        CompoundTag rightData,
+        List<CatalystOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue = 0;
+        for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+        {
+            CatalystOptions sortOptions = sortingOrder.get(i);
+
+            returnValue = switch (sortOptions) {
+                case NAME -> SortingHelper.compareString(leftName, rightName);
+                case SIZE -> SortingHelper.compareIntegerValue(
+                    leftData.contains(SIZE) ? leftData.getInt(SIZE) : -1,
+                    rightData.contains(SIZE) ? rightData.getInt(SIZE) : -1);
+                case MODIFIER -> SortingHelper.compareModifiers(
+                    leftData.getList(MODIFIERS, CompoundTag.TAG_STRING),
+                    rightData.getList(MODIFIERS, CompoundTag.TAG_STRING));
             };
         }
 
@@ -1060,6 +1099,32 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares to given modifier list to each other.
+     * Assumption is made here, that ListTag#get(<number>) returns empty string for non-existent
+     * index.
+     * @param leftList The list of modifiers for first object.
+     * @param rightList The list of modifiers for second object.
+     * @return Comparison between 2 lists.
+     */
+    private static int compareModifiers(ListTag leftList, ListTag rightList)
+    {
+        int i = 0;
+        int max = Math.max(leftList.size(), rightList.size());
+
+        String leftMain = leftList.getString(i);
+        String rightMain = rightList.getString(i++);
+
+        while (leftMain.equals(rightMain) && i < max)
+        {
+            leftMain = leftList.getString(i);
+            rightMain = leftList.getString(i++);
+        }
+
+        return leftMain.compareTo(rightMain);
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enum for sorting order
 // ---------------------------------------------------------------------
@@ -1244,6 +1309,36 @@ public class SortingHelper
         USES
     }
 
+
+    /**
+     * This enum holds all possible values for infused catalyst sorting order
+     */
+    public enum CatalystOptions
+    {
+        /**
+         * The name of item
+         */
+        NAME,
+        /**
+         * The size of catalyst
+         */
+        SIZE,
+        /**
+         * The modifier of catalyst
+         */
+        MODIFIER
+    }
+
+
+    /**
+     * The modifiers variable
+     */
+    public static final String MODIFIERS = "modifiers";
+
+    /**
+     * The size variable
+     */
+    public static final String SIZE = "size";
 
     /**
      * The name of the cache.

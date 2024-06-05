@@ -19,6 +19,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
@@ -182,6 +183,20 @@ public class MixinNameGridSorter
                             VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
                             sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
+                }
+            }
+            else if (leftStack.getItem() instanceof InfusedCatalystItem &&
+                rightStack.getItem() instanceof InfusedCatalystItem)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(
+                        SortingHelper.compareCatalysts(leftStack.getDisplayName().getString(),
+                            leftStack.getTag(),
+                            rightStack.getDisplayName().getString(),
+                            rightStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                            sortingDirection == SortingDirection.ASCENDING));
                 }
             }
             else if (leftStack.getItem() instanceof VaultDollItem &&

@@ -276,6 +276,37 @@ public class Configuration
 
         builder.pop();
 
+        builder.comment("This category holds options how Infused Catalysts are sorted");
+        builder.push("Infused Catalysts Sorting");
+
+        this.catalystSortingByName = builder.
+            comment("The order of Infused Catalysts if they are sorted by the name.").
+            comment("Supported Values: NAME, SIZE, MODIFIER").
+            defineList("catalyst_sorting_by_name",
+                Arrays.asList(SortingHelper.CatalystOptions.NAME.name(),
+                    SortingHelper.CatalystOptions.MODIFIER.name(),
+                    SortingHelper.CatalystOptions.SIZE.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CatalystOptions.class, value.toUpperCase()).isPresent());
+
+        this.catalystSortingByAmount = builder.
+            comment("The order of Infused Catalysts if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, SIZE, MODIFIER").
+            defineList("catalyst_sorting_by_amount",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CatalystOptions.class, value.toUpperCase()).isPresent());
+
+        this.catalystSortingByMod = builder.
+            comment("The order of Infused Catalysts if they are sorted by the mod.").
+            comment("Supported Values: NAME, SIZE, MODIFIER").
+            defineList("catalyst_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CatalystOptions.class, value.toUpperCase()).isPresent());
+
+        builder.pop();
+
         Configuration.GENERAL_SPEC = builder.build();
     }
 
@@ -523,6 +554,39 @@ public class Configuration
 
 
     /**
+     * Gets catalyst sorting by name.
+     *
+     * @return the catalyst sorting by name
+     */
+    public List<SortingHelper.CatalystOptions> getCatalystSortingByName()
+    {
+        return this.convertStringToCatalystEnum(this.catalystSortingByName.get());
+    }
+
+
+    /**
+     * Gets catalyst sorting by amount.
+     *
+     * @return the catalyst sorting by amount
+     */
+    public List<SortingHelper.CatalystOptions> getCatalystSortingByAmount()
+    {
+        return this.convertStringToCatalystEnum(this.catalystSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets catalyst sorting by mod.
+     *
+     * @return the catalyst sorting by mod
+     */
+    public List<SortingHelper.CatalystOptions> getCatalystSortingByMod()
+    {
+        return this.convertStringToCatalystEnum(this.catalystSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -629,6 +693,22 @@ public class Configuration
             map(String::toUpperCase).
             filter(upperCase -> Enums.getIfPresent(SortingHelper.CharmOptions.class, upperCase).isPresent()).
             map(SortingHelper.CharmOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.CatalystOptions> convertStringToCatalystEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.CatalystOptions.class, upperCase).isPresent()).
+            map(SortingHelper.CatalystOptions::valueOf).
             distinct().
             toList();
     }
@@ -748,6 +828,22 @@ public class Configuration
      * The config value for vault charm sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> charmSortingByMod;
+
+
+    /**
+     * The config value for infused catalyst sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> catalystSortingByName;
+
+    /**
+     * The config value for infused catalyst sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> catalystSortingByAmount;
+
+    /**
+     * The config value for infused catalyst sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> catalystSortingByMod;
 
     /**
      * The general config spec.

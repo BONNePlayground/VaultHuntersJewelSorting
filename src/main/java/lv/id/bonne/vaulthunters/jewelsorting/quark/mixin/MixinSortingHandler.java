@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.AugmentItem;
+import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
@@ -117,6 +119,22 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
+        else if (stack1.getItem() instanceof InfusedCatalystItem &&
+            stack2.getItem() instanceof InfusedCatalystItem)
+        {
+            if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareCatalysts(stack1.getDisplayName().getString(),
+                        stack1.getTag(),
+                        stack2.getDisplayName().getString(),
+                        stack2.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                        true));
+
+                callbackInfoReturnable.cancel();
+            }
+        }
         else if (stack1.getItem() instanceof VaultCrystalItem &&
             stack2.getItem() instanceof VaultCrystalItem)
         {
@@ -200,6 +218,7 @@ public class MixinSortingHandler
             stack.getItem() instanceof InscriptionItem ||
             stack.getItem() instanceof VaultCrystalItem ||
             stack.getItem() instanceof TrinketItem ||
-            stack.getItem() instanceof VaultDollItem;
+            stack.getItem() instanceof VaultDollItem ||
+            stack.getItem() instanceof InfusedCatalystItem;
     }
 }

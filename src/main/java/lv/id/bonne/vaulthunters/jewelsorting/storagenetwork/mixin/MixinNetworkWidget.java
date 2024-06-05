@@ -13,6 +13,7 @@ import java.util.Comparator;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
+import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
@@ -252,6 +253,30 @@ public class MixinNetworkWidget
                         AttributeGearData.read(second),
                         second.getTag(),
                         VaultJewelSorting.CONFIGURATION.getCharmSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() instanceof InfusedCatalystItem &&
+                second.getItem() instanceof InfusedCatalystItem)
+            {
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareCatalysts(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareCatalysts(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareCatalysts(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByMod(),
                         true);
                 };
             }

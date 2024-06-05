@@ -279,6 +279,29 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.VAULT_CATALYST_INFUSED.getRegistryName())
+            {
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareCatalysts(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareCatalysts(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareCatalysts(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCatalystSortingByMod(),
+                        ascending);
+                };
+            }
             else if (leftWhat.getId() == ModItems.VAULT_DOLL.getRegistryName())
             {
                 return switch (sortOrder) {
@@ -347,6 +370,7 @@ public abstract class MixinRepo
             id.equals(ModItems.TRINKET.getRegistryName()) ||
             SortingHelper.VAULT_CHARMS.contains(id) ||
             SortingHelper.VAULT_GEAR_SET.contains(id) ||
-            id.equals(ModItems.VAULT_DOLL.getRegistryName());
+            id.equals(ModItems.VAULT_DOLL.getRegistryName()) ||
+            id.equals(ModItems.VAULT_CATALYST_INFUSED.getRegistryName());
     }
 }
