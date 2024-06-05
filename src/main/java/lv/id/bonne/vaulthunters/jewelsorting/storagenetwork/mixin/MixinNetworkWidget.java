@@ -12,16 +12,9 @@ import java.util.Comparator;
 
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
-import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.init.ModItems;
-import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
-import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
-import iskallia.vault.item.gear.CharmItem;
-import iskallia.vault.item.gear.TrinketItem;
-import iskallia.vault.item.tool.JewelItem;
-import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
 import net.minecraft.client.gui.screens.Screen;
@@ -64,13 +57,12 @@ public class MixinNetworkWidget
                 second.getItem().getRegistryName(),
                 this.gui.getDownwards());
 
-            if (registryOrder != 0)
+            if (registryOrder != 0 || !SortingHelper.isSortable(first.getItem().getRegistryName()))
             {
                 // Use default string comparing
                 return registryOrder;
             }
-            else if (first.getItem() instanceof JewelItem &&
-                second.getItem() instanceof JewelItem)
+            else if (first.getItem() == ModItems.JEWEL)
             {
                 String leftName = first.getDisplayName().getString();
                 String rightName = second.getDisplayName().getString();
@@ -98,8 +90,7 @@ public class MixinNetworkWidget
                         this.gui.getDownwards());
                 };
             }
-            else if (first.getItem() instanceof ToolItem &&
-                second.getItem() instanceof ToolItem)
+            else if (first.getItem() == ModItems.TOOL)
             {
 // TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
 //                callbackInfoReturnable.setReturnValue(SortingHelper.compareTools(
@@ -108,8 +99,7 @@ public class MixinNetworkWidget
 //                    sortingDirection == SortingDirection.ASCENDING));
 //                callbackInfoReturnable.cancel();
             }
-            else if (first.getItem() instanceof VaultGearItem &&
-                second.getItem() instanceof VaultGearItem)
+            else if (SortingHelper.VAULT_GEAR_SET.contains(first.getItem().getRegistryName()))
             {
                 String leftName = first.getDisplayName().getString();
                 String rightName = second.getDisplayName().getString();
@@ -137,8 +127,7 @@ public class MixinNetworkWidget
                         this.gui.getDownwards());
                 };
             }
-            else if (first.getItem() instanceof InscriptionItem &&
-                second.getItem() instanceof InscriptionItem)
+            else if (first.getItem() == ModItems.INSCRIPTION)
             {
                 String leftName = first.getDisplayName().getString();
                 String rightName = second.getDisplayName().getString();
@@ -166,8 +155,7 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof VaultCrystalItem &&
-                second.getItem() instanceof VaultCrystalItem)
+            else if (first.getItem() == ModItems.VAULT_CRYSTAL)
             {
                 String leftName = first.getDisplayName().getString();
                 String rightName = second.getDisplayName().getString();
@@ -195,8 +183,7 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof TrinketItem &&
-                second.getItem() instanceof TrinketItem)
+            else if (first.getItem() == ModItems.TRINKET)
             {
                 return switch (this.gui.getSort()) {
                     case NAME -> SortingHelper.compareTrinkets(first.getDisplayName().getString(),
@@ -225,8 +212,7 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof CharmItem &&
-                second.getItem() instanceof CharmItem)
+            else if (SortingHelper.VAULT_CHARMS.contains(first.getItem().getRegistryName()))
             {
                 return switch (this.gui.getSort()) {
                     case NAME -> SortingHelper.compareCharms(first.getDisplayName().getString(),
@@ -255,8 +241,7 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof InfusedCatalystItem &&
-                second.getItem() instanceof InfusedCatalystItem)
+            else if (first.getItem() == ModItems.VAULT_CATALYST_INFUSED)
             {
                 return switch (this.gui.getSort()) {
                     case NAME -> SortingHelper.compareCatalysts(first.getDisplayName().getString(),
@@ -279,8 +264,7 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof VaultDollItem &&
-                second.getItem() instanceof VaultDollItem)
+            else if (first.getItem() == ModItems.VAULT_DOLL)
             {
                 return switch (this.gui.getSort()) {
                     case NAME -> SortingHelper.compareVaultDolls(first.getDisplayName().getString(),
@@ -303,23 +287,19 @@ public class MixinNetworkWidget
                         true);
                 };
             }
-            else if (first.getItem() instanceof RelicFragmentItem &&
-                second.getItem() instanceof RelicFragmentItem)
+            else if (first.getItem() == ModItems.RELIC_FRAGMENT)
             {
                 return SortingHelper.compareRelicFragments(first.getTag(), second.getTag(), true);
             }
-            else if (first.getItem() instanceof ItemRespecFlask &&
-                second.getItem() instanceof ItemRespecFlask)
+            else if (first.getItem() == ModItems.RESPEC_FLASK)
             {
                 return SortingHelper.compareRespecFlasks(first.getTag(), second.getTag(), true);
             }
-            else if (first.getItem() == ModItems.FACETED_FOCUS &&
-                second.getItem() == ModItems.FACETED_FOCUS)
+            else if (first.getItem() == ModItems.FACETED_FOCUS)
             {
                 return SortingHelper.compareFacedFocus(first.getTag(), second.getTag(), true);
             }
-            else if (first.getItem() == ModItems.AUGMENT &&
-                second.getItem() == ModItems.AUGMENT)
+            else if (first.getItem() == ModItems.AUGMENT)
             {
                 return SortingHelper.compareAugments(first.getTag(), second.getTag(), true);
             }
