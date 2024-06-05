@@ -16,10 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
-import iskallia.vault.item.AugmentItem;
-import iskallia.vault.item.InfusedCatalystItem;
-import iskallia.vault.item.InscriptionItem;
-import iskallia.vault.item.VaultDollItem;
+import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -203,6 +200,16 @@ public class MixinSortingHandler
                 callbackInfoReturnable.cancel();
             }
         }
+        else if (stack1.getItem() instanceof RelicFragmentItem &&
+            stack2.getItem() instanceof RelicFragmentItem)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareRelicFragments(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 
 
@@ -219,6 +226,7 @@ public class MixinSortingHandler
             stack.getItem() instanceof VaultCrystalItem ||
             stack.getItem() instanceof TrinketItem ||
             stack.getItem() instanceof VaultDollItem ||
-            stack.getItem() instanceof InfusedCatalystItem;
+            stack.getItem() instanceof InfusedCatalystItem ||
+            stack.getItem() instanceof RelicFragmentItem;
     }
 }

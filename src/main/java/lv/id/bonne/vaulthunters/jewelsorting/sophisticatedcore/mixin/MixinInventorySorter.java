@@ -5,6 +5,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.RelicFragmentItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -157,6 +158,14 @@ public class MixinInventorySorter
                             true);
                     }
                 }
+                else if (first.getKey().getStack().getItem() instanceof RelicFragmentItem &&
+                    second.getKey().getStack().getItem() instanceof RelicFragmentItem)
+                {
+                    return SortingHelper.compareRelicFragments(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -287,6 +296,14 @@ public class MixinInventorySorter
                             VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
                             true);
                     }
+                }
+                else if (first.getKey().getStack().getItem() instanceof RelicFragmentItem &&
+                    second.getKey().getStack().getItem() instanceof RelicFragmentItem)
+                {
+                    return SortingHelper.compareRelicFragments(
+                        first.getKey().getStack().getTag(),
+                        second.getKey().getStack().getTag(),
+                        true);
                 }
 
                 return 0;

@@ -15,6 +15,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.RelicFragmentItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -303,6 +304,11 @@ public class MixinNetworkWidget
                         VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
                         true);
                 };
+            }
+            else if (first.getItem() instanceof RelicFragmentItem &&
+                second.getItem() instanceof RelicFragmentItem)
+            {
+                return SortingHelper.compareRelicFragments(first.getTag(), second.getTag(), true);
             }
 
             return 0;

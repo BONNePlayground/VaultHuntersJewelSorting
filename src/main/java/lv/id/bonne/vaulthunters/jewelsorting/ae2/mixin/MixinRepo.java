@@ -325,6 +325,13 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
+            else if (leftWhat.getId() == ModItems.RELIC_FRAGMENT.getRegistryName())
+            {
+                return SortingHelper.compareRelicFragments(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
@@ -371,6 +378,7 @@ public abstract class MixinRepo
             SortingHelper.VAULT_CHARMS.contains(id) ||
             SortingHelper.VAULT_GEAR_SET.contains(id) ||
             id.equals(ModItems.VAULT_DOLL.getRegistryName()) ||
-            id.equals(ModItems.VAULT_CATALYST_INFUSED.getRegistryName());
+            id.equals(ModItems.VAULT_CATALYST_INFUSED.getRegistryName()) ||
+            id.equals(ModItems.RELIC_FRAGMENT.getRegistryName());
     }
 }

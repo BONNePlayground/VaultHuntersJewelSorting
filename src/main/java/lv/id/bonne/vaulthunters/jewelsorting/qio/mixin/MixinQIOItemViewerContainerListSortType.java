@@ -7,6 +7,7 @@
 package lv.id.bonne.vaulthunters.jewelsorting.qio.mixin;
 
 
+import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +22,7 @@ import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.item.InfusedCatalystItem;
 import iskallia.vault.item.InscriptionItem;
+import iskallia.vault.item.RelicFragmentItem;
 import iskallia.vault.item.VaultDollItem;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
@@ -361,6 +363,14 @@ public class MixinQIOItemViewerContainerListSortType
                         true);
                 };
             }
+            else if (firstItem.getItem() instanceof RelicFragmentItem &&
+                secondItem.getItem() instanceof RelicFragmentItem)
+            {
+                return SortingHelper.compareRelicFragments(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    true);
+            }
             else
             {
                 return 0;
@@ -652,6 +662,14 @@ public class MixinQIOItemViewerContainerListSortType
                         VaultJewelSorting.CONFIGURATION.getDollSortingByMod(),
                         false);
                 };
+            }
+            else if (firstItem.getItem() instanceof RelicFragmentItem &&
+                secondItem.getItem() instanceof RelicFragmentItem)
+            {
+                return SortingHelper.compareRelicFragments(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    false);
             }
             else
             {

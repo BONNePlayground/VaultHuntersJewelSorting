@@ -7,6 +7,7 @@
 package lv.id.bonne.vaulthunters.jewelsorting.utils;
 
 
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import iskallia.vault.VaultMod;
@@ -516,6 +517,39 @@ public class SortingHelper
                 case USES -> Integer.compare(getRemainingUses(leftTag), getRemainingUses(rightTag));
                 case VALUE -> Float.compare(getCharmValue(leftTag), getCharmValue(rightTag));
             };
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares relic fragments by their "VaultModelId" tag value.
+     * @param leftTag The left tag of relic fragment
+     * @param rightTag The right tag of relic fragment
+     * @param ascending the order of sort
+     * @return the comparison of two given relic fragment tags.
+     */
+    public static int compareRelicFragments(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(VAULT_MODEL_ID),
+                rightTag.getString(VAULT_MODEL_ID));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
         }
 
         return ascending ? returnValue : -returnValue;
@@ -1339,6 +1373,11 @@ public class SortingHelper
      * The size variable
      */
     public static final String SIZE = "size";
+
+    /**
+     * The vault model id variable
+     */
+    public static final String VAULT_MODEL_ID = "VaultModelId";
 
     /**
      * The name of the cache.
