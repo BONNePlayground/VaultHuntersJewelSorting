@@ -33,6 +33,19 @@ import net.minecraft.resources.ResourceLocation;
 public class SortingHelper
 {
     /**
+     * Indicates if item with given id has custom sorting.
+     * @param id The id of item.
+     * @return {@code true} if sortable, otherwise {@code false}
+     */
+    public static boolean isSortable(ResourceLocation id)
+    {
+        return SortingHelper.VAULT_CHARMS.contains(id) ||
+            SortingHelper.VAULT_GEAR_SET.contains(id) ||
+            SortingHelper.CUSTOM_SORTING.contains(id);
+    }
+
+
+    /**
      * This method compares two given registry names.
      * @param leftReg The left registry name.
      * @param rightReg The right registry name.
@@ -1528,6 +1541,11 @@ public class SortingHelper
      */
     public static final Set<ResourceLocation> VAULT_CHARMS = new HashSet<>();
 
+    /**
+     * The set of items that can be sorted by this algorithm.
+     */
+    public static final Set<ResourceLocation> CUSTOM_SORTING = new HashSet<>();
+
     // Put all vault gear items into the set.
     static
     {
@@ -1555,5 +1573,16 @@ public class SortingHelper
         VAULT_CHARMS.add(ModItems.LARGE_CHARM.getRegistryName());
         VAULT_CHARMS.add(ModItems.GRAND_CHARM.getRegistryName());
         VAULT_CHARMS.add(ModItems.MAJESTIC_CHARM.getRegistryName());
+
+        CUSTOM_SORTING.add(ModItems.JEWEL.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.INSCRIPTION.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.VAULT_CRYSTAL.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.TRINKET.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.VAULT_DOLL.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.VAULT_CATALYST_INFUSED.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.RELIC_FRAGMENT.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.RESPEC_FLASK.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.FACETED_FOCUS.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.AUGMENT.getRegistryName());
     }
 }

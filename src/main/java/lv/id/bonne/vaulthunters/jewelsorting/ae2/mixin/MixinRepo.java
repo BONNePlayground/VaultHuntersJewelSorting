@@ -75,18 +75,19 @@ public abstract class MixinRepo
                     rightWhat.getModId());
             }
 
+            final ResourceLocation leftId = leftWhat.getId();
+
             int registryOrder = SortingHelper.compareRegistryNames(
-                leftWhat.getId(),
+                leftId,
                 rightWhat.getId(),
                 ascending);
 
-            if (registryOrder != 0 ||
-                !MixinRepo.isSortable(leftWhat.getId()))
+            if (registryOrder != 0 || !SortingHelper.isSortable(leftId))
             {
                 // Use default string comparing
                 return registryOrder;
             }
-            else if (leftWhat.getId() == ModItems.JEWEL.getRegistryName())
+            else if (leftId == ModItems.JEWEL.getRegistryName())
             {
                 CompoundTag leftTag = leftWhat.toTag().getCompound("tag");
                 CompoundTag rightTag = rightWhat.toTag().getCompound("tag");
@@ -157,7 +158,7 @@ public abstract class MixinRepo
                     };
                 }
             }
-            else if (leftWhat.getId() == ModItems.INSCRIPTION.getRegistryName())
+            else if (leftId == ModItems.INSCRIPTION.getRegistryName())
             {
                 InscriptionData leftData = InscriptionData.empty();
                 leftData.deserializeNBT(leftWhat.toTag().getCompound("tag").getCompound("data"));
@@ -186,7 +187,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (leftWhat.getId() == ModItems.VAULT_CRYSTAL.getRegistryName())
+            else if (leftId == ModItems.VAULT_CRYSTAL.getRegistryName())
             {
                 CrystalData leftData = CrystalData.empty();
                 leftData.deserializeNBT(leftWhat.toTag().getCompound("tag").getCompound("CrystalData"));
@@ -215,7 +216,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (leftWhat.getId() == ModItems.TRINKET.getRegistryName())
+            else if (leftId == ModItems.TRINKET.getRegistryName())
             {
                 AttributeGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
                 AttributeGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
@@ -247,7 +248,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (SortingHelper.VAULT_CHARMS.contains(leftWhat.getId()))
+            else if (SortingHelper.VAULT_CHARMS.contains(leftId))
             {
                 AttributeGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
                 AttributeGearData rightData = CustomVaultGearData.read(rightWhat.toTag().getCompound("tag"));
@@ -279,7 +280,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (leftWhat.getId() == ModItems.VAULT_CATALYST_INFUSED.getRegistryName())
+            else if (leftId == ModItems.VAULT_CATALYST_INFUSED.getRegistryName())
             {
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareCatalysts(leftName,
@@ -302,7 +303,7 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (leftWhat.getId() == ModItems.VAULT_DOLL.getRegistryName())
+            else if (leftId == ModItems.VAULT_DOLL.getRegistryName())
             {
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareVaultDolls(leftName,
@@ -325,28 +326,28 @@ public abstract class MixinRepo
                         ascending);
                 };
             }
-            else if (leftWhat.getId() == ModItems.RELIC_FRAGMENT.getRegistryName())
+            else if (leftId == ModItems.RELIC_FRAGMENT.getRegistryName())
             {
                 return SortingHelper.compareRelicFragments(
                     leftWhat.toTag().getCompound("tag"),
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
-            else if (leftWhat.getId() == ModItems.RESPEC_FLASK.getRegistryName())
+            else if (leftId == ModItems.RESPEC_FLASK.getRegistryName())
             {
                 return SortingHelper.compareRespecFlasks(
                     leftWhat.toTag().getCompound("tag"),
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
-            else if (leftWhat.getId() == ModItems.FACETED_FOCUS.getRegistryName())
+            else if (leftId == ModItems.FACETED_FOCUS.getRegistryName())
             {
                 return SortingHelper.compareFacedFocus(
                     leftWhat.toTag().getCompound("tag"),
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
-            else if (leftWhat.getId() == ModItems.AUGMENT.getRegistryName())
+            else if (leftId == ModItems.AUGMENT.getRegistryName())
             {
                 return SortingHelper.compareAugments(
                     leftWhat.toTag().getCompound("tag"),
@@ -381,28 +382,5 @@ public abstract class MixinRepo
             }
 
         }));
-    }
-
-
-    /**
-     * This method checks if item is sortable via custom sorting.
-     * @param id the ResourceLocation of item.
-     * @return true if item is sortable via custom sorting.
-     */
-    @Unique
-    private static boolean isSortable(ResourceLocation id)
-    {
-        return id.equals(ModItems.JEWEL.getRegistryName()) ||
-            id.equals(ModItems.INSCRIPTION.getRegistryName()) ||
-            id.equals(ModItems.VAULT_CRYSTAL.getRegistryName()) ||
-            id.equals(ModItems.TRINKET.getRegistryName()) ||
-            SortingHelper.VAULT_CHARMS.contains(id) ||
-            SortingHelper.VAULT_GEAR_SET.contains(id) ||
-            id.equals(ModItems.VAULT_DOLL.getRegistryName()) ||
-            id.equals(ModItems.VAULT_CATALYST_INFUSED.getRegistryName()) ||
-            id.equals(ModItems.RELIC_FRAGMENT.getRegistryName()) ||
-            id.equals(ModItems.RESPEC_FLASK.getRegistryName()) ||
-            id.equals(ModItems.FACETED_FOCUS.getRegistryName()) ||
-            id.equals(ModItems.AUGMENT.getRegistryName());
     }
 }
