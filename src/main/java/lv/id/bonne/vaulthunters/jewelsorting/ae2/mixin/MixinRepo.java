@@ -332,6 +332,13 @@ public abstract class MixinRepo
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
+            else if (leftWhat.getId() == ModItems.RESPEC_FLASK.getRegistryName())
+            {
+                return SortingHelper.compareRespecFlasks(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
@@ -379,6 +386,7 @@ public abstract class MixinRepo
             SortingHelper.VAULT_GEAR_SET.contains(id) ||
             id.equals(ModItems.VAULT_DOLL.getRegistryName()) ||
             id.equals(ModItems.VAULT_CATALYST_INFUSED.getRegistryName()) ||
-            id.equals(ModItems.RELIC_FRAGMENT.getRegistryName());
+            id.equals(ModItems.RELIC_FRAGMENT.getRegistryName()) ||
+            id.equals(ModItems.RESPEC_FLASK.getRegistryName());
     }
 }

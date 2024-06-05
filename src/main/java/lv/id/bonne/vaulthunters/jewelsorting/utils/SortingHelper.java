@@ -556,6 +556,39 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares respec flasks by their "Ability" tag value.
+     * @param leftTag The left tag of relic fragment
+     * @param rightTag The right tag of relic fragment
+     * @param ascending the order of sort
+     * @return the comparison of two given respec flasks tags.
+     */
+    public static int compareRespecFlasks(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(ABILITY),
+                rightTag.getString(ABILITY));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -1378,6 +1411,11 @@ public class SortingHelper
      * The vault model id variable
      */
     public static final String VAULT_MODEL_ID = "VaultModelId";
+
+    /**
+     * The ability variable
+     */
+    public static final String ABILITY = "Ability";
 
     /**
      * The name of the cache.

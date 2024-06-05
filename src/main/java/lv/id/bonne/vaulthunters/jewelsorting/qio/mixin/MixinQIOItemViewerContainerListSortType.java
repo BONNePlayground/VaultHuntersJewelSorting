@@ -20,10 +20,7 @@ import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.GearDataCache;
 import iskallia.vault.gear.data.VaultGearData;
 import iskallia.vault.gear.item.VaultGearItem;
-import iskallia.vault.item.InfusedCatalystItem;
-import iskallia.vault.item.InscriptionItem;
-import iskallia.vault.item.RelicFragmentItem;
-import iskallia.vault.item.VaultDollItem;
+import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
@@ -371,6 +368,14 @@ public class MixinQIOItemViewerContainerListSortType
                     secondItem.getTag(),
                     true);
             }
+            else if (firstItem.getItem() instanceof ItemRespecFlask &&
+                secondItem.getItem() instanceof ItemRespecFlask)
+            {
+                return SortingHelper.compareRespecFlasks(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    true);
+            }
             else
             {
                 return 0;
@@ -667,6 +672,14 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getItem() instanceof RelicFragmentItem)
             {
                 return SortingHelper.compareRelicFragments(
+                    firstItem.getTag(),
+                    secondItem.getTag(),
+                    false);
+            }
+            else if (firstItem.getItem() instanceof ItemRespecFlask &&
+                secondItem.getItem() instanceof ItemRespecFlask)
+            {
+                return SortingHelper.compareRespecFlasks(
                     firstItem.getTag(),
                     secondItem.getTag(),
                     false);

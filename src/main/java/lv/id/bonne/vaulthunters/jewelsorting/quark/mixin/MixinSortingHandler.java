@@ -210,6 +210,16 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
+        else if (stack1.getItem() instanceof ItemRespecFlask &&
+            stack2.getItem() instanceof ItemRespecFlask)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareRespecFlasks(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 
 
@@ -227,6 +237,7 @@ public class MixinSortingHandler
             stack.getItem() instanceof TrinketItem ||
             stack.getItem() instanceof VaultDollItem ||
             stack.getItem() instanceof InfusedCatalystItem ||
-            stack.getItem() instanceof RelicFragmentItem;
+            stack.getItem() instanceof RelicFragmentItem ||
+            stack.getItem() instanceof ItemRespecFlask;
     }
 }
