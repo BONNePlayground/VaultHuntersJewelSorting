@@ -2,18 +2,12 @@ package lv.id.bonne.vaulthunters.jewelsorting.sophisticatedcore.mixin;
 
 import iskallia.vault.gear.data.AttributeGearData;
 import iskallia.vault.gear.data.VaultGearData;
-import iskallia.vault.gear.item.VaultGearItem;
 import iskallia.vault.init.ModItems;
-import iskallia.vault.item.*;
 import iskallia.vault.item.crystal.CrystalData;
-import iskallia.vault.item.crystal.VaultCrystalItem;
 import iskallia.vault.item.data.InscriptionData;
-import iskallia.vault.item.gear.CharmItem;
-import iskallia.vault.item.gear.TrinketItem;
-import iskallia.vault.item.tool.JewelItem;
-import iskallia.vault.item.tool.ToolItem;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import lv.id.bonne.vaulthunters.jewelsorting.utils.SortingHelper;
+import net.minecraft.world.item.ItemStack;
 import net.p3pp3rf1y.sophisticatedcore.inventory.ItemStackKey;
 import net.p3pp3rf1y.sophisticatedcore.util.InventorySorter;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,29 +27,31 @@ public class MixinInventorySorter
         {
             return original.thenComparing((first, second) ->
             {
+                final ItemStack firstStack = first.getKey().getStack();
+                final ItemStack secondStack = second.getKey().getStack();
+                
                 int registryOrder = SortingHelper.compareRegistryNames(
-                    first.getKey().getStack().getItem().getRegistryName(),
-                    second.getKey().getStack().getItem().getRegistryName(),
+                    firstStack.getItem().getRegistryName(),
+                    secondStack.getItem().getRegistryName(),
                     true);
 
-                if (registryOrder != 0)
+                if (registryOrder != 0 || 
+                    !SortingHelper.isSortable(firstStack.getItem().getRegistryName()))
                 {
                     // Use default string comparing
                     return registryOrder;
                 }
-                else if (first.getKey().getStack().getItem() instanceof JewelItem &&
-                    second.getKey().getStack().getItem() instanceof JewelItem)
+                else if (firstStack.getItem() == ModItems.JEWEL)
                 {
                     return SortingHelper.compareJewels(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        VaultGearData.read(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        VaultGearData.read(secondStack),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof ToolItem &&
-                    second.getKey().getStack().getItem() instanceof ToolItem)
+                else if (firstStack.getItem() == ModItems.TOOL)
                 {
 // TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
 //                return SortingHelper.compareTools(
@@ -63,129 +59,118 @@ public class MixinInventorySorter
 //                    VaultGearData.read(rightStack),
 //                    true));
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultGearItem &&
-                    second.getKey().getStack().getItem() instanceof VaultGearItem)
+                else if (SortingHelper.VAULT_GEAR_SET.contains(firstStack.getItem().getRegistryName()))
                 {
                     return SortingHelper.compareVaultGear(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        VaultGearData.read(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        VaultGearData.read(secondStack),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByAmount(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof InscriptionItem &&
-                    second.getKey().getStack().getItem() instanceof InscriptionItem)
+                else if (firstStack.getItem() == ModItems.INSCRIPTION)
                 {
                     return SortingHelper.compareInscriptions(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        InscriptionData.from(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        InscriptionData.from(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        InscriptionData.from(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        InscriptionData.from(secondStack),
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByAmount(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultCrystalItem &&
-                    second.getKey().getStack().getItem() instanceof VaultCrystalItem)
+                else if (firstStack.getItem() == ModItems.VAULT_CRYSTAL)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount().isEmpty())
                     {
                         return SortingHelper.compareVaultCrystals(
-                            first.getKey().getStack().getDisplayName().getString(),
-                            CrystalData.read(first.getKey().getStack()),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            CrystalData.read(second.getKey().getStack()),
+                            firstStack.getDisplayName().getString(),
+                            CrystalData.read(firstStack),
+                            secondStack.getDisplayName().getString(),
+                            CrystalData.read(secondStack),
                             VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByAmount(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof TrinketItem &&
-                    second.getKey().getStack().getItem() instanceof TrinketItem)
+                else if (firstStack.getItem() == ModItems.TRINKET)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount().isEmpty())
                     {
-                        return SortingHelper.compareTrinkets(first.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(first.getKey().getStack()),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(second.getKey().getStack()),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareTrinkets(firstStack.getDisplayName().getString(),
+                            AttributeGearData.read(firstStack),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            AttributeGearData.read(secondStack),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByAmount(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof CharmItem &&
-                    second.getKey().getStack().getItem() instanceof CharmItem)
+                else if (SortingHelper.VAULT_CHARMS.contains(firstStack.getItem().getRegistryName()))
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount().isEmpty())
                     {
-                        return SortingHelper.compareCharms(first.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(first.getKey().getStack()),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(second.getKey().getStack()),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareCharms(firstStack.getDisplayName().getString(),
+                            AttributeGearData.read(firstStack),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            AttributeGearData.read(secondStack),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getCharmSortingByAmount(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof InfusedCatalystItem &&
-                    second.getKey().getStack().getItem() instanceof InfusedCatalystItem)
+                else if (firstStack.getItem() == ModItems.VAULT_CATALYST_INFUSED)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount().isEmpty())
                     {
                         return SortingHelper.compareCatalysts(
-                            first.getKey().getStack().getDisplayName().getString(),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            second.getKey().getStack().getTag(),
+                            firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getCatalystSortingByAmount(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultDollItem &&
-                    second.getKey().getStack().getItem() instanceof VaultDollItem)
+                else if (firstStack.getItem() == ModItems.VAULT_DOLL)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getDollSortingByAmount().isEmpty())
                     {
-                        return SortingHelper.compareVaultDolls(first.getKey().getStack().getDisplayName().getString(),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareVaultDolls(firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getDollSortingByAmount(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof RelicFragmentItem &&
-                    second.getKey().getStack().getItem() instanceof RelicFragmentItem)
+                else if (firstStack.getItem() == ModItems.RELIC_FRAGMENT)
                 {
                     return SortingHelper.compareRelicFragments(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof ItemRespecFlask &&
-                    second.getKey().getStack().getItem() instanceof ItemRespecFlask)
+                else if (firstStack.getItem() == ModItems.RESPEC_FLASK)
                 {
                     return SortingHelper.compareRespecFlasks(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() == ModItems.FACETED_FOCUS &&
-                    second.getKey().getStack().getItem() == ModItems.FACETED_FOCUS)
+                else if (firstStack.getItem() == ModItems.FACETED_FOCUS)
                 {
                     return SortingHelper.compareFacedFocus(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() == ModItems.AUGMENT &&
-                    second.getKey().getStack().getItem() == ModItems.AUGMENT)
+                else if (firstStack.getItem() == ModItems.AUGMENT)
                 {
                     return SortingHelper.compareAugments(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
 
@@ -196,29 +181,31 @@ public class MixinInventorySorter
         {
             return original.thenComparing((first, second) ->
             {
+                final ItemStack firstStack = first.getKey().getStack();
+                final ItemStack secondStack = second.getKey().getStack();
+
                 int registryOrder = SortingHelper.compareRegistryNames(
-                    first.getKey().getStack().getItem().getRegistryName(),
-                    second.getKey().getStack().getItem().getRegistryName(),
+                    firstStack.getItem().getRegistryName(),
+                    secondStack.getItem().getRegistryName(),
                     true);
 
-                if (registryOrder != 0)
+                if (registryOrder != 0 ||
+                    !SortingHelper.isSortable(firstStack.getItem().getRegistryName()))
                 {
                     // Use default string comparing
                     return registryOrder;
                 }
-                else if (first.getKey().getStack().getItem() instanceof JewelItem &&
-                    second.getKey().getStack().getItem() instanceof JewelItem)
+                else if (firstStack.getItem() == ModItems.JEWEL)
                 {
                     return SortingHelper.compareJewels(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        VaultGearData.read(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        VaultGearData.read(secondStack),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof ToolItem &&
-                    second.getKey().getStack().getItem() instanceof ToolItem)
+                else if (firstStack.getItem() == ModItems.TOOL)
                 {
 // TODO: Compare vault tools by their type? Currently is left just to filter out from VaultGearItem
 //                return SortingHelper.compareTools(
@@ -226,129 +213,118 @@ public class MixinInventorySorter
 //                    VaultGearData.read(rightStack),
 //                    true));
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultGearItem &&
-                    second.getKey().getStack().getItem() instanceof VaultGearItem)
+                else if (SortingHelper.VAULT_GEAR_SET.contains(firstStack.getItem().getRegistryName()))
                 {
                     return SortingHelper.compareVaultGear(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        VaultGearData.read(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        VaultGearData.read(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        VaultGearData.read(secondStack),
                         VaultJewelSorting.CONFIGURATION.getGearSortingByName(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof InscriptionItem &&
-                    second.getKey().getStack().getItem() instanceof InscriptionItem)
+                else if (firstStack.getItem() == ModItems.INSCRIPTION)
                 {
                     return SortingHelper.compareInscriptions(
-                        first.getKey().getStack().getDisplayName().getString(),
-                        InscriptionData.from(first.getKey().getStack()),
-                        second.getKey().getStack().getDisplayName().getString(),
-                        InscriptionData.from(second.getKey().getStack()),
+                        firstStack.getDisplayName().getString(),
+                        InscriptionData.from(firstStack),
+                        secondStack.getDisplayName().getString(),
+                        InscriptionData.from(secondStack),
                         VaultJewelSorting.CONFIGURATION.getInscriptionSortingByName(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultCrystalItem &&
-                    second.getKey().getStack().getItem() instanceof VaultCrystalItem)
+                else if (firstStack.getItem() == ModItems.VAULT_CRYSTAL)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName().isEmpty())
                     {
                         return SortingHelper.compareVaultCrystals(
-                            first.getKey().getStack().getDisplayName().getString(),
-                            CrystalData.read(first.getKey().getStack()),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            CrystalData.read(second.getKey().getStack()),
+                            firstStack.getDisplayName().getString(),
+                            CrystalData.read(firstStack),
+                            secondStack.getDisplayName().getString(),
+                            CrystalData.read(secondStack),
                             VaultJewelSorting.CONFIGURATION.getVaultCrystalSortingByName(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof TrinketItem &&
-                    second.getKey().getStack().getItem() instanceof TrinketItem)
+                else if (firstStack.getItem() == ModItems.TRINKET)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getTrinketSortingByName().isEmpty())
                     {
-                        return SortingHelper.compareTrinkets(first.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(first.getKey().getStack()),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(second.getKey().getStack()),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareTrinkets(firstStack.getDisplayName().getString(),
+                            AttributeGearData.read(firstStack),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            AttributeGearData.read(secondStack),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getTrinketSortingByName(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof CharmItem &&
-                    second.getKey().getStack().getItem() instanceof CharmItem)
+                else if (SortingHelper.VAULT_CHARMS.contains(firstStack.getItem().getRegistryName()))
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getCharmSortingByName().isEmpty())
                     {
-                        return SortingHelper.compareCharms(first.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(first.getKey().getStack()),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            AttributeGearData.read(second.getKey().getStack()),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareCharms(firstStack.getDisplayName().getString(),
+                            AttributeGearData.read(firstStack),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            AttributeGearData.read(secondStack),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getCharmSortingByName(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof InfusedCatalystItem &&
-                    second.getKey().getStack().getItem() instanceof InfusedCatalystItem)
+                else if (firstStack.getItem() == ModItems.VAULT_CATALYST_INFUSED)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getCatalystSortingByName().isEmpty())
                     {
                         return SortingHelper.compareCatalysts(
-                            first.getKey().getStack().getDisplayName().getString(),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            second.getKey().getStack().getTag(),
+                            firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getCatalystSortingByName(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof VaultDollItem &&
-                    second.getKey().getStack().getItem() instanceof VaultDollItem)
+                else if (firstStack.getItem() == ModItems.VAULT_DOLL)
                 {
                     if (!VaultJewelSorting.CONFIGURATION.getDollSortingByName().isEmpty())
                     {
-                        return SortingHelper.compareVaultDolls(first.getKey().getStack().getDisplayName().getString(),
-                            first.getKey().getStack().getTag(),
-                            second.getKey().getStack().getDisplayName().getString(),
-                            second.getKey().getStack().getTag(),
+                        return SortingHelper.compareVaultDolls(firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
                             VaultJewelSorting.CONFIGURATION.getDollSortingByName(),
                             true);
                     }
                 }
-                else if (first.getKey().getStack().getItem() instanceof RelicFragmentItem &&
-                    second.getKey().getStack().getItem() instanceof RelicFragmentItem)
+                else if (firstStack.getItem() == ModItems.RELIC_FRAGMENT)
                 {
                     return SortingHelper.compareRelicFragments(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() instanceof ItemRespecFlask &&
-                    second.getKey().getStack().getItem() instanceof ItemRespecFlask)
+                else if (firstStack.getItem() == ModItems.RESPEC_FLASK)
                 {
                     return SortingHelper.compareRespecFlasks(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() == ModItems.FACETED_FOCUS &&
-                    second.getKey().getStack().getItem() == ModItems.FACETED_FOCUS)
+                else if (firstStack.getItem() == ModItems.FACETED_FOCUS)
                 {
                     return SortingHelper.compareFacedFocus(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
-                else if (first.getKey().getStack().getItem() == ModItems.AUGMENT &&
-                    second.getKey().getStack().getItem() == ModItems.AUGMENT)
+                else if (firstStack.getItem() == ModItems.AUGMENT)
                 {
                     return SortingHelper.compareAugments(
-                        first.getKey().getStack().getTag(),
-                        second.getKey().getStack().getTag(),
+                        firstStack.getTag(),
+                        secondStack.getTag(),
                         true);
                 }
 
