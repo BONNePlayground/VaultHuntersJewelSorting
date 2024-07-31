@@ -116,20 +116,26 @@ public abstract class MixinRepo
                     return switch (sortOrder) {
                         case NAME -> SortingHelper.compareJewels(leftName,
                             leftData,
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightData,
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                             ascending);
                         case AMOUNT -> SortingHelper.compareJewels(leftName,
                             leftData,
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightData,
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                             ascending);
                         case MOD -> SortingHelper.compareJewels(leftName,
                             leftData,
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightData,
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                             ascending);
                     };
@@ -139,20 +145,26 @@ public abstract class MixinRepo
                     return switch (sortOrder) {
                         case NAME -> SortingHelper.compareJewels(leftName,
                             leftTag.getCompound("clientCache"),
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightTag.getCompound("clientCache"),
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                             ascending);
                         case AMOUNT -> SortingHelper.compareJewels(leftName,
                             leftTag.getCompound("clientCache"),
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightTag.getCompound("clientCache"),
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                             ascending);
                         case MOD -> SortingHelper.compareJewels(leftName,
                             leftTag.getCompound("clientCache"),
+                            leftTag.getInt("freeCuts"),
                             rightName,
                             rightTag.getCompound("clientCache"),
+                            rightTag.getInt("freeCuts"),
                             VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                             ascending);
                     };

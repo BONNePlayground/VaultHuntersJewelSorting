@@ -72,20 +72,26 @@ public class MixinNetworkWidget
                 return switch (this.gui.getSort()) {
                     case NAME -> SortingHelper.compareJewels(leftName,
                         leftData,
+                        first.getOrCreateTag().getInt("freeCuts"),
                         rightName,
                         rightData,
+                        second.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         this.gui.getDownwards());
                     case AMOUNT -> SortingHelper.compareJewels(leftName,
                         leftData,
+                        first.getOrCreateTag().getInt("freeCuts"),
                         rightName,
                         rightData,
+                        second.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         this.gui.getDownwards());
                     case MOD -> SortingHelper.compareJewels(leftName,
                         leftData,
+                        first.getOrCreateTag().getInt("freeCuts"),
                         rightName,
                         rightData,
+                        second.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                         this.gui.getDownwards());
                 };

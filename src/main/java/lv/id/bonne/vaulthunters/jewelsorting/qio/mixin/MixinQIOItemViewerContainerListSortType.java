@@ -180,20 +180,26 @@ public class MixinQIOItemViewerContainerListSortType
             return switch (instance) {
                 case NAME -> SortingHelper.compareJewels(leftName,
                     leftData,
+                    firstItem.getOrCreateTag().getInt("freeCuts"),
                     rightName,
                     rightData,
+                    secondItem.getOrCreateTag().getInt("freeCuts"),
                     VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                     ascending);
                 case SIZE -> SortingHelper.compareJewels(leftName,
                     leftData,
+                    firstItem.getOrCreateTag().getInt("freeCuts"),
                     rightName,
                     rightData,
+                    secondItem.getOrCreateTag().getInt("freeCuts"),
                     VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                     ascending);
                 case MOD -> SortingHelper.compareJewels(leftName,
                     leftData,
+                    firstItem.getOrCreateTag().getInt("freeCuts"),
                     rightName,
                     rightData,
+                    secondItem.getOrCreateTag().getInt("freeCuts"),
                     VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                     ascending);
             };

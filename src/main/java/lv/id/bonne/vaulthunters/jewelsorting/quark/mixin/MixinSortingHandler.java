@@ -57,8 +57,10 @@ public class MixinSortingHandler
                 callbackInfoReturnable.setReturnValue(
                     SortingHelper.compareJewels(stack1.getDisplayName().getString(),
                         VaultGearData.read(stack1),
+                        stack1.getOrCreateTag().getInt("freeCuts"),
                         stack2.getDisplayName().getString(),
                         VaultGearData.read(stack2),
+                        stack2.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         true));
 

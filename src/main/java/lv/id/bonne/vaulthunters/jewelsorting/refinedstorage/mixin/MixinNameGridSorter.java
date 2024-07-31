@@ -92,8 +92,10 @@ public class MixinNameGridSorter
 
                     callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(left.getName(),
                         GearDataCache.of(leftStack),
+                        leftStack.getOrCreateTag().getInt("freeCuts"),
                         right.getName(),
                         GearDataCache.of(rightStack),
+                        rightStack.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();

@@ -33,19 +33,20 @@ public class Configuration
 
         this.jewelSortingByName = builder.
             comment("The order of Jewels if they are sorted by the name.").
-            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
+            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT, CUTS").
             defineList("jewel_sorting_by_name",
                 Arrays.asList(SortingHelper.JewelOptions.NAME.name(),
                     SortingHelper.JewelOptions.ATTRIBUTE.name(),
                     SortingHelper.JewelOptions.ATTRIBUTE_VALUE.name(),
                     SortingHelper.JewelOptions.SIZE.name(),
-                    SortingHelper.JewelOptions.LEVEL.name()),
+                    SortingHelper.JewelOptions.LEVEL.name(),
+                    SortingHelper.JewelOptions.CUTS.name()),
                 entry -> entry instanceof String value &&
                     Enums.getIfPresent(SortingHelper.JewelOptions.class, value.toUpperCase()).isPresent());
 
         this.jewelSortingByAmount = builder.
             comment("The order of Jewels if they are sorted by the amount/size.").
-            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
+            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT, CUTS").
             defineList("jewel_sorting_by_amount",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&
@@ -53,7 +54,7 @@ public class Configuration
 
         this.jewelSortingByMod = builder.
             comment("The order of Jewels if they are sorted by the mod.").
-            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT").
+            comment("Supported Values: NAME, ATTRIBUTE, ATTRIBUTE_VALUE, SIZE, LEVEL, ATTRIBUTE_WEIGHT, CUTS").
             defineList("jewel_sorting_by_mod",
                 Collections.emptyList(),
                 entry -> entry instanceof String value &&

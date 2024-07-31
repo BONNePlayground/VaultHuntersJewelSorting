@@ -86,8 +86,10 @@ public class SortingHelper
     public static int compareJewels(
         String leftName,
         VaultGearData leftData,
+        int leftCuts,
         String rightName,
         VaultGearData rightData,
+        int rightCuts,
         List<JewelOptions> sortingOrder,
         boolean ascending)
     {
@@ -118,6 +120,7 @@ public class SortingHelper
                 case SIZE -> SortingHelper.compareSizeAttribute(leftData, rightData);
                 case ATTRIBUTE_WEIGHT -> SortingHelper.compareAttributeValueWeight(leftData, leftAttribute, rightData, rightAttribute);
                 case LEVEL -> SortingHelper.compareLevel(leftData, rightData);
+                case CUTS -> SortingHelper.compareIntegerValue(rightCuts, leftCuts);
             };
         }
 
@@ -139,8 +142,10 @@ public class SortingHelper
     public static int compareJewels(
         String leftName,
         GearDataCache leftData,
+        int leftCuts,
         String rightName,
         GearDataCache rightData,
+        int rightCuts,
         List<JewelOptions> sortingOrder,
         boolean ascending)
     {
@@ -164,6 +169,7 @@ public class SortingHelper
                 case ATTRIBUTE_WEIGHT -> SortingHelper.compareAttributeValueWeight(leftExtraCache, rightExtraCache);
                 case LEVEL -> SortingHelper.compareIntegerValue(leftExtraCache.getExtraGearLevel(),
                     rightExtraCache.getExtraGearLevel());
+                case CUTS -> SortingHelper.compareIntegerValue(rightCuts, leftCuts);
             };
         }
 
@@ -185,8 +191,10 @@ public class SortingHelper
     public static int compareJewels(
         String leftName,
         CompoundTag leftData,
+        int leftCuts,
         String rightName,
         CompoundTag rightData,
+        int rightCuts,
         List<JewelOptions> sortingOrder,
         boolean ascending)
     {
@@ -212,6 +220,7 @@ public class SortingHelper
                 }
                 case LEVEL -> SortingHelper.compareIntegerValue(leftData.getInt(EXTRA_GEAR_LEVEL),
                     rightData.getInt(EXTRA_GEAR_LEVEL));
+                case CUTS -> SortingHelper.compareIntegerValue(rightCuts, leftCuts);
             };
         }
 
@@ -1304,7 +1313,11 @@ public class SortingHelper
         /**
          * The level of the item
          */
-        LEVEL
+        LEVEL,
+        /**
+         * Number of free cuts applied to gear
+         */
+        CUTS
     }
 
 

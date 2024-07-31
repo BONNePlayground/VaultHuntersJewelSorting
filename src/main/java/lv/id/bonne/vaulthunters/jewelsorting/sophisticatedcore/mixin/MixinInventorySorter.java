@@ -46,8 +46,10 @@ public class MixinInventorySorter
                     return SortingHelper.compareJewels(
                         firstStack.getDisplayName().getString(),
                         VaultGearData.read(firstStack),
+                        firstStack.getOrCreateTag().getInt("freeCuts"),
                         secondStack.getDisplayName().getString(),
                         VaultGearData.read(secondStack),
+                        secondStack.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByAmount(),
                         true);
                 }
@@ -200,8 +202,10 @@ public class MixinInventorySorter
                     return SortingHelper.compareJewels(
                         firstStack.getDisplayName().getString(),
                         VaultGearData.read(firstStack),
+                        firstStack.getOrCreateTag().getInt("freeCuts"),
                         secondStack.getDisplayName().getString(),
                         VaultGearData.read(secondStack),
+                        secondStack.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByName(),
                         true);
                 }

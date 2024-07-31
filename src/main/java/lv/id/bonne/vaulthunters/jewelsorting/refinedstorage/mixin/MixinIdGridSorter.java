@@ -92,8 +92,10 @@ public class MixinIdGridSorter
 
                     callbackInfoReturnable.setReturnValue(SortingHelper.compareJewels(left.getName(),
                         GearDataCache.of(leftStack),
+                        leftStack.getOrCreateTag().getInt("freeCuts"),
                         right.getName(),
                         GearDataCache.of(rightStack),
+                        rightStack.getOrCreateTag().getInt("freeCuts"),
                         VaultJewelSorting.CONFIGURATION.getJewelSortingByMod(),
                         sortingDirection == SortingDirection.ASCENDING));
                     callbackInfoReturnable.cancel();
