@@ -116,6 +116,7 @@ mixin {
     config "mixins.${mod_id}.rs.json"
     config "mixins.${mod_id}.sophisticatedcore.json"
     config "mixins.${mod_id}.storagenetwork.json"
+    config "mixins.${mod_id}.tomsstorage.json"
     config "mixins.${mod_id}.vaulthunters.json"
 }
 
@@ -129,6 +130,10 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
     maven { url "https://cursemaven.com" }
+
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -151,17 +156,18 @@ dependencies {
     implementation fg.deobf("curse.maven:sophisticated-core-618298:${sophisticated_core_version}")
     implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:${sophisticated_backpacks_version}")
     implementation fg.deobf("curse.maven:simple-storage-network-268495:${storage_network_version}")
+    implementation fg.deobf("curse.maven:toms-storage-378609:${toms_storage_version}")
 
 //    Dependencies for Runtime Debug
-//    implementation fg.deobf("curse.maven:architects-palette-433862:4498424")
-//    implementation fg.deobf("curse.maven:curios-309927:4418032")
-//    implementation fg.deobf("curse.maven:autoreglib-250363:3642382")
-//    implementation fg.deobf("curse.maven:sophisticated-backpacks-vault-hunters-edition-696425:4287544")
-//    implementation fg.deobf("curse.maven:configured-457570:4462832")
-//    implementation fg.deobf("curse.maven:sophisticated-storage-619320:4736649")
-//    implementation fg.deobf("curse.maven:cyclops-core-232758:4162660")
-//    implementation fg.deobf("curse.maven:colossal-chests-237875:3768512")
-//    implementation fg.deobf("curse.maven:geckolib-388172:4181370")
+    implementation fg.deobf("curse.maven:architects-palette-433862:4498424")
+    implementation fg.deobf("curse.maven:curios-309927:4418032")
+    implementation fg.deobf("curse.maven:autoreglib-250363:3642382")
+    implementation fg.deobf("curse.maven:sophisticated-backpacks-vault-hunters-edition-696425:4287544")
+    implementation fg.deobf("curse.maven:configured-457570:4462832")
+    implementation fg.deobf("curse.maven:sophisticated-storage-619320:4736649")
+    implementation fg.deobf("curse.maven:cyclops-core-232758:4162660")
+    implementation fg.deobf("curse.maven:colossal-chests-237875:3768512")
+    implementation fg.deobf("curse.maven:geckolib-388172:4181370")
 //    implementation fg.deobf("curse.maven:vault-integrations-867003:4641741")
 }
 
