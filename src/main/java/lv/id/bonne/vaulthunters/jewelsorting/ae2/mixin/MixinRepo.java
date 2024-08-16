@@ -403,6 +403,13 @@ public abstract class MixinRepo
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
+            else if (leftId == ModItems.ANTIQUE.getRegistryName())
+            {
+                return SortingHelper.compareAntique(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));

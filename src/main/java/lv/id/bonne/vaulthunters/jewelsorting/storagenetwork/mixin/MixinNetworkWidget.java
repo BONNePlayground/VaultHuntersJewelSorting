@@ -340,6 +340,10 @@ public class MixinNetworkWidget
             {
                 return SortingHelper.compareBoosterPacks(first.getTag(), second.getTag(), true);
             }
+            else if (first.getItem() == ModItems.ANTIQUE)
+            {
+                return SortingHelper.compareAntique(first.getTag(), second.getTag(), true);
+            }
 
             return 0;
         });

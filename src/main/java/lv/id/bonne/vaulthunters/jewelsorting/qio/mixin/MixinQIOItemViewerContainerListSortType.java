@@ -486,6 +486,13 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getTag(),
                 ascending);
         }
+        else if (firstItem.getItem() == ModItems.ANTIQUE)
+        {
+            return SortingHelper.compareAntique(
+                firstItem.getTag(),
+                secondItem.getTag(),
+                ascending);
+        }
         else
         {
             return 0;

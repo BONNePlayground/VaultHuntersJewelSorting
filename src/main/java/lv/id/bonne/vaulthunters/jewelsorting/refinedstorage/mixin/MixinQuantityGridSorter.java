@@ -275,6 +275,14 @@ public class MixinQuantityGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
+            else if (leftStack.getItem() == ModItems.ANTIQUE)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareAntique(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
         }
     }
 }

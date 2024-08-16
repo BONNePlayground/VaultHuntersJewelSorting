@@ -251,5 +251,14 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
+        else if (stack1.getItem() == ModItems.ANTIQUE)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareAntique(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 }

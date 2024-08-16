@@ -258,6 +258,14 @@ public class MixinStoredItemStackComparatorName
                     rightStack.getTag(),
                     !this.reversed));
         }
+        else if (leftStack.getItem() == ModItems.ANTIQUE)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareAntique(
+                    leftStack.getTag(),
+                    rightStack.getTag(),
+                    !this.reversed));
+        }
     }
 }
 

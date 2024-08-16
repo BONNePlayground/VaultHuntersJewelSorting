@@ -814,6 +814,37 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares antiques by their "id" tag value.
+     * @param leftTag The left tag of antique
+     * @param rightTag The right tag of antique
+     * @param ascending the order of sort
+     * @return the comparison of two given antiques tags.
+     */
+    public static int compareAntique(CompoundTag leftTag, CompoundTag rightTag, boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(ANTIQUE),
+                rightTag.getString(ANTIQUE));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -1803,6 +1834,11 @@ public class SortingHelper
     public static final String DATA = "data";
 
     /**
+     * The antique variable
+     */
+    public static final String ANTIQUE = "antique";
+
+    /**
      * The name of the cache.
      */
     public static final String EXTRA_ATTRIBUTE_INDEX = "extra_attribute_index";
@@ -1884,5 +1920,7 @@ public class SortingHelper
         CUSTOM_SORTING.add(ModItems.CARD.getRegistryName());
         CUSTOM_SORTING.add(ModItems.CARD_DECK.getRegistryName());
         CUSTOM_SORTING.add(ModItems.BOOSTER_PACK.getRegistryName());
+
+        CUSTOM_SORTING.add(ModItems.ANTIQUE.getRegistryName());
     }
 }

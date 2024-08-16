@@ -201,6 +201,13 @@ public class MixinInventorySorter
                         secondStack.getTag(),
                         true);
                 }
+                else if (firstStack.getItem() == ModItems.ANTIQUE)
+                {
+                    return SortingHelper.compareAntique(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -379,6 +386,13 @@ public class MixinInventorySorter
                 else if (firstStack.getItem() == ModItems.BOOSTER_PACK)
                 {
                     return SortingHelper.compareBoosterPacks(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
+                else if (firstStack.getItem() == ModItems.ANTIQUE)
+                {
+                    return SortingHelper.compareAntique(
                         firstStack.getTag(),
                         secondStack.getTag(),
                         true);
