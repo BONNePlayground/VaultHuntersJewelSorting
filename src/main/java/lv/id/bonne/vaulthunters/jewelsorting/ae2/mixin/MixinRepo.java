@@ -202,10 +202,10 @@ public abstract class MixinRepo
             else if (leftId == ModItems.VAULT_CRYSTAL.getRegistryName())
             {
                 CrystalData leftData = CrystalData.empty();
-                leftData.deserializeNBT(leftWhat.toTag().getCompound("tag").getCompound("CrystalData"));
+                leftData.readNbt(leftWhat.toTag().getCompound("tag").getCompound("CrystalData"));
 
                 CrystalData rightData = CrystalData.empty();
-                rightData.deserializeNBT(rightWhat.toTag().getCompound("tag").getCompound("CrystalData"));
+                rightData.readNbt(rightWhat.toTag().getCompound("tag").getCompound("CrystalData"));
 
                 return switch (sortOrder) {
                     case NAME -> SortingHelper.compareVaultCrystals(leftName,

@@ -55,6 +55,6 @@ public interface InvokerGearDataCache
      * This method allows to call private method cacheTag.
      * @return The cache tag.
      */
-    @Invoker
+    @Invoker(value = "cacheTag", remap = false)
     public CompoundTag callCacheTag();
 }
