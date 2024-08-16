@@ -366,6 +366,43 @@ public abstract class MixinRepo
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
+            else if (leftId == ModItems.CARD.getRegistryName())
+            {
+                return switch (sortOrder) {
+                    case NAME -> SortingHelper.compareCards(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                        ascending);
+                    case AMOUNT -> SortingHelper.compareCards(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByAmount(),
+                        ascending);
+                    case MOD -> SortingHelper.compareCards(leftName,
+                        leftWhat.toTag().getCompound("tag"),
+                        rightName,
+                        rightWhat.toTag().getCompound("tag"),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByMod(),
+                        ascending);
+                };
+            }
+            else if (leftId == ModItems.CARD_DECK.getRegistryName())
+            {
+                return SortingHelper.compareDecks(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
+            else if (leftId == ModItems.BOOSTER_PACK.getRegistryName())
+            {
+                return SortingHelper.compareBoosterPacks(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));

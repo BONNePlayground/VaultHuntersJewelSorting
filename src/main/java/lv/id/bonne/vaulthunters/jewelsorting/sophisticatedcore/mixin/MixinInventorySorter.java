@@ -175,6 +175,32 @@ public class MixinInventorySorter
                         secondStack.getTag(),
                         true);
                 }
+                else if (firstStack.getItem() == ModItems.CARD)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCardSortingByAmount().isEmpty())
+                    {
+                        return SortingHelper.compareCards(firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCardSortingByAmount(),
+                            true);
+                    }
+                }
+                else if (firstStack.getItem() == ModItems.CARD_DECK)
+                {
+                    return SortingHelper.compareDecks(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
+                else if (firstStack.getItem() == ModItems.BOOSTER_PACK)
+                {
+                    return SortingHelper.compareBoosterPacks(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -327,6 +353,32 @@ public class MixinInventorySorter
                 else if (firstStack.getItem() == ModItems.AUGMENT)
                 {
                     return SortingHelper.compareAugments(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
+                else if (firstStack.getItem() == ModItems.CARD)
+                {
+                    if (!VaultJewelSorting.CONFIGURATION.getCardSortingByName().isEmpty())
+                    {
+                        return SortingHelper.compareCards(firstStack.getDisplayName().getString(),
+                            firstStack.getTag(),
+                            secondStack.getDisplayName().getString(),
+                            secondStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                            true);
+                    }
+                }
+                else if (firstStack.getItem() == ModItems.CARD_DECK)
+                {
+                    return SortingHelper.compareDecks(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
+                else if (firstStack.getItem() == ModItems.BOOSTER_PACK)
+                {
+                    return SortingHelper.compareBoosterPacks(
                         firstStack.getTag(),
                         secondStack.getTag(),
                         true);

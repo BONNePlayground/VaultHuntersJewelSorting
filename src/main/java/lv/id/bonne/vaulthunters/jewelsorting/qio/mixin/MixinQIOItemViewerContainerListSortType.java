@@ -445,6 +445,47 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getTag(),
                 ascending);
         }
+        else if (firstItem.getItem() == ModItems.CARD)
+        {
+            String leftName = firstItem.getDisplayName().getString();
+            String rightName = secondItem.getDisplayName().getString();
+
+            return switch (instance)
+            {
+                case NAME -> SortingHelper.compareCards(leftName,
+                    firstItem.getTag(),
+                    rightName,
+                    secondItem.getTag(),
+                    VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                    ascending);
+                case SIZE -> SortingHelper.compareCards(leftName,
+                    firstItem.getTag(),
+                    rightName,
+                    secondItem.getTag(),
+                    VaultJewelSorting.CONFIGURATION.getCardSortingByAmount(),
+                    ascending);
+                case MOD -> SortingHelper.compareCards(leftName,
+                    firstItem.getTag(),
+                    rightName,
+                    secondItem.getTag(),
+                    VaultJewelSorting.CONFIGURATION.getCardSortingByMod(),
+                    ascending);
+            };
+        }
+        else if (firstItem.getItem() == ModItems.CARD_DECK)
+        {
+            return SortingHelper.compareDecks(
+                firstItem.getTag(),
+                secondItem.getTag(),
+                ascending);
+        }
+        else if (firstItem.getItem() == ModItems.BOOSTER_PACK)
+        {
+            return SortingHelper.compareBoosterPacks(
+                firstItem.getTag(),
+                secondItem.getTag(),
+                ascending);
+        }
         else
         {
             return 0;

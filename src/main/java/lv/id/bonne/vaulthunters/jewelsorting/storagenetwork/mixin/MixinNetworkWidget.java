@@ -309,6 +309,37 @@ public class MixinNetworkWidget
             {
                 return SortingHelper.compareAugments(first.getTag(), second.getTag(), true);
             }
+            else if (first.getItem() == ModItems.CARD)
+            {
+                return switch (this.gui.getSort()) {
+                    case NAME -> SortingHelper.compareCards(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                        true);
+                    case AMOUNT -> SortingHelper.compareCards(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByAmount(),
+                        true);
+                    case MOD -> SortingHelper.compareCards(first.getDisplayName().getString(),
+                        first.getTag(),
+                        second.getDisplayName().getString(),
+                        second.getTag(),
+                        VaultJewelSorting.CONFIGURATION.getCardSortingByMod(),
+                        true);
+                };
+            }
+            else if (first.getItem() == ModItems.CARD_DECK)
+            {
+                return SortingHelper.compareDecks(first.getTag(), second.getTag(), true);
+            }
+            else if (first.getItem() == ModItems.BOOSTER_PACK)
+            {
+                return SortingHelper.compareBoosterPacks(first.getTag(), second.getTag(), true);
+            }
 
             return 0;
         });

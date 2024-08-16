@@ -221,5 +221,35 @@ public class MixinSortingHandler
 
             callbackInfoReturnable.cancel();
         }
+        else if (stack1.getItem() == ModItems.BOOSTER_PACK)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareBoosterPacks(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
+        else if (stack1.getItem() == ModItems.CARD_DECK)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareDecks(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
+        else if (stack1.getItem() == ModItems.CARD)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.compareCards(stack1.getDisplayName().getString(),
+                    stack1.getTag(),
+                    stack2.getDisplayName().getString(),
+                    stack2.getTag(),
+                    VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
     }
 }

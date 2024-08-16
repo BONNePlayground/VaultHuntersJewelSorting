@@ -308,6 +308,45 @@ public class Configuration
 
         builder.pop();
 
+        builder.comment("This category holds options how Cards are sorted");
+        builder.push("Cards Sorting");
+
+        this.cardSortingByName = builder.
+            comment("The order of Cards if they are sorted by the name.").
+            comment("Supported Values: NAME, TIER, TYPE, COLOR, GROUPS, MODEL").
+            defineList("card_sorting_by_name",
+                Arrays.asList(
+                    SortingHelper.CardOptions.TYPE.name(),
+                    SortingHelper.CardOptions.COLOR.name(),
+                    SortingHelper.CardOptions.TIER.name(),
+                    SortingHelper.CardOptions.NAME.name(),
+                    SortingHelper.CardOptions.GROUPS.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CardOptions.class, value.toUpperCase()).isPresent());
+
+        this.cardSortingByAmount = builder.
+            comment("The order of Cards if they are sorted by the amount/size.").
+            comment("Supported Values: NAME, TIER, TYPE, COLOR, GROUPS, MODEL").
+            defineList("card_sorting_by_amount",
+                Arrays.asList(
+                    SortingHelper.CardOptions.TYPE.name(),
+                    SortingHelper.CardOptions.COLOR.name(),
+                    SortingHelper.CardOptions.TIER.name(),
+                    SortingHelper.CardOptions.NAME.name(),
+                    SortingHelper.CardOptions.GROUPS.name()),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CardOptions.class, value.toUpperCase()).isPresent());
+
+        this.cardSortingByMod = builder.
+            comment("The order of Cards if they are sorted by the mod.").
+            comment("Supported Values: NAME, TIER, TYPE, COLOR, GROUPS, MODEL").
+            defineList("card_sorting_by_mod",
+                Collections.emptyList(),
+                entry -> entry instanceof String value &&
+                    Enums.getIfPresent(SortingHelper.CardOptions.class, value.toUpperCase()).isPresent());
+
+        builder.pop();
+
         Configuration.GENERAL_SPEC = builder.build();
     }
 
@@ -588,6 +627,39 @@ public class Configuration
 
 
     /**
+     * Gets card sorting by name.
+     *
+     * @return the card sorting by name
+     */
+    public List<SortingHelper.CardOptions> getCardSortingByName()
+    {
+        return this.convertStringToCardEnum(this.cardSortingByName.get());
+    }
+
+
+    /**
+     * Gets card sorting by amount.
+     *
+     * @return the card sorting by amount
+     */
+    public List<SortingHelper.CardOptions> getCardSortingByAmount()
+    {
+        return this.convertStringToCardEnum(this.cardSortingByAmount.get());
+    }
+
+
+    /**
+     * Gets card sorting by mod.
+     *
+     * @return the card sorting by mod
+     */
+    public List<SortingHelper.CardOptions> getCardSortingByMod()
+    {
+        return this.convertStringToCardEnum(this.cardSortingByMod.get());
+    }
+
+
+    /**
      * This method converts String list to Enum list.
      * @param value The string list that need to be converted.
      * @return Converted Enum list.
@@ -715,6 +787,22 @@ public class Configuration
     }
 
 
+    /**
+     * This method converts String list to Enum list.
+     * @param value The string list that need to be converted.
+     * @return Converted Enum list.
+     */
+    private List<SortingHelper.CardOptions> convertStringToCardEnum(List<? extends String> value)
+    {
+        return value.stream().
+            map(String::toUpperCase).
+            filter(upperCase -> Enums.getIfPresent(SortingHelper.CardOptions.class, upperCase).isPresent()).
+            map(SortingHelper.CardOptions::valueOf).
+            distinct().
+            toList();
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Variables
 // ---------------------------------------------------------------------
@@ -830,7 +918,6 @@ public class Configuration
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> charmSortingByMod;
 
-
     /**
      * The config value for infused catalyst sorting by name.
      */
@@ -845,6 +932,21 @@ public class Configuration
      * The config value for infused catalyst sorting by mod.
      */
     private final ForgeConfigSpec.ConfigValue<List<? extends String>> catalystSortingByMod;
+
+    /**
+     * The config value for infused catalyst sorting by name.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> cardSortingByName;
+
+    /**
+     * The config value for infused catalyst sorting by amount.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> cardSortingByAmount;
+
+    /**
+     * The config value for infused catalyst sorting by mod.
+     */
+    private final ForgeConfigSpec.ConfigValue<List<? extends String>> cardSortingByMod;
 
     /**
      * The general config spec.

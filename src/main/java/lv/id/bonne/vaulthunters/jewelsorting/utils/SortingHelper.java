@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import iskallia.vault.VaultMod;
+import iskallia.vault.core.card.Card;
+import iskallia.vault.core.card.CardEntry;
 import iskallia.vault.gear.VaultGearState;
 import iskallia.vault.gear.attribute.VaultGearAttribute;
 import iskallia.vault.gear.attribute.VaultGearModifier;
@@ -24,6 +26,7 @@ import iskallia.vault.item.crystal.CrystalData;
 import iskallia.vault.item.data.InscriptionData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 
@@ -677,6 +680,140 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares booster packs by their "id" tag value.
+     * @param leftTag The left tag of booster pack
+     * @param rightTag The right tag of booster pack
+     * @param ascending the order of sort
+     * @return the comparison of two given booster packs tags.
+     */
+    public static int compareBoosterPacks(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(ID),
+                rightTag.getString(ID));
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares decks by their "id" and "inventory" tag value.
+     * @param leftTag The left tag of deck
+     * @param rightTag The right tag of deck
+     * @param ascending the order of sort
+     * @return the comparison of two given decks tags.
+     */
+    public static int compareDecks(@Nullable CompoundTag leftTag,
+        @Nullable CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            returnValue = SortingHelper.compareString(
+                leftTag.getString(ID),
+                rightTag.getString(ID));
+
+            if (returnValue == 0)
+            {
+                returnValue = SortingHelper.compareIntegerValue(
+                    rightTag.getList(INVENTORY, Tag.TAG_COMPOUND).size(),
+                    leftTag.getList(INVENTORY, Tag.TAG_COMPOUND).size());
+            }
+        }
+        else if (leftTag != null)
+        {
+            returnValue = -1;
+
+        }
+        else
+        {
+            returnValue = 1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
+    /**
+     * This method compares cards by their properties.
+     *
+     * @param leftName The name of left card
+     * @param leftTag The left tag of card
+     * @param rightName The name of right card
+     * @param rightTag The right tag of card
+     * @param sortingOrder The card ordering settings
+     * @param ascending the order of sort
+     * @return the comparison of two given cards tags.
+     */
+    public static int compareCards(String leftName,
+        @Nullable CompoundTag leftTag,
+        String rightName,
+        @Nullable CompoundTag rightTag,
+        List<CardOptions> sortingOrder,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && leftTag.contains(DATA, Tag.TAG_COMPOUND) &&
+            rightTag != null && rightTag.contains(DATA, Tag.TAG_COMPOUND))
+        {
+            returnValue = 0;
+
+            Card leftCard = new Card();
+            leftCard.readNbt(leftTag.getCompound(DATA));
+
+            Card rightCard = new Card();
+            rightCard.readNbt(rightTag.getCompound(DATA));
+
+            for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
+            {
+                CardOptions sortOptions = sortingOrder.get(i);
+
+                returnValue = switch (sortOptions) {
+                    case NAME -> SortingHelper.compareString(leftName, rightName);
+                    case TIER -> SortingHelper.compareIntegerValue(leftCard.getTier(), rightCard.getTier());
+                    case COLOR -> SortingHelper.compareCardColors(leftCard.getColors(), rightCard.getColors());
+                    case TYPE -> SortingHelper.compareCardType(leftCard.getGroups(), rightCard.getGroups());
+                    case MODEL -> SortingHelper.compareString(leftCard.getFirstModel(), rightCard.getFirstModel());
+                    case GROUPS -> SortingHelper.compareCardGroups(leftCard.getGroups(), rightCard.getGroups());
+                };
+            }
+
+            leftCard = null;
+            rightCard = null;
+        }
+        else if (leftTag != null && leftTag.contains(DATA, Tag.TAG_COMPOUND))
+        {
+            returnValue = 1;
+        }
+        else
+        {
+            returnValue = 1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -688,9 +825,20 @@ public class SortingHelper
      * @param rightName Right item name.
      * @return Returns comparison of two given strings.
      */
-    private static int compareString(String leftName, String rightName)
+    private static int compareString(@Nullable String leftName, @Nullable String rightName)
     {
-        return leftName.compareTo(rightName);
+        if (leftName != null && rightName != null)
+        {
+            return leftName.compareTo(rightName);
+        }
+        else if (leftName != null)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
 
@@ -1280,6 +1428,112 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares colors of two entries.
+     * @param leftColors Set of first colors.
+     * @param rightColors Set of second colors.
+     * @return The order of color items.
+     */
+    private static int compareCardColors(Set<CardEntry.Color> leftColors, Set<CardEntry.Color> rightColors)
+    {
+        Iterator<CardEntry.Color> leftList = leftColors.stream().sorted().toList().iterator();
+        Iterator<CardEntry.Color> rightList = rightColors.stream().sorted().toList().iterator();
+
+        int returnValue = 0;
+
+        while (leftList.hasNext() && rightList.hasNext() && returnValue == 0)
+        {
+            returnValue = leftList.next().compareTo(rightList.next());
+        }
+
+        if (returnValue == 0)
+        {
+            if (leftList.hasNext())
+            {
+                returnValue = -1;
+            }
+            else if (rightList.hasNext())
+            {
+                returnValue = 1;
+            }
+        }
+
+        return returnValue;
+    }
+
+
+    /**
+     * This method compares types of two entries.
+     * @param leftGroups Set of first groups.
+     * @param rightGroups Set of second groups.
+     * @return The order of type items.
+     */
+    private static int compareCardType(List<String> leftGroups, List<String> rightGroups)
+    {
+        Iterator<String> leftTypes = leftGroups.stream().
+            filter(Card.TYPES::contains).sorted().toList().iterator();
+        Iterator<String> rightTypes = rightGroups.stream().
+            filter(Card.TYPES::contains).sorted().toList().iterator();
+
+        int returnValue = 0;
+
+        while (leftTypes.hasNext() && rightTypes.hasNext() && returnValue == 0)
+        {
+            returnValue = leftTypes.next().compareTo(rightTypes.next());
+        }
+
+        if (returnValue == 0)
+        {
+            if (leftTypes.hasNext())
+            {
+                returnValue = -1;
+            }
+            else if (rightTypes.hasNext())
+            {
+                returnValue = 1;
+            }
+        }
+
+        return returnValue;
+    }
+
+
+    /**
+     * This method compares groups of two entries.
+     * @param leftGroups Set of first groups.
+     * @param rightGroups Set of second groups.
+     * @return The order of group items.
+     */
+    private static int compareCardGroups(List<String> leftGroups, List<String> rightGroups)
+    {
+        Iterator<String> leftTypes = leftGroups.stream().
+            filter(o -> !Card.TYPES.contains(o)).sorted().toList().iterator();
+        Iterator<String> rightTypes = rightGroups.stream().
+            filter(o -> !Card.TYPES.contains(o)).sorted().toList().iterator();
+
+        int returnValue = 0;
+
+        while (leftTypes.hasNext() && rightTypes.hasNext() && returnValue == 0)
+        {
+            returnValue = leftTypes.next().compareTo(rightTypes.next());
+        }
+
+        if (returnValue == 0)
+        {
+            if (leftTypes.hasNext())
+            {
+                returnValue = -1;
+            }
+            else if (rightTypes.hasNext())
+            {
+                returnValue = 1;
+            }
+        }
+
+        return returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Enum for sorting order
 // ---------------------------------------------------------------------
@@ -1490,6 +1744,20 @@ public class SortingHelper
 
 
     /**
+     * This enum holds all possible values for Card sorting order.
+     */
+    public enum CardOptions
+    {
+        NAME,
+        TIER,
+        COLOR,
+        TYPE,
+        MODEL,
+        GROUPS
+    }
+
+
+    /**
      * The modifiers variable
      */
     public static final String MODIFIERS = "modifiers";
@@ -1518,6 +1786,21 @@ public class SortingHelper
      * The theme variable
      */
     public static final String THEME = "theme";
+
+    /**
+     * The id variable
+     */
+    public static final String ID = "id";
+
+    /**
+     * The inventory variable
+     */
+    public static final String INVENTORY = "inventory";
+
+    /**
+     * The data variable
+     */
+    public static final String DATA = "data";
 
     /**
      * The name of the cache.
@@ -1597,5 +1880,9 @@ public class SortingHelper
         CUSTOM_SORTING.add(ModItems.RESPEC_FLASK.getRegistryName());
         CUSTOM_SORTING.add(ModItems.FACETED_FOCUS.getRegistryName());
         CUSTOM_SORTING.add(ModItems.AUGMENT.getRegistryName());
+
+        CUSTOM_SORTING.add(ModItems.CARD.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.CARD_DECK.getRegistryName());
+        CUSTOM_SORTING.add(ModItems.BOOSTER_PACK.getRegistryName());
     }
 }

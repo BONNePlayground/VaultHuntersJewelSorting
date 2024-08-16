@@ -240,6 +240,35 @@ public class MixinNameGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
+            else if (leftStack.getItem() == ModItems.CARD)
+            {
+                if (!VaultJewelSorting.CONFIGURATION.getCardSortingByName().isEmpty())
+                {
+                    callbackInfoReturnable.setReturnValue(
+                        SortingHelper.compareCards(leftStack.getDisplayName().getString(),
+                            leftStack.getTag(),
+                            rightStack.getDisplayName().getString(),
+                            rightStack.getTag(),
+                            VaultJewelSorting.CONFIGURATION.getCardSortingByName(),
+                            sortingDirection == SortingDirection.ASCENDING));
+                }
+            }
+            else if (leftStack.getItem() == ModItems.CARD_DECK)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareDecks(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
+            else if (leftStack.getItem() == ModItems.BOOSTER_PACK)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.compareBoosterPacks(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
         }
     }
 }
