@@ -328,6 +328,9 @@ public class SortingHelper
         List<CatalystOptions> sortingOrder,
         boolean ascending)
     {
+        if (leftData == null) leftData = new CompoundTag();
+        if (rightData == null) rightData = new CompoundTag();
+
         int returnValue = 0;
         for (int i = 0, sortingOrderSize = sortingOrder.size(); returnValue == 0 && i < sortingOrderSize; i++)
         {
