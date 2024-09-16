@@ -493,6 +493,13 @@ public class MixinQIOItemViewerContainerListSortType
                 secondItem.getTag(),
                 ascending);
         }
+        else if (firstItem.getItem() == ModItems.JEWEL_POUCH)
+        {
+            return SortingHelper.comparePouches(
+                firstItem.getTag(),
+                secondItem.getTag(),
+                ascending);
+        }
         else
         {
             return 0;

@@ -848,6 +848,50 @@ public class SortingHelper
     }
 
 
+    /**
+     * This method compares jewel pouches by number of jewels or their level.
+     * @param leftTag The left tag of pouch
+     * @param rightTag The right tag of pouch
+     * @param ascending the order of sort
+     * @return the comparison of two given pouch tags.
+     */
+    public static int comparePouches(CompoundTag leftTag,
+        CompoundTag rightTag,
+        boolean ascending)
+    {
+        int returnValue;
+
+        if (leftTag != null && rightTag != null)
+        {
+            ListTag numberOfLeftJewels = leftTag.getList("jewels", 10);
+            ListTag numberOfRightJewels = rightTag.getList("jewels", 10);
+
+            returnValue = Integer.compare(numberOfRightJewels.size(), numberOfLeftJewels.size());
+
+            if (returnValue == 0)
+            {
+                int leftLevel = !leftTag.contains("vaultLevel") ?
+                    0 : leftTag.getInt("vaultLevel");
+                int rightLevel = !rightTag.contains("vaultLevel") ?
+                    0 : rightTag.getInt("vaultLevel");
+
+                returnValue = Integer.compare(leftLevel, rightLevel);
+            }
+        }
+        else if (leftTag != null)
+        {
+            returnValue = 1;
+
+        }
+        else
+        {
+            returnValue = -1;
+        }
+
+        return ascending ? returnValue : -returnValue;
+    }
+
+
 // ---------------------------------------------------------------------
 // Section: Internal Sorting Methods
 // ---------------------------------------------------------------------
@@ -1925,5 +1969,7 @@ public class SortingHelper
         CUSTOM_SORTING.add(ModItems.BOOSTER_PACK.getRegistryName());
 
         CUSTOM_SORTING.add(ModItems.ANTIQUE.getRegistryName());
+
+        CUSTOM_SORTING.add(ModItems.JEWEL_POUCH.getRegistryName());
     }
 }

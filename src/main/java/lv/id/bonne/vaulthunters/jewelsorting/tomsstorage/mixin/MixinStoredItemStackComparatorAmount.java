@@ -268,6 +268,14 @@ public class MixinStoredItemStackComparatorAmount
                     rightStack.getTag(),
                     !this.reversed));
         }
+        else if (leftStack.getItem() == ModItems.JEWEL_POUCH)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.comparePouches(
+                    leftStack.getTag(),
+                    rightStack.getTag(),
+                    !this.reversed));
+        }
     }
 }
 

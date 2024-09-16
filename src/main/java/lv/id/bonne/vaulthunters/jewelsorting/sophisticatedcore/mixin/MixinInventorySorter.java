@@ -208,6 +208,13 @@ public class MixinInventorySorter
                         secondStack.getTag(),
                         true);
                 }
+                else if (firstStack.getItem() == ModItems.JEWEL_POUCH)
+                {
+                    return SortingHelper.comparePouches(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
 
                 return 0;
             });
@@ -393,6 +400,13 @@ public class MixinInventorySorter
                 else if (firstStack.getItem() == ModItems.ANTIQUE)
                 {
                     return SortingHelper.compareAntique(
+                        firstStack.getTag(),
+                        secondStack.getTag(),
+                        true);
+                }
+                else if (firstStack.getItem() == ModItems.JEWEL_POUCH)
+                {
+                    return SortingHelper.comparePouches(
                         firstStack.getTag(),
                         secondStack.getTag(),
                         true);

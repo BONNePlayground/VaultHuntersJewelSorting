@@ -344,6 +344,10 @@ public class MixinNetworkWidget
             {
                 return SortingHelper.compareAntique(first.getTag(), second.getTag(), true);
             }
+            else if (first.getItem() == ModItems.JEWEL_POUCH)
+            {
+                return SortingHelper.comparePouches(first.getTag(), second.getTag(), true);
+            }
 
             return 0;
         });

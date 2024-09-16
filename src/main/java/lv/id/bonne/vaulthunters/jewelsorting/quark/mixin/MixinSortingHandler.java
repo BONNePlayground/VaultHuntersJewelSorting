@@ -7,6 +7,7 @@
 package lv.id.bonne.vaulthunters.jewelsorting.quark.mixin;
 
 
+import com.refinedmods.refinedstorage.screen.grid.sorting.SortingDirection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -255,6 +256,15 @@ public class MixinSortingHandler
         {
             callbackInfoReturnable.setReturnValue(
                 SortingHelper.compareAntique(stack1.getTag(),
+                    stack2.getTag(),
+                    true));
+
+            callbackInfoReturnable.cancel();
+        }
+        else if (stack1.getItem() == ModItems.JEWEL_POUCH)
+        {
+            callbackInfoReturnable.setReturnValue(
+                SortingHelper.comparePouches(stack1.getTag(),
                     stack2.getTag(),
                     true));
 

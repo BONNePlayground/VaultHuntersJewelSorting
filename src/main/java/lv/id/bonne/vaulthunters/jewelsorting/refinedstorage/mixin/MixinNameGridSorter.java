@@ -277,6 +277,14 @@ public class MixinNameGridSorter
                         rightStack.getTag(),
                         sortingDirection == SortingDirection.ASCENDING));
             }
+            else if (leftStack.getItem() == ModItems.JEWEL_POUCH)
+            {
+                callbackInfoReturnable.setReturnValue(
+                    SortingHelper.comparePouches(
+                        leftStack.getTag(),
+                        rightStack.getTag(),
+                        sortingDirection == SortingDirection.ASCENDING));
+            }
         }
     }
 }

@@ -410,6 +410,13 @@ public abstract class MixinRepo
                     rightWhat.toTag().getCompound("tag"),
                     ascending);
             }
+            else if (leftId == ModItems.JEWEL_POUCH.getRegistryName())
+            {
+                return SortingHelper.comparePouches(
+                    leftWhat.toTag().getCompound("tag"),
+                    rightWhat.toTag().getCompound("tag"),
+                    ascending);
+            }
             else
             {
                 VaultGearData leftData = CustomVaultGearData.read(leftWhat.toTag().getCompound("tag"));
