@@ -64,7 +64,8 @@ public class AttributeHelper
     {
         try
         {
-            return attribute != null && attribute.getType().cast(0) instanceof Integer;
+            return attribute != null && attribute.getType().cast(0) instanceof Integer &&
+                attribute.getType().cast(0.0) instanceof Integer;
         }
         catch (ClassCastException ignore)
         {
