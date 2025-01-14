@@ -7,11 +7,10 @@
 package lv.id.bonne.vaulthunters.jewelsorting.utils;
 
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import iskallia.vault.gear.attribute.VaultGearAttribute;
-import iskallia.vault.init.ModGearAttributes;
 import lv.id.bonne.vaulthunters.jewelsorting.VaultJewelSorting;
 import net.minecraftforge.event.RegistryEvent;
 
@@ -26,46 +25,13 @@ public class AttributeHelper
      */
     public static void registerAttributes(RegistryEvent.Register<VaultGearAttribute<?>> event)
     {
-        MOD_GEAR_ATTRIBUTE.clear();
-        MOD_GEAR_ATTRIBUTE.addAll(event.getRegistry().getValues());
-    }
-
-
-    public static void registerAttributes()
-    {
-        MOD_GEAR_ATTRIBUTE.clear();
-        FLOAT_ATTRIBUTE.clear();
-        INTEGER_ATTRIBUTE.clear();
-        DOUBLE_ATTRIBUTE.clear();
-
-        for (Field field : ModGearAttributes.class.getDeclaredFields())
+        event.getRegistry().getValues().forEach(attribute ->
         {
-            try
+            if (!MOD_GEAR_ATTRIBUTE.contains(attribute))
             {
-                Object fieldObject = field.get(ModGearAttributes.class);
-
-                if (fieldObject instanceof VaultGearAttribute<?> attribute)
-                {
-                    MOD_GEAR_ATTRIBUTE.add(attribute);
-
-                    if (field.getGenericType().getTypeName().endsWith("<java.lang.Integer>"))
-                    {
-                        INTEGER_ATTRIBUTE.add(attribute);
-                    }
-                    else if (field.getGenericType().getTypeName().endsWith("<java.lang.Float>"))
-                    {
-                        FLOAT_ATTRIBUTE.add(attribute);
-                    }
-                    else if (field.getGenericType().getTypeName().endsWith("<java.lang.Double>"))
-                    {
-                        DOUBLE_ATTRIBUTE.add(attribute);
-                    }
-                }
+                MOD_GEAR_ATTRIBUTE.add(attribute);
             }
-            catch (IllegalAccessException ignored)
-            {
-            }
-        }
+        });
     }
 
 
@@ -77,7 +43,14 @@ public class AttributeHelper
      */
     public static boolean isFloatAttribute(VaultGearAttribute<?> attribute)
     {
-        return attribute != null && FLOAT_ATTRIBUTE.contains(attribute);
+        try
+        {
+            return attribute != null && attribute.getType().cast(0) instanceof Float;
+        }
+        catch (ClassCastException ignore)
+        {
+            return false;
+        }
     }
 
 
@@ -89,8 +62,16 @@ public class AttributeHelper
      */
     public static boolean isIntegerAttribute(VaultGearAttribute<?> attribute)
     {
-        return attribute != null && INTEGER_ATTRIBUTE.contains(attribute);
+        try
+        {
+            return attribute != null && attribute.getType().cast(0) instanceof Integer;
+        }
+        catch (ClassCastException ignore)
+        {
+            return false;
+        }
     }
+
 
 
     /**
@@ -101,7 +82,14 @@ public class AttributeHelper
      */
     public static boolean isDoubleAttribute(VaultGearAttribute<?> attribute)
     {
-        return attribute != null && DOUBLE_ATTRIBUTE.contains(attribute);
+        try
+        {
+            return attribute != null && attribute.getType().cast(0) instanceof Double;
+        }
+        catch (ClassCastException ignore)
+        {
+            return false;
+        }
     }
 
 
@@ -137,19 +125,4 @@ public class AttributeHelper
      * List that holds all VaultGearAttributes.
      */
     private static final List<VaultGearAttribute<?>> MOD_GEAR_ATTRIBUTE = new ArrayList<>();
-
-    /**
-     * The set that holds all VaultGearAttributes that are float.
-     */
-    private static final Set<VaultGearAttribute<?>> FLOAT_ATTRIBUTE = new HashSet<>();
-
-    /**
-     * The set that holds all VaultGearAttributes that are integer.
-     */
-    private static final Set<VaultGearAttribute<?>> INTEGER_ATTRIBUTE = new HashSet<>();
-
-    /**
-     * The set that holds all VaultGearAttributes that are double.
-     */
-    private static final Set<VaultGearAttribute<?>> DOUBLE_ATTRIBUTE = new HashSet<>();
 }

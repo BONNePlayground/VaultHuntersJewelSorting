@@ -5,8 +5,8 @@ import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 import iskallia.vault.gear.attribute.VaultGearAttribute;
-import lv.id.bonne.vaulthunters.jewelsorting.utils.AttributeHelper;
 import lv.id.bonne.vaulthunters.jewelsorting.config.Configuration;
+import lv.id.bonne.vaulthunters.jewelsorting.utils.AttributeHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -42,8 +42,7 @@ public class VaultJewelSorting
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onGearAttributeRegistry(RegistryEvent.Register<VaultGearAttribute<?>> event)
     {
-        AttributeHelper.registerAttributes();
-//        AttributeHelper.registerAttributes(event);
+        AttributeHelper.registerAttributes(event);
     }
 
 
